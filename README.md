@@ -1,21 +1,44 @@
-# shadcn/ui monorepo template
+# Civic Research Hub
 
-This is a TanStack Start monorepo template with shadcn/ui.
+A TanStack Start + shadcn monorepo scaffold for a combined civic research site.
+The first three seeded topics come from:
 
-## Adding components
+- `corruptionincongress`
+- `deflock-michigan`
+- `mi-data-center-fight`
 
-To add components to your app, run the following command at the root of your `web` app:
+## Structure
+
+- `apps/web/src/routes/index.tsx` renders the combined topic index.
+- `apps/web/src/routes/topics.$slug.tsx` renders any topic that matches the shared topic model.
+- `apps/web/convex/schema.ts` defines the Convex `topics` table.
+- `apps/web/convex/seedTopics.ts` is the initial seed data and the easiest place to model a future topic.
+- `apps/web/convex/topics.ts` exposes list and detail queries.
+- `apps/web/convex/seed.ts` upserts the seed topics into Convex.
+
+## Convex setup
 
 ```bash
-pnpm dlx shadcn@latest add button -c apps/web
+cd apps/web
+pnpm convex:dev
 ```
 
-This will place the ui components in the `packages/ui/src/components` directory.
+After Convex creates the deployment and writes `.env.local`, seed the first
+three topics:
 
-## Using components
-
-To use the components in your app, import them from the `ui` package.
-
-```tsx
-import { Button } from "@workspace/ui/components/button";
+```bash
+pnpm convex:seed
 ```
+
+The web app is wired to use Convex when `VITE_CONVEX_URL` is present. The
+visible pages currently read the seed model directly so the scaffold can run
+before a Convex project is created.
+
+## Add a future topic
+
+1. Add a new object to `apps/web/convex/seedTopics.ts`.
+2. Keep claims tied to `sourceIndexes` so stats, arguments, and findings all
+   point back to documents.
+3. Run `pnpm --filter web convex:seed` after the Convex deployment exists.
+4. If you later add AI deep research, store the generated findings in the same
+   topic shape: `arguments`, `findings`, `stats`, `actions`, and `sources`.

@@ -1,8 +1,16 @@
-import { HeadContent, Scripts, createRootRoute } from "@tanstack/react-router"
+import {
+  HeadContent,
+  Scripts,
+  createRootRouteWithContext,
+} from "@tanstack/react-router"
 
 import appCss from "@workspace/ui/globals.css?url"
+import type { QueryClient } from "@tanstack/react-query"
 
-export const Route = createRootRoute({
+export const Route = createRootRouteWithContext<{
+  queryClient: QueryClient
+  convexEnabled: boolean
+}>()({
   head: () => ({
     meta: [
       {
@@ -13,7 +21,12 @@ export const Route = createRootRoute({
         content: "width=device-width, initial-scale=1",
       },
       {
-        title: "TanStack Start Starter",
+        title: "Civic Research Hub",
+      },
+      {
+        name: "description",
+        content:
+          "A combined civic research site for congressional ethics, Michigan surveillance oversight, and Michigan data center accountability.",
       },
     ],
     links: [
