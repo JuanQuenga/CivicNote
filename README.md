@@ -1,7 +1,7 @@
 # Civic Research Hub
 
 A TanStack Start + shadcn monorepo scaffold for a combined civic research site.
-The first three seeded topics come from:
+The first three seeded topics came from:
 
 - `corruptionincongress`
 - `deflock-michigan`
@@ -24,7 +24,7 @@ pnpm convex:dev
 ```
 
 After Convex creates the deployment and writes `.env.local`, seed the first
-three topics:
+topic set:
 
 ```bash
 pnpm convex:seed

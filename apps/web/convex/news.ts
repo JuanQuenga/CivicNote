@@ -19,6 +19,21 @@ const topicFeeds = [
     tag: "Michigan data centers",
     url: "https://news.google.com/rss/search?q=Michigan%20data%20center%20water%20power%20moratorium",
   },
+  {
+    topicSlug: "glyphosate-health-environment",
+    tag: "Glyphosate",
+    url: "https://news.google.com/rss/search?q=glyphosate%20EPA%20IARC%20health%20environment",
+  },
+  {
+    topicSlug: "israel-gaza-us-influence",
+    tag: "Israel Gaza",
+    url: "https://news.google.com/rss/search?q=Israel%20Gaza%20genocide%20ICJ%20AIPAC%20Congress",
+  },
+  {
+    topicSlug: "voter-fraud-claims-election-rules",
+    tag: "Election rules",
+    url: "https://news.google.com/rss/search?q=Trump%20voter%20fraud%20mail%20voting%20executive%20order%202026",
+  },
 ] as const
 
 type ParsedNewsItem = {
@@ -124,7 +139,7 @@ function parseRssItems(
   tag: string
 ): Array<ParsedNewsItem> {
   return Array.from(xml.matchAll(/<item>([\s\S]*?)<\/item>/g)).map((match) => {
-    const itemXml = match[1] ?? ""
+    const itemXml = match[1]
     const title = decodeXml(readTag(itemXml, "title"))
     const url = decodeXml(readTag(itemXml, "link"))
     const publishedAt = normalizeDate(readTag(itemXml, "pubDate"))

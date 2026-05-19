@@ -1,5 +1,7 @@
-import { useState } from "react"
 import { Link, createFileRoute } from "@tanstack/react-router"
+import { useState } from "react"
+import type { CSSProperties } from "react"
+import type { ResearchTopic, TopicModule } from "../../convex/seedTopics"
 
 import { SiteHeader } from "@/components/SiteHeader"
 import { SourceLinks } from "@/components/SourceLinks"
@@ -144,152 +146,41 @@ function TopicPage() {
           </div>
         </section>
 
-        <section className="mx-auto grid max-w-7xl gap-6 px-4 py-10 sm:px-6 lg:grid-cols-3 lg:px-8">
-          {topic.stats.map((stat) => (
-            <article
-              key={stat.label}
-              className="border border-zinc-200 bg-white p-6"
-            >
-              <p className="text-4xl font-black">{stat.value}</p>
-              <p className="mt-3 text-sm leading-6 text-zinc-700">
-                {stat.label}
-              </p>
-              <div className="mt-4">
-                <SourceLinks topic={topic} indexes={stat.sourceIndexes} />
-              </div>
-            </article>
+        <section className="mx-auto grid max-w-7xl gap-5 px-4 py-10 sm:px-6 lg:px-8">
+          {topic.modules.map((module, index) => (
+            <TopicModuleView
+              key={`${module.type}-${module.title}`}
+              module={module}
+              topic={topic}
+              index={index}
+            />
           ))}
-        </section>
-
-        <section className="mx-auto grid max-w-7xl gap-6 px-4 pb-12 sm:px-6 lg:grid-cols-[0.9fr_1.1fr] lg:px-8">
-          <article className="border border-zinc-200 bg-white p-6 sm:p-8">
-            <p className="text-xs font-black tracking-[0.2em] text-zinc-500 uppercase">
-              Why it matters
-            </p>
-            <p className="mt-5 text-lg leading-8 text-zinc-700">
-              {topic.summary}
-            </p>
-          </article>
-
-          <div className="grid gap-4">
-            {topic.arguments.map((argument) => (
-              <article
-                key={argument.title}
-                className="border border-zinc-200 bg-white p-6"
-              >
-                <h2 className="text-2xl font-black">{argument.title}</h2>
-                <p className="mt-4 text-sm font-semibold tracking-[0.12em] text-red-700 uppercase">
-                  Argument
-                </p>
-                <p className="mt-2 text-sm leading-6 text-zinc-700">
-                  {argument.claim}
-                </p>
-                <p className="mt-4 text-sm font-semibold tracking-[0.12em] text-emerald-800 uppercase">
-                  Response
-                </p>
-                <p className="mt-2 text-sm leading-6 text-zinc-700">
-                  {argument.counterpoint}
-                </p>
-                <div className="mt-5">
-                  <SourceLinks topic={topic} indexes={argument.sourceIndexes} />
-                </div>
-              </article>
-            ))}
-          </div>
-        </section>
-
-        <section className="border-y border-zinc-200 bg-white">
-          <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-            <div className="mb-8 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-              <div>
-                <p className="text-xs font-black tracking-[0.2em] text-zinc-500 uppercase">
-                  Research Findings
-                </p>
-                <h2 className="mt-2 text-3xl font-black">Evidence snapshot</h2>
-              </div>
-              <p className="max-w-md text-sm leading-6 text-zinc-600">
-                These are intentionally structured so later AI deep research can
-                add or revise findings without changing the page code.
-              </p>
-            </div>
-            <div className="grid gap-5 lg:grid-cols-3">
-              {topic.findings.map((finding) => (
-                <article
-                  key={finding.title}
-                  className="border border-zinc-200 bg-[#f7f4ee] p-6"
-                >
-                  <h3 className="text-xl font-black">{finding.title}</h3>
-                  <p className="mt-3 text-sm leading-6 text-zinc-700">
-                    {finding.body}
-                  </p>
-                  <div className="mt-4">
-                    <SourceLinks
-                      topic={topic}
-                      indexes={finding.sourceIndexes}
-                    />
-                  </div>
-                </article>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        <section className="mx-auto grid max-w-7xl gap-6 px-4 py-12 sm:px-6 lg:grid-cols-[0.65fr_1.35fr] lg:px-8">
-          <div>
-            <p className="text-xs font-black tracking-[0.2em] text-zinc-500 uppercase">
-              Public Action
-            </p>
-            <h2 className="mt-2 text-3xl font-black">
-              Do the next useful thing
-            </h2>
-            <p className="mt-4 text-sm leading-6 text-zinc-600">
-              Each action includes the audience, time cost, urgency, and a
-              script you can copy before opening the source link.
-            </p>
-          </div>
-          <div className="grid gap-4">
-            {topic.actions.map((action, index) => (
-              <ActionCard action={action} index={index} key={action.title} />
-            ))}
-          </div>
-        </section>
-
-        <section className="border-y border-zinc-200 bg-white">
-          <div className="mx-auto grid max-w-7xl gap-8 px-4 py-12 sm:px-6 lg:grid-cols-[0.7fr_1.3fr] lg:px-8">
-            <div>
-              <p className="text-xs font-black tracking-[0.2em] text-zinc-500 uppercase">
-                Timeline
-              </p>
-              <h2 className="mt-2 text-3xl font-black">
-                What moved this topic
-              </h2>
-              <p className="mt-4 text-sm leading-6 text-zinc-600">
-                Milestones are linked back to the same source library as the
-                topic claims.
-              </p>
-            </div>
-            <div className="grid gap-4">
-              {topic.timeline.map((item) => (
-                <article
-                  key={`${item.date}-${item.title}`}
-                  className="grid gap-4 border border-zinc-200 bg-[#f7f4ee] p-5 sm:grid-cols-[120px_1fr]"
-                >
-                  <time className="text-sm font-black tracking-[0.16em] text-red-700 uppercase">
-                    {item.date}
-                  </time>
-                  <div>
-                    <h3 className="text-xl font-black">{item.title}</h3>
-                    <p className="mt-2 text-sm leading-6 text-zinc-700">
-                      {item.description}
-                    </p>
-                    <div className="mt-4">
-                      <SourceLinks topic={topic} indexes={item.sourceIndexes} />
-                    </div>
-                  </div>
-                </article>
-              ))}
-            </div>
-          </div>
+          {topic.modules.some(
+            (module) => module.type === "actionList"
+          ) ? null : (
+            <TopicModuleView
+              module={{
+                type: "actionList",
+                eyebrow: "Public action",
+                title: "Do the next useful thing",
+                actions: topic.actions,
+              }}
+              topic={topic}
+              index={topic.modules.length}
+            />
+          )}
+          {topic.modules.some((module) => module.type === "timeline") ? null : (
+            <TopicModuleView
+              module={{
+                type: "timeline",
+                eyebrow: "Milestones",
+                title: "What moved this topic",
+                items: topic.timeline,
+              }}
+              topic={topic}
+              index={topic.modules.length + 1}
+            />
+          )}
         </section>
 
         <section className="border-t border-zinc-200 bg-zinc-950 text-white">
@@ -354,6 +245,333 @@ function TopicPage() {
   )
 }
 
+const claimStatusStyles = {
+  documented: "border-emerald-300 bg-emerald-50 text-emerald-900",
+  contested: "border-amber-300 bg-amber-50 text-amber-900",
+  unsupported: "border-red-300 bg-red-50 text-red-900",
+  watch: "border-zinc-300 bg-zinc-100 text-zinc-800",
+} as const
+
+function TopicModuleView({
+  module,
+  topic,
+  index,
+}: {
+  module: TopicModule
+  topic: ResearchTopic
+  index: number
+}) {
+  const shell =
+    index % 2 === 0
+      ? "border-zinc-200 bg-white"
+      : "border-zinc-200 bg-[#f7f4ee]"
+
+  if (module.type === "briefing") {
+    return (
+      <article className={`border p-6 sm:p-8 ${shell}`}>
+        <ModuleHeader module={module} />
+        <div className="mt-6 grid gap-5 lg:grid-cols-[1.2fr_0.8fr]">
+          <div className="grid gap-4">
+            {module.body.map((paragraph) => (
+              <p
+                key={paragraph}
+                className="text-base leading-8 text-zinc-700 sm:text-lg"
+              >
+                {paragraph}
+              </p>
+            ))}
+            {module.sourceIndexes ? (
+              <SourceLinks topic={topic} indexes={module.sourceIndexes} />
+            ) : null}
+          </div>
+          {module.bullets ? (
+            <ul className="grid content-start gap-3">
+              {module.bullets.map((bullet) => (
+                <li
+                  key={bullet}
+                  className="border-l-2 border-zinc-950 bg-white px-4 py-3 text-sm leading-6 text-zinc-700"
+                >
+                  {bullet}
+                </li>
+              ))}
+            </ul>
+          ) : null}
+        </div>
+      </article>
+    )
+  }
+
+  if (module.type === "statGrid") {
+    return (
+      <article className={`border p-6 sm:p-8 ${shell}`}>
+        <ModuleHeader module={module} />
+        <div className="mt-6 grid gap-4 md:grid-cols-3">
+          {module.stats.map((stat) => (
+            <div
+              key={stat.label}
+              className="border border-zinc-200 bg-white p-5"
+            >
+              <p className="text-4xl font-black">{stat.value}</p>
+              <p className="mt-3 text-sm leading-6 text-zinc-700">
+                {stat.label}
+              </p>
+              <div className="mt-4">
+                <SourceLinks topic={topic} indexes={stat.sourceIndexes} />
+              </div>
+            </div>
+          ))}
+        </div>
+      </article>
+    )
+  }
+
+  if (module.type === "evidenceMatrix") {
+    return (
+      <article className={`border p-6 sm:p-8 ${shell}`}>
+        <ModuleHeader module={module} summary={module.summary} />
+        <div className="mt-6 grid gap-4 lg:grid-cols-3">
+          {module.rows.map((row) => (
+            <div
+              key={row.label}
+              className="border border-zinc-200 bg-white p-5"
+            >
+              <h3 className="text-xl font-black">{row.label}</h3>
+              <p className="mt-4 text-xs font-black tracking-[0.14em] text-emerald-800 uppercase">
+                Evidence
+              </p>
+              <p className="mt-2 text-sm leading-6 text-zinc-700">
+                {row.evidence}
+              </p>
+              <p className="mt-4 text-xs font-black tracking-[0.14em] text-red-700 uppercase">
+                Caveat
+              </p>
+              <p className="mt-2 text-sm leading-6 text-zinc-700">
+                {row.caveat}
+              </p>
+              <div className="mt-4">
+                <SourceLinks topic={topic} indexes={row.sourceIndexes} />
+              </div>
+            </div>
+          ))}
+        </div>
+      </article>
+    )
+  }
+
+  if (module.type === "claimLedger") {
+    return (
+      <article className={`border p-6 sm:p-8 ${shell}`}>
+        <ModuleHeader module={module} />
+        <div className="mt-6 grid gap-3">
+          {module.rows.map((row) => (
+            <div
+              key={row.claim}
+              className="grid gap-4 border border-zinc-200 bg-white p-5 lg:grid-cols-[0.9fr_120px_1.1fr]"
+            >
+              <p className="text-sm leading-6 font-semibold text-zinc-950">
+                {row.claim}
+              </p>
+              <span
+                className={`h-fit border px-3 py-1 text-center text-[10px] font-black tracking-[0.14em] uppercase ${
+                  claimStatusStyles[row.status]
+                }`}
+              >
+                {row.status}
+              </span>
+              <div>
+                <p className="text-sm leading-6 text-zinc-700">{row.finding}</p>
+                <div className="mt-4">
+                  <SourceLinks topic={topic} indexes={row.sourceIndexes} />
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </article>
+    )
+  }
+
+  if (module.type === "tracker") {
+    return (
+      <article className={`border p-6 sm:p-8 ${shell}`}>
+        <ModuleHeader module={module} />
+        <div className="mt-6 overflow-hidden border border-zinc-200 bg-white">
+          <div
+            className="hidden border-b border-zinc-200 bg-zinc-950 text-white lg:grid"
+            style={{
+              gridTemplateColumns: `repeat(${module.columns.length}, minmax(0, 1fr)) 180px`,
+            }}
+          >
+            {module.columns.map((column) => (
+              <p
+                key={column}
+                className="border-r border-white/10 p-4 text-xs font-black tracking-[0.14em] uppercase"
+              >
+                {column}
+              </p>
+            ))}
+            <p className="p-4 text-xs font-black tracking-[0.14em] uppercase">
+              Sources
+            </p>
+          </div>
+          {module.rows.map((row, rowIndex) => (
+            <div
+              key={`${row.cells.join("-")}-${rowIndex}`}
+              className="grid gap-0 border-b border-zinc-200 last:border-b-0 lg:grid-cols-[var(--tracker-cols)]"
+              style={
+                {
+                  "--tracker-cols": `${module.columns
+                    .map(() => "minmax(0, 1fr)")
+                    .join(" ")} 180px`,
+                } as CSSProperties
+              }
+            >
+              {row.cells.map((cell, cellIndex) => (
+                <div
+                  key={`${cell}-${cellIndex}`}
+                  className="border-b border-zinc-100 p-4 lg:border-r lg:border-b-0"
+                >
+                  <p className="mb-2 text-[10px] font-black tracking-[0.14em] text-zinc-500 uppercase lg:hidden">
+                    {module.columns[cellIndex]}
+                  </p>
+                  <p className="text-sm leading-6 text-zinc-700">{cell}</p>
+                </div>
+              ))}
+              <div className="p-4">
+                <SourceLinks topic={topic} indexes={row.sourceIndexes} />
+              </div>
+            </div>
+          ))}
+        </div>
+      </article>
+    )
+  }
+
+  if (module.type === "moneyTrail") {
+    return (
+      <article className={`border p-6 sm:p-8 ${shell}`}>
+        <ModuleHeader module={module} />
+        <div className="mt-6 grid gap-4 lg:grid-cols-3">
+          {module.rows.map((row) => (
+            <div
+              key={row.actor}
+              className="border border-zinc-200 bg-white p-5"
+            >
+              <p className="text-xs font-black tracking-[0.16em] text-red-700 uppercase">
+                {row.actor}
+              </p>
+              <h3 className="mt-4 text-xl font-black">{row.mechanism}</h3>
+              <p className="mt-3 text-sm leading-6 text-zinc-700">
+                {row.impact}
+              </p>
+              <div className="mt-4">
+                <SourceLinks topic={topic} indexes={row.sourceIndexes} />
+              </div>
+            </div>
+          ))}
+        </div>
+      </article>
+    )
+  }
+
+  if (module.type === "policyLevers") {
+    return (
+      <article className={`border p-6 sm:p-8 ${shell}`}>
+        <ModuleHeader module={module} />
+        <div className="mt-6 grid gap-4">
+          {module.levers.map((lever) => (
+            <div
+              key={`${lever.actor}-${lever.lever}`}
+              className="grid gap-4 border border-zinc-200 bg-white p-5 md:grid-cols-[180px_1fr_1fr]"
+            >
+              <p className="text-sm font-black text-red-700">{lever.actor}</p>
+              <p className="text-sm leading-6 font-semibold text-zinc-950">
+                {lever.lever}
+              </p>
+              <div>
+                <p className="text-sm leading-6 text-zinc-700">
+                  {lever.pressurePoint}
+                </p>
+                <div className="mt-4">
+                  <SourceLinks topic={topic} indexes={lever.sourceIndexes} />
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </article>
+    )
+  }
+
+  if (module.type === "actionList") {
+    return (
+      <article className={`border p-6 sm:p-8 ${shell}`}>
+        <ModuleHeader module={module} />
+        <div className="mt-6 grid gap-4">
+          {module.actions.map((action, actionIndex) => (
+            <ActionCard
+              action={action}
+              index={actionIndex}
+              key={action.title}
+            />
+          ))}
+        </div>
+      </article>
+    )
+  }
+
+  return (
+    <article className={`border p-6 sm:p-8 ${shell}`}>
+      <ModuleHeader module={module} />
+      <div className="mt-6 grid gap-4">
+        {module.items.map((item) => (
+          <div
+            key={`${item.date}-${item.title}`}
+            className="grid gap-4 border border-zinc-200 bg-white p-5 sm:grid-cols-[120px_1fr]"
+          >
+            <time className="text-sm font-black tracking-[0.16em] text-red-700 uppercase">
+              {item.date}
+            </time>
+            <div>
+              <h3 className="text-xl font-black">{item.title}</h3>
+              <p className="mt-2 text-sm leading-6 text-zinc-700">
+                {item.description}
+              </p>
+              <div className="mt-4">
+                <SourceLinks topic={topic} indexes={item.sourceIndexes} />
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </article>
+  )
+}
+
+function ModuleHeader({
+  module,
+  summary,
+}: {
+  module: Pick<TopicModule, "title" | "eyebrow">
+  summary?: string
+}) {
+  return (
+    <div className="max-w-4xl">
+      <p className="text-xs font-black tracking-[0.2em] text-zinc-500 uppercase">
+        {module.eyebrow}
+      </p>
+      <h2 className="mt-2 text-3xl leading-tight font-black sm:text-4xl">
+        {module.title}
+      </h2>
+      {summary ? (
+        <p className="mt-4 max-w-2xl text-sm leading-6 text-zinc-600">
+          {summary}
+        </p>
+      ) : null}
+    </div>
+  )
+}
+
 function ActionCard({
   action,
   index,
@@ -367,11 +585,7 @@ function ActionCard({
 
   async function copyScript() {
     try {
-      if (navigator.clipboard) {
-        await navigator.clipboard.writeText(action.script)
-      } else {
-        fallbackCopy(action.script)
-      }
+      await navigator.clipboard.writeText(action.script)
       setCopyState("copied")
     } catch {
       const copied = fallbackCopy(action.script)

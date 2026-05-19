@@ -1,3 +1,4 @@
+import { useMemo, useState } from "react"
 import { Link, createFileRoute } from "@tanstack/react-router"
 
 import { SiteHeader } from "@/components/SiteHeader"
@@ -13,8 +14,38 @@ const themeStyles = {
   future: "border-amber-200 bg-amber-50 text-amber-950",
 } as const
 
+const themeLabels = {
+  all: "All",
+  ethics: "Ethics",
+  surveillance: "Surveillance",
+  infrastructure: "Infrastructure",
+  future: "Public Health",
+} as const
+
 function Home() {
+  const [query, setQuery] = useState("")
+  const [theme, setTheme] = useState<keyof typeof themeLabels>("all")
   const stats = getAllStats().slice(0, 6)
+  const filteredTopics = useMemo(() => {
+    const normalizedQuery = query.trim().toLowerCase()
+
+    return topics.filter((topic) => {
+      const matchesTheme = theme === "all" || topic.theme === theme
+      const searchable = [
+        topic.title,
+        topic.shortTitle,
+        topic.region,
+        topic.status,
+        topic.summary,
+        topic.statusBrief.headline,
+        ...topic.modules.map((module) => module.title),
+      ]
+        .join(" ")
+        .toLowerCase()
+
+      return matchesTheme && searchable.includes(normalizedQuery)
+    })
+  }, [query, theme])
 
   return (
     <div className="min-h-svh bg-[#f7f4ee] text-zinc-950">
@@ -23,28 +54,28 @@ function Home() {
         <section className="border-b border-zinc-200 bg-white">
           <div className="mx-auto grid max-w-7xl gap-10 px-4 py-14 sm:px-6 sm:py-20 lg:grid-cols-[1.2fr_0.8fr] lg:px-8">
             <div>
-              <p className="mb-5 text-xs font-black uppercase tracking-[0.22em] text-red-700">
+              <p className="mb-5 text-xs font-black tracking-[0.22em] text-red-700 uppercase">
                 Research-backed topic organizing
               </p>
-              <h1 className="max-w-4xl text-5xl font-black leading-[0.9] tracking-normal text-zinc-950 sm:text-7xl lg:text-8xl">
+              <h1 className="max-w-4xl text-5xl leading-[0.9] font-black tracking-normal text-zinc-950 sm:text-7xl lg:text-8xl">
                 One home for civic fights that need receipts.
               </h1>
               <p className="mt-7 max-w-2xl text-lg leading-8 text-zinc-700 sm:text-xl">
-                A combined TanStack Start site for the first three topics:
-                congressional stock trading, Michigan surveillance tech, and
-                Michigan data-center accountability. Each topic uses the same
-                structure for arguments, stats, actions, and linked sources.
+                A combined TanStack Start site for civic research dossiers.
+                Browse the directory, filter by issue family, then open a topic
+                for its own evidence structure: legal dockets, money trails,
+                exposure pathways, claim ledgers, or policy levers.
               </p>
               <div className="mt-8 flex flex-wrap gap-3">
                 <a
                   href="#topics"
-                  className="inline-flex h-11 items-center border border-zinc-950 bg-zinc-950 px-5 text-xs font-black uppercase tracking-[0.16em] text-white hover:bg-white hover:text-zinc-950"
+                  className="inline-flex h-11 items-center border border-zinc-950 bg-zinc-950 px-5 text-xs font-black tracking-[0.16em] text-white uppercase hover:bg-white hover:text-zinc-950"
                 >
                   Browse Topics
                 </a>
                 <a
                   href="#sources"
-                  className="inline-flex h-11 items-center border border-zinc-300 bg-white px-5 text-xs font-black uppercase tracking-[0.16em] text-zinc-950 hover:border-zinc-950"
+                  className="inline-flex h-11 items-center border border-zinc-300 bg-white px-5 text-xs font-black tracking-[0.16em] text-zinc-950 uppercase hover:border-zinc-950"
                 >
                   Source Model
                 </a>
@@ -61,14 +92,14 @@ function Home() {
                 >
                   <div className="flex items-start justify-between gap-4">
                     <div>
-                      <p className="text-3xl font-black leading-none">
+                      <p className="text-3xl leading-none font-black">
                         {stat.value}
                       </p>
                       <p className="mt-2 text-sm leading-5 text-zinc-700">
                         {stat.label}
                       </p>
                     </div>
-                    <span className="text-[10px] font-black uppercase tracking-[0.14em] text-zinc-500">
+                    <span className="text-[10px] font-black tracking-[0.14em] text-zinc-500 uppercase">
                       {stat.topic}
                     </span>
                   </div>
@@ -84,66 +115,110 @@ function Home() {
         >
           <div className="mb-8 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
             <div>
-              <p className="text-xs font-black uppercase tracking-[0.2em] text-zinc-500">
+              <p className="text-xs font-black tracking-[0.2em] text-zinc-500 uppercase">
                 Active Topics
               </p>
               <h2 className="mt-2 text-3xl font-black sm:text-4xl">
-                Built to add more topics later
+                Built for a growing research library
               </h2>
             </div>
             <p className="max-w-lg text-sm leading-6 text-zinc-600">
-              The same topic record supports AI research notes, pro/con
-              arguments, public-action prompts, numeric claims, and a source
-              library with per-claim links.
+              Each card stays compact. The deep structure moves inside the
+              dossier where modules can match the topic instead of forcing every
+              issue into the same layout.
             </p>
           </div>
 
-          <div className="grid gap-5 lg:grid-cols-3">
-            {topics.map((topic) => (
+          <div className="sticky top-0 z-10 mb-6 border border-zinc-200 bg-white p-4 shadow-sm">
+            <div className="grid gap-3 lg:grid-cols-[1fr_auto] lg:items-center">
+              <label className="block">
+                <span className="mb-2 block text-[10px] font-black tracking-[0.16em] text-zinc-500 uppercase">
+                  Search topics
+                </span>
+                <input
+                  value={query}
+                  onChange={(event) => setQuery(event.target.value)}
+                  placeholder="Search by topic, region, status, or module"
+                  className="h-11 w-full border border-zinc-300 bg-white px-3 text-sm font-semibold text-zinc-950 outline-none focus:border-zinc-950"
+                />
+              </label>
+              <div>
+                <p className="mb-2 text-[10px] font-black tracking-[0.16em] text-zinc-500 uppercase">
+                  Filter
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {Object.entries(themeLabels).map(([value, label]) => (
+                    <button
+                      type="button"
+                      key={value}
+                      onClick={() =>
+                        setTheme(value as keyof typeof themeLabels)
+                      }
+                      className={`h-11 border px-4 text-xs font-black tracking-[0.14em] uppercase ${
+                        theme === value
+                          ? "border-zinc-950 bg-zinc-950 text-white"
+                          : "border-zinc-300 bg-white text-zinc-700 hover:border-zinc-950"
+                      }`}
+                    >
+                      {label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+            <p className="mt-3 text-xs font-semibold text-zinc-500">
+              Showing {filteredTopics.length} of {topics.length} topics
+            </p>
+          </div>
+
+          <div className="grid gap-px overflow-hidden border border-zinc-200 bg-zinc-200 lg:grid-cols-2">
+            {filteredTopics.map((topic) => (
               <article
                 key={topic.slug}
-                className="flex min-h-[420px] flex-col border border-zinc-200 bg-white"
+                className="grid bg-white lg:grid-cols-[220px_1fr]"
               >
-                <div className={`border-b p-6 ${themeStyles[topic.theme]}`}>
-                  <div className="flex items-center justify-between gap-4">
-                    <p className="text-xs font-black uppercase tracking-[0.18em] opacity-80">
+                <div className={`p-5 ${themeStyles[topic.theme]}`}>
+                  <div className="flex items-center justify-between gap-3 lg:block">
+                    <p className="text-xs font-black tracking-[0.18em] uppercase opacity-80">
                       Topic {topic.topicNumber}
                     </p>
-                    <p className="text-xs font-black uppercase tracking-[0.14em] opacity-80">
+                    <p className="text-xs font-black tracking-[0.14em] uppercase opacity-80 lg:mt-3">
                       {topic.region}
                     </p>
                   </div>
-                  <h3 className="mt-10 text-3xl font-black leading-none">
-                    {topic.title}
-                  </h3>
+                  <p className="mt-8 text-[10px] font-black tracking-[0.14em] uppercase opacity-80">
+                    {themeLabels[topic.theme]}
+                  </p>
                 </div>
 
-                <div className="flex flex-1 flex-col p-6">
-                  <p className="text-sm font-semibold uppercase tracking-[0.14em] text-zinc-500">
+                <div className="flex min-h-[280px] flex-col p-5">
+                  <h3 className="text-2xl leading-tight font-black">
+                    {topic.title}
+                  </h3>
+                  <p className="text-sm font-semibold tracking-[0.14em] text-zinc-500 uppercase">
                     {topic.status}
                   </p>
-                  <p className="mt-4 text-base leading-7 text-zinc-700">
+                  <p className="mt-4 line-clamp-4 text-sm leading-6 text-zinc-700">
                     {topic.summary}
                   </p>
 
-                  <div className="mt-6 grid gap-3">
-                    {topic.stats.slice(0, 2).map((stat) => (
-                      <div
-                        key={stat.label}
-                        className="border-l-2 border-zinc-950 pl-4"
+                  <div className="mt-5 flex flex-wrap gap-2">
+                    {topic.modules.slice(0, 3).map((module) => (
+                      <span
+                        key={module.title}
+                        className="border border-zinc-200 bg-[#f7f4ee] px-2 py-1 text-[10px] font-black tracking-[0.12em] text-zinc-600 uppercase"
                       >
-                        <p className="text-2xl font-black">{stat.value}</p>
-                        <p className="text-sm text-zinc-600">{stat.label}</p>
-                      </div>
+                        {module.eyebrow}
+                      </span>
                     ))}
                   </div>
 
                   <Link
                     to="/topics/$slug"
                     params={{ slug: topic.slug }}
-                    className="mt-auto inline-flex h-11 items-center justify-center border border-zinc-950 bg-zinc-950 px-5 text-xs font-black uppercase tracking-[0.16em] text-white hover:bg-white hover:text-zinc-950"
+                    className="mt-auto inline-flex h-11 items-center justify-center border border-zinc-950 bg-zinc-950 px-5 text-xs font-black tracking-[0.16em] text-white uppercase hover:bg-white hover:text-zinc-950"
                   >
-                    Open Research
+                    Open Dossier
                   </Link>
                 </div>
               </article>
@@ -155,16 +230,17 @@ function Home() {
           <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
             <div className="grid gap-8 lg:grid-cols-[0.8fr_1.2fr]">
               <div>
-                <p className="text-xs font-black uppercase tracking-[0.2em] text-zinc-500">
+                <p className="text-xs font-black tracking-[0.2em] text-zinc-500 uppercase">
                   Citation Pattern
                 </p>
                 <h2 className="mt-3 text-3xl font-black sm:text-4xl">
-                  Claims carry source links with them.
+                  Modules carry source links with them.
                 </h2>
                 <p className="mt-4 text-sm leading-6 text-zinc-600">
-                  Each argument, finding, and stat stores indexes into the
-                  topic&apos;s source library. That keeps the visible text tied
-                  to the documents it depends on as the site grows.
+                  Each dossier module stores indexes into the topic&apos;s
+                  source library. That keeps legal findings, money trails,
+                  exposure pathways, and claim ledgers tied to the documents
+                  they depend on.
                 </p>
               </div>
 

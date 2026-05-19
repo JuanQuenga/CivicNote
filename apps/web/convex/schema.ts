@@ -89,6 +89,7 @@ export default defineSchema({
     actions: v.array(action),
     timeline: v.array(timelineItem),
     updates: v.array(update),
+    modules: v.array(v.any()),
     sources: v.array(source),
   }).index("by_slug", ["slug"]),
   topicNewsItems: defineTable({

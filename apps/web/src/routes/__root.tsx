@@ -26,7 +26,7 @@ export const Route = createRootRouteWithContext<{
       {
         name: "description",
         content:
-          "A combined civic research site for congressional ethics, Michigan surveillance oversight, and Michigan data center accountability.",
+          "A combined civic research site for congressional ethics, surveillance oversight, infrastructure accountability, public-health exposure, human-rights law, and election integrity.",
       },
     ],
     links: [

@@ -62,6 +62,89 @@ export type TopicUpdate = {
   tag: string
 }
 
+export type TopicModule =
+  | {
+      type: "briefing"
+      title: string
+      eyebrow: string
+      body: Array<string>
+      bullets?: Array<string>
+      sourceIndexes?: Array<number>
+    }
+  | {
+      type: "statGrid"
+      title: string
+      eyebrow: string
+      stats: Array<TopicStat>
+    }
+  | {
+      type: "evidenceMatrix"
+      title: string
+      eyebrow: string
+      summary?: string
+      rows: Array<{
+        label: string
+        evidence: string
+        caveat: string
+        sourceIndexes: Array<number>
+      }>
+    }
+  | {
+      type: "claimLedger"
+      title: string
+      eyebrow: string
+      rows: Array<{
+        claim: string
+        status: "documented" | "contested" | "unsupported" | "watch"
+        finding: string
+        sourceIndexes: Array<number>
+      }>
+    }
+  | {
+      type: "tracker"
+      title: string
+      eyebrow: string
+      columns: Array<string>
+      rows: Array<{
+        cells: Array<string>
+        sourceIndexes: Array<number>
+      }>
+    }
+  | {
+      type: "moneyTrail"
+      title: string
+      eyebrow: string
+      rows: Array<{
+        actor: string
+        mechanism: string
+        impact: string
+        sourceIndexes: Array<number>
+      }>
+    }
+  | {
+      type: "policyLevers"
+      title: string
+      eyebrow: string
+      levers: Array<{
+        actor: string
+        lever: string
+        pressurePoint: string
+        sourceIndexes: Array<number>
+      }>
+    }
+  | {
+      type: "actionList"
+      title: string
+      eyebrow: string
+      actions: Array<TopicAction>
+    }
+  | {
+      type: "timeline"
+      title: string
+      eyebrow: string
+      items: Array<TopicTimelineItem>
+    }
+
 export type ResearchTopic = {
   slug: string
   topicNumber: string
@@ -80,6 +163,7 @@ export type ResearchTopic = {
   actions: Array<TopicAction>
   timeline: Array<TopicTimelineItem>
   updates: Array<TopicUpdate>
+  modules: Array<TopicModule>
   sources: Array<TopicSource>
 }
 
@@ -241,6 +325,84 @@ export const seedTopics: Array<ResearchTopic> = [
         summary:
           "Transaction disclosures can document conflicts after the fact, which supports the case for preemptive rules.",
         tag: "Disclosure",
+      },
+    ],
+    modules: [
+      {
+        type: "briefing",
+        eyebrow: "Power map",
+        title: "The conflict is structural, not just scandal-driven",
+        body: [
+          "A member can comply with disclosure rules and still hold assets affected by committee work, classified or closed-door briefings, federal contracts, appropriations, and agency oversight.",
+          "The useful reform frame is ownership and trading restrictions for officials, spouses, and dependents, with clear carve-outs for broad funds, Treasury securities, and qualified blind trusts.",
+        ],
+        bullets: [
+          "Disclosure reports are evidence of the problem, not the remedy.",
+          "The House Clerk is the pressure source for discharge petitions and transaction reports.",
+          "A strong ban has to cover spouses and dependents or it leaves the main workaround intact.",
+        ],
+        sourceIndexes: [2, 3],
+      },
+      {
+        type: "claimLedger",
+        eyebrow: "Argument ledger",
+        title: "Separate reform claims from distractions",
+        rows: [
+          {
+            claim:
+              "Members need individual-stock flexibility because congressional pay is frozen.",
+            status: "contested",
+            finding:
+              "The salary baseline is real, but it does not justify holding assets directly affected by legislative power.",
+            sourceIndexes: [0],
+          },
+          {
+            claim:
+              "Disclosure is enough because the public can inspect trades.",
+            status: "unsupported",
+            finding:
+              "Delayed disclosure exposes conflicts after the fact; it does not prevent conflicted ownership or trading before votes and briefings.",
+            sourceIndexes: [3],
+          },
+          {
+            claim: "A ban can preserve ordinary retirement investing.",
+            status: "documented",
+            finding:
+              "The reform lane already distinguishes individual securities from diversified funds and blind trusts.",
+            sourceIndexes: [2, 3],
+          },
+        ],
+      },
+      {
+        type: "policyLevers",
+        eyebrow: "Pressure points",
+        title: "Where advocates can move the issue",
+        levers: [
+          {
+            actor: "Constituents",
+            lever:
+              "Get a public yes/no on a ban covering spouses and dependents.",
+            pressurePoint:
+              "District offices are sensitive to simple conflict questions that can be quoted back later.",
+            sourceIndexes: [2],
+          },
+          {
+            actor: "Researchers",
+            lever:
+              "Tie transaction disclosures to committee assignments and votes.",
+            pressurePoint:
+              "The most persuasive examples show a direct policy jurisdiction, not just a large trade.",
+            sourceIndexes: [3],
+          },
+          {
+            actor: "Ethics groups",
+            lever:
+              "Track discharge petitions and bill text, not only press statements.",
+            pressurePoint:
+              "Official Clerk records show whether members are moving the bill or only endorsing the idea.",
+            sourceIndexes: [2],
+          },
+        ],
       },
     ],
     sources: [
@@ -434,6 +596,125 @@ export const seedTopics: Array<ResearchTopic> = [
         summary:
           "Audit-log analysis turns the oversight question toward who searched, why, and across which agencies.",
         tag: "Audit logs",
+      },
+    ],
+    modules: [
+      {
+        type: "briefing",
+        eyebrow: "System view",
+        title: "The public sees cameras, but the product is query power",
+        body: [
+          "A license-plate reader debate that stops at camera placement misses the main civil-liberties problem: who can search the scans, which hotlists trigger stops, how long the records live, and what other databases get connected later.",
+          "The Michigan issue is therefore a stack: ALPR collection, vendor-hosted storage, outside-agency access, audit logs, fusion platforms, real-time crime center integration, and AI search interfaces.",
+        ],
+        bullets: [
+          "Camera approval should not silently authorize data fusion.",
+          "Audit logs are the accountability document residents should request first.",
+          "Every integration layer should require a separate public vote.",
+        ],
+        sourceIndexes: [0, 1, 4],
+      },
+      {
+        type: "tracker",
+        eyebrow: "Stack tracker",
+        title: "Which layer needs which oversight question",
+        columns: ["Layer", "Risk", "Oversight question"],
+        rows: [
+          {
+            cells: [
+              "ALPR cameras",
+              "Routine travel becomes searchable location history.",
+              "What is captured, retained, and deleted?",
+            ],
+            sourceIndexes: [0, 5],
+          },
+          {
+            cells: [
+              "Vendor network access",
+              "Outside agencies can query local scans without local democratic review.",
+              "Which agencies have access and what purpose codes are required?",
+            ],
+            sourceIndexes: [1],
+          },
+          {
+            cells: [
+              "Fusion and AI tools",
+              "Separate records become investigative profiles.",
+              "Will the agency require a public vote before adding AI or fusion products?",
+            ],
+            sourceIndexes: [2, 3, 4, 6],
+          },
+          {
+            cells: [
+              "Facial-recognition search",
+              "Identity search can be layered onto camera and public-record systems.",
+              "Is facial recognition prohibited, permitted, or subject to a warrant rule?",
+            ],
+            sourceIndexes: [4, 7],
+          },
+        ],
+      },
+      {
+        type: "evidenceMatrix",
+        eyebrow: "Evidence map",
+        title: "What organizers can prove with records",
+        summary:
+          "The most useful record requests ask for operating documents, not generic assurances.",
+        rows: [
+          {
+            label: "Deployment scale",
+            evidence:
+              "Michigan reporting places ALPR use across more than 125 local governments.",
+            caveat:
+              "Counts change quickly as contracts are signed, cancelled, or expanded.",
+            sourceIndexes: [0, 5],
+          },
+          {
+            label: "Search behavior",
+            evidence:
+              "Audit logs can show queries, agency names, stated reasons, and outside access.",
+            caveat:
+              "Logs may be incomplete if vendors or agencies redact fields heavily.",
+            sourceIndexes: [1],
+          },
+          {
+            label: "Integration creep",
+            evidence:
+              "Vendor materials show ALPR, real-time crime center, AI, and fusion tools marketed as connected investigative products.",
+            caveat:
+              "A local camera contract does not automatically mean every product is deployed.",
+            sourceIndexes: [2, 3, 6, 7],
+          },
+        ],
+      },
+      {
+        type: "policyLevers",
+        eyebrow: "Local controls",
+        title: "Rules that stop the stack from expanding quietly",
+        levers: [
+          {
+            actor: "City council",
+            lever: "Require a surveillance impact report before procurement.",
+            pressurePoint:
+              "Force retention, sharing, hotlists, audits, and integrations into the public packet.",
+            sourceIndexes: [0, 5],
+          },
+          {
+            actor: "County board",
+            lever:
+              "Ban outside-agency access without a written agreement and public log.",
+            pressurePoint:
+              "The network effect depends on quiet cross-jurisdiction querying.",
+            sourceIndexes: [1],
+          },
+          {
+            actor: "Residents",
+            lever: "Ask for audit logs every quarter.",
+            pressurePoint:
+              "The logs show whether the stated use case matches actual search behavior.",
+            sourceIndexes: [1],
+          },
+        ],
       },
     ],
     sources: [
@@ -662,6 +943,123 @@ export const seedTopics: Array<ResearchTopic> = [
         tag: "Local fight",
       },
     ],
+    modules: [
+      {
+        type: "briefing",
+        eyebrow: "Approval window",
+        title:
+          "The leverage exists before utility and zoning commitments harden",
+        body: [
+          "Data-center fights are often presented as ordinary land-use decisions, but the real deal stack includes zoning, water withdrawals, sewer capacity, electric load, transmission upgrades, backup generation, abatements, and emergency services.",
+          "Once a township, utility, and company align on infrastructure assumptions, residents are left debating details after the largest commitments have already become politically expensive to unwind.",
+        ],
+        bullets: [
+          "Separate temporary construction jobs from permanent operations jobs.",
+          "Demand maximum-demand numbers, not average-use talking points.",
+          "Make companies disclose who pays for grid, road, water, sewer, and tax costs.",
+        ],
+        sourceIndexes: [0, 1, 2, 9, 10],
+      },
+      {
+        type: "tracker",
+        eyebrow: "Impact ledger",
+        title: "What each approval document should disclose",
+        columns: ["Impact", "Document to demand", "Why it matters"],
+        rows: [
+          {
+            cells: [
+              "Electric load",
+              "Peak MW, expansion phases, substation and transmission plans.",
+              "Ratepayer risk and grid reliability depend on maximum demand.",
+            ],
+            sourceIndexes: [2, 3, 7],
+          },
+          {
+            cells: [
+              "Water and sewer",
+              "Maximum daily withdrawal, cooling design, discharge and drought assumptions.",
+              "A campus can stress local systems before residents see benefits.",
+            ],
+            sourceIndexes: [1, 4, 8],
+          },
+          {
+            cells: [
+              "Diesel backup and noise",
+              "Generator count, testing schedule, emissions controls, and sound modeling.",
+              "Quality-of-life impacts are continuous, local, and enforceable through permits.",
+            ],
+            sourceIndexes: [5, 6],
+          },
+          {
+            cells: [
+              "Tax concessions",
+              "Abatements, school-revenue impacts, special rates, and clawbacks.",
+              "Permanent jobs may be small relative to public cost.",
+            ],
+            sourceIndexes: [9, 10],
+          },
+        ],
+      },
+      {
+        type: "moneyTrail",
+        eyebrow: "Who pays",
+        title: "Separate company investment from public exposure",
+        rows: [
+          {
+            actor: "Developer",
+            mechanism:
+              "Capital spending, land acquisition, construction contracts, and utility commitments.",
+            impact:
+              "Headline investment numbers can hide whether upgrades are privately paid or socialized.",
+            sourceIndexes: [11, 12],
+          },
+          {
+            actor: "Utility and ratepayers",
+            mechanism:
+              "Grid upgrades, special tariffs, new generation, and transmission planning.",
+            impact:
+              "Residents need to know whether ordinary customers subsidize hyperscale load.",
+            sourceIndexes: [2, 3, 7],
+          },
+          {
+            actor: "Local tax base",
+            mechanism:
+              "Abatements and exemptions promoted as recruitment tools.",
+            impact:
+              "School and municipal revenue losses should be disclosed before votes.",
+            sourceIndexes: [9],
+          },
+        ],
+      },
+      {
+        type: "policyLevers",
+        eyebrow: "Local controls",
+        title: "Practical standards before a vote",
+        levers: [
+          {
+            actor: "Planning commission",
+            lever: "Create special land-use standards for data centers.",
+            pressurePoint:
+              "Use enforceable conditions for noise, diesel testing, water, expansion, and decommissioning.",
+            sourceIndexes: [1],
+          },
+          {
+            actor: "Township board",
+            lever: "Adopt a moratorium while standards are drafted.",
+            pressurePoint:
+              "A temporary pause keeps the community from negotiating under a rushed approval clock.",
+            sourceIndexes: [2],
+          },
+          {
+            actor: "Journalists",
+            lever: "Ask for permanent jobs, not total job-years.",
+            pressurePoint:
+              "Construction labor and permanent operations roles should never be merged in one number.",
+            sourceIndexes: [10],
+          },
+        ],
+      },
+    ],
     sources: [
       {
         title: "What Happens When Data Centers Come to Your Community",
@@ -758,6 +1156,1067 @@ export const seedTopics: Array<ResearchTopic> = [
         year: 2025,
         url: "https://planetdetroit.org/2025/11/dte-openai-saline-township/",
         note: "Climate and energy planning coverage.",
+      },
+    ],
+  },
+  {
+    slug: "glyphosate-health-environment",
+    topicNumber: "04",
+    title: "Glyphosate, Health, and Public Exposure",
+    shortTitle: "Glyphosate",
+    tagline:
+      "The fight is not only whether glyphosate works. It is who bears the exposure risk.",
+    summary:
+      "Glyphosate is the most widely used herbicide in the United States and a recurring fight over cancer risk, environmental exposure, worker safety, labeling, litigation, and regulatory trust. This topic tracks the split between hazard findings, regulatory risk assessments, environmental monitoring, and local policy options.",
+    region: "United States",
+    status: "Pesticide regulation and public-health oversight",
+    theme: "future",
+    updatedAt: "2026-05-19",
+    stats: [
+      {
+        value: "Group 2A",
+        label:
+          "IARC classification for glyphosate: probably carcinogenic to humans",
+        sourceIndexes: [0],
+      },
+      {
+        value: "80K+ MT",
+        label:
+          "Annual U.S. glyphosate use exceeded 80,000 metric tons by 2007 in USGS reporting",
+        sourceIndexes: [2],
+      },
+      {
+        value: "2026",
+        label:
+          "EPA's public glyphosate page was still tracking registration-review mitigation",
+        sourceIndexes: [1],
+      },
+    ],
+    arguments: [
+      {
+        title: "Hazard and risk are being blurred",
+        claim:
+          "IARC classified glyphosate as a probable human carcinogen based on published hazard evidence, while EPA has said glyphosate is not likely to be carcinogenic to humans when used according to label directions.",
+        counterpoint:
+          "A credible public topic should show both frames: hazard classification asks whether a substance can cause cancer under some conditions, while regulatory risk assessment asks whether expected uses create unacceptable risk.",
+        sourceIndexes: [0, 1, 3],
+      },
+      {
+        title: "Exposure is the accountability question",
+        claim:
+          "Even when regulators disagree on cancer classification, glyphosate and its breakdown product AMPA have been found widely enough in the environment to justify monitoring and disclosure.",
+        counterpoint:
+          "Local policy can focus on reducing avoidable exposure near schools, parks, waterways, workers, and drift-prone applications without pretending the scientific dispute is simple.",
+        sourceIndexes: [2, 4],
+      },
+    ],
+    findings: [
+      {
+        title: "The science dispute is real, not imaginary",
+        body: "IARC, EPA, and European regulators have reached different conclusions because they apply different evidence standards and decision frames.",
+        sourceIndexes: [0, 1, 3],
+      },
+      {
+        title: "The public record supports exposure reduction",
+        body: "USGS monitoring and summaries describe glyphosate and AMPA moving off-site from agricultural and urban sources into streams, soil, air, and water systems.",
+        sourceIndexes: [2, 4],
+      },
+      {
+        title: "Regulatory decisions are still the pressure point",
+        body: "The most practical organizing asks are updated labels, drift controls, public-use restrictions, worker protections, water monitoring, and transparent pesticide-use records.",
+        sourceIndexes: [1, 2],
+      },
+    ],
+    statusBrief: {
+      headline: "Exposure controls are the common-ground fight",
+      summary:
+        "The strongest civic frame is not a single slogan about safety. It is a demand for transparent monitoring, safer application rules, and protections for workers and nearby communities.",
+      latestDevelopment:
+        "EPA's glyphosate registration-review materials remain the key U.S. regulatory checkpoint, while IARC's cancer classification remains central to public-health campaigns.",
+      nextDecisionPoint:
+        "Whether federal, state, and local agencies add stronger limits for public spaces, waterways, drift, and occupational exposure.",
+      whoCanAct:
+        "Local governments, school boards, park agencies, farmworker advocates, water utilities, and EPA commenters",
+      urgency: "medium",
+      lastChecked: "2026-05-19",
+    },
+    actions: [
+      {
+        title: "Ask for public-space disclosure",
+        description:
+          "Push schools, parks, and city departments to publish what herbicides they apply, where, when, and under what notice rules.",
+        audience: "Residents",
+        difficulty: "15 minutes",
+        urgency: "medium",
+        ctaLabel: "Open EPA Glyphosate",
+        ctaUrl:
+          "https://www.epa.gov/ingredients-used-pesticide-products/glyphosate",
+        script:
+          "Please publish current glyphosate-use locations, application dates, product labels, contractor records, and public-notice procedures for schools, parks, and rights-of-way.",
+      },
+      {
+        title: "Target waterways and drift",
+        description:
+          "Focus local policy on buffers, timing, runoff, storm drains, and applications near sensitive sites.",
+        audience: "Local officials",
+        difficulty: "30 minutes",
+        urgency: "medium",
+        ctaLabel: "Read USGS Summary",
+        ctaUrl:
+          "https://www.usgs.gov/programs/environmental-health-program/science/common-weed-killer-widespread-environment",
+        script:
+          "Will this agency adopt buffer, runoff, drift, and notice standards for glyphosate applications near waterways, playgrounds, schools, homes, and public trails?",
+      },
+      {
+        title: "Separate scientific claims",
+        description:
+          "When organizing, distinguish cancer-hazard classification from regulatory risk findings and use sources for both.",
+        audience: "Researchers",
+        difficulty: "20 minutes",
+        urgency: "low",
+        ctaLabel: "Open IARC Monograph",
+        ctaUrl: "https://publications.iarc.who.int/549",
+        script:
+          "This campaign is tracking both the IARC hazard finding and EPA's risk-assessment position. Which standard is the agency relying on, and why?",
+      },
+    ],
+    timeline: [
+      {
+        date: "2015",
+        title: "IARC classifies glyphosate as probably carcinogenic",
+        description:
+          "The World Health Organization cancer agency placed glyphosate in Group 2A after reviewing human, animal, and mechanistic evidence.",
+        sourceIndexes: [0],
+      },
+      {
+        date: "2020",
+        title: "EPA issues its interim registration-review decision",
+        description:
+          "EPA concluded there were no human-health risks of concern when glyphosate is used according to the label and required mitigation measures.",
+        sourceIndexes: [1],
+      },
+      {
+        date: "2026",
+        title: "Environmental exposure remains the civic hook",
+        description:
+          "USGS environmental monitoring and EPA label decisions remain practical entry points for public records, local policy, and exposure-reduction campaigns.",
+        sourceIndexes: [1, 2, 4],
+      },
+    ],
+    updates: [
+      {
+        title: "EPA glyphosate registration-review materials remain active",
+        publisher: "U.S. Environmental Protection Agency",
+        publishedAt: "2026-05-19",
+        url: "https://www.epa.gov/ingredients-used-pesticide-products/glyphosate",
+        summary:
+          "EPA's glyphosate page is the current federal source for registration review, mitigation, and risk-assessment materials.",
+        tag: "Regulation",
+      },
+      {
+        title: "IARC monograph remains central to cancer-risk debate",
+        publisher: "International Agency for Research on Cancer",
+        publishedAt: "2015-07-29",
+        url: "https://publications.iarc.who.int/549",
+        summary:
+          "The IARC monograph is the source document for the probable-carcinogen classification used by many public-health advocates.",
+        tag: "Cancer evidence",
+      },
+    ],
+    modules: [
+      {
+        type: "briefing",
+        eyebrow: "Research frame",
+        title: "Glyphosate needs a split-screen dossier",
+        body: [
+          "A serious glyphosate page should not collapse the dispute into a single safety slogan. IARC made a cancer-hazard classification, EPA made a U.S. label-based risk assessment, and environmental monitoring asks a third question about where the chemical and AMPA travel after use.",
+          "The public-interest frame is exposure governance: which uses are avoidable, which workers and communities carry the burden, and what monitoring exists before agencies approve continued use.",
+        ],
+        bullets: [
+          "Hazard classification and regulatory risk assessment answer different questions.",
+          "Environmental occurrence turns this from a farm-only issue into a water, parks, schools, and rights-of-way issue.",
+          "Local campaigns can win disclosure and public-space limits even while federal science disputes continue.",
+        ],
+        sourceIndexes: [0, 1, 2, 3, 4],
+      },
+      {
+        type: "evidenceMatrix",
+        eyebrow: "Science split",
+        title: "What the major evidence lanes say",
+        summary:
+          "The strongest page presents disagreements plainly and then focuses on exposure reduction.",
+        rows: [
+          {
+            label: "Cancer hazard",
+            evidence:
+              "IARC classified glyphosate as Group 2A, probably carcinogenic to humans.",
+            caveat:
+              "Hazard classification does not estimate risk for every labeled use scenario.",
+            sourceIndexes: [0, 3],
+          },
+          {
+            label: "U.S. regulatory risk",
+            evidence:
+              "EPA's public materials continue to frame glyphosate through registration review and label mitigation.",
+            caveat:
+              "A label-based conclusion depends on compliance, enforcement, and assumptions about exposure.",
+            sourceIndexes: [1],
+          },
+          {
+            label: "Environmental movement",
+            evidence:
+              "USGS summaries describe glyphosate and AMPA in environmental samples including streams and rivers.",
+            caveat:
+              "Occurrence data alone does not settle health risk; it shows where monitoring and reduction may be warranted.",
+            sourceIndexes: [2, 4],
+          },
+        ],
+      },
+      {
+        type: "tracker",
+        eyebrow: "Exposure pathways",
+        title: "Who may be exposed and what record proves it",
+        columns: ["Pathway", "Evidence to request", "Public-health question"],
+        rows: [
+          {
+            cells: [
+              "Farm and landscaping workers",
+              "Product labels, application logs, PPE rules, training records.",
+              "Are workers protected under real-use conditions, not ideal label assumptions?",
+            ],
+            sourceIndexes: [1],
+          },
+          {
+            cells: [
+              "Schools, parks, and rights-of-way",
+              "Spray schedules, contractor invoices, public notice, buffer rules.",
+              "Can avoidable public-space exposure be reduced or replaced?",
+            ],
+            sourceIndexes: [1, 2],
+          },
+          {
+            cells: [
+              "Streams and stormwater",
+              "Water testing, rainfall timing, runoff controls, application maps.",
+              "Are waterways monitored where repeated application is likely?",
+            ],
+            sourceIndexes: [2, 4],
+          },
+        ],
+      },
+      {
+        type: "policyLevers",
+        eyebrow: "Governance",
+        title: "The policy fight can be narrower than a total ban",
+        levers: [
+          {
+            actor: "School board",
+            lever:
+              "Require public notice and integrated pest management before glyphosate use.",
+            pressurePoint:
+              "Parents can evaluate avoidable exposure only if application records are public.",
+            sourceIndexes: [1],
+          },
+          {
+            actor: "City or parks department",
+            lever:
+              "Restrict routine cosmetic use in parks, playgrounds, and rights-of-way.",
+            pressurePoint:
+              "Public-space policy can reduce nonessential exposure while federal review continues.",
+            sourceIndexes: [1, 2],
+          },
+          {
+            actor: "Water utility",
+            lever: "Add glyphosate and AMPA monitoring where use is heavy.",
+            pressurePoint:
+              "Occurrence data makes monitoring a concrete, source-backed ask.",
+            sourceIndexes: [2, 4],
+          },
+        ],
+      },
+    ],
+    sources: [
+      {
+        title: "IARC Monograph on Glyphosate",
+        publisher: "International Agency for Research on Cancer",
+        year: 2015,
+        url: "https://www.iarc.who.int/featured-news/media-centre-iarc-news-glyphosate/",
+        note: "Cancer-hazard classification and evidence summary.",
+      },
+      {
+        title: "Glyphosate",
+        publisher: "U.S. Environmental Protection Agency",
+        year: 2026,
+        url: "https://www.epa.gov/ingredients-used-pesticide-products/glyphosate",
+        note: "Current U.S. regulatory status and registration-review materials.",
+      },
+      {
+        title: "Common Weed Killer is Widespread in the Environment",
+        publisher: "U.S. Geological Survey",
+        year: 2014,
+        url: "https://www.usgs.gov/programs/environmental-health-program/science/common-weed-killer-widespread-environment",
+        note: "Environmental occurrence and U.S. use trend summary.",
+      },
+      {
+        title: "Glyphosate not classified as a carcinogen by ECHA",
+        publisher: "International Agency for Research on Cancer",
+        year: 2017,
+        url: "https://www.iarc.who.int/news-events/glyphosate-not-classified-as-a-carcinogen-by-echa/",
+        note: "Explains the regulatory difference between ECHA and IARC conclusions.",
+      },
+      {
+        title: "Herbicide glyphosate prevalent in U.S. streams and rivers",
+        publisher: "U.S. Geological Survey",
+        year: 2019,
+        url: "https://www.usgs.gov/news/herbicide-glyphosate-prevalent-us-streams-and-rivers",
+        note: "Stream and river monitoring context.",
+      },
+    ],
+  },
+  {
+    slug: "israel-gaza-us-influence",
+    topicNumber: "05",
+    title: "Israel, Gaza, and U.S. Political Influence",
+    shortTitle: "Israel and Gaza",
+    tagline:
+      "Track the legal record, the humanitarian record, and the money trail without flattening them into slogans.",
+    summary:
+      "This topic covers three linked but distinct questions: allegations and findings that Israel has committed genocide or related international crimes in Gaza, the humanitarian and displacement record in Gaza and the occupied Palestinian territory, and the role of pro-Israel lobbying and campaign spending in U.S. congressional politics.",
+    region: "Gaza, Israel, Palestine, and United States",
+    status: "International law, human rights, and campaign finance",
+    theme: "ethics",
+    updatedAt: "2026-05-19",
+    stats: [
+      {
+        value: "3",
+        label:
+          "ICJ provisional-measures orders issued in South Africa v. Israel during 2024",
+        sourceIndexes: [0],
+      },
+      {
+        value: "2025",
+        label:
+          "UN Commission of Inquiry report concluded Israel committed genocide in Gaza",
+        sourceIndexes: [1, 2],
+      },
+      {
+        value: "$53M+",
+        label:
+          "AIPAC-reported direct support for 361 pro-Israel candidates in the 2024 cycle",
+        sourceIndexes: [5],
+      },
+    ],
+    arguments: [
+      {
+        title: "Use legal findings precisely",
+        claim:
+          "UN investigators and many human-rights groups have found or alleged genocide in Gaza, while Israel rejects the charge and the ICJ merits case remains pending.",
+        counterpoint:
+          "The strongest public record says exactly who found what: the ICJ ordered provisional measures, the UN Commission of Inquiry made a genocide finding, and final state responsibility in the ICJ case is still unresolved.",
+        sourceIndexes: [0, 1, 2, 3],
+      },
+      {
+        title: "Campaign money is influence, not proof of control",
+        claim:
+          "AIPAC, United Democracy Project, and other pro-Israel groups have spent heavily in congressional races, especially against candidates viewed as insufficiently supportive of Israel.",
+        counterpoint:
+          "That spending can be documented through FEC and OpenSecrets-style campaign-finance records without making unsupported claims that any donor group controls Congress.",
+        sourceIndexes: [5, 6, 7, 8],
+      },
+    ],
+    findings: [
+      {
+        title: "The genocide record has moved beyond advocacy language",
+        body: "The ICJ found South Africa's claims plausible enough for provisional measures, and a UN Commission of Inquiry later concluded that Israeli authorities and security forces committed genocide in Gaza.",
+        sourceIndexes: [0, 1, 2],
+      },
+      {
+        title: "Humanitarian and displacement concerns extend beyond Gaza",
+        body: "UN reporting in 2026 raised concerns about ethnic cleansing and forcible transfer in both Gaza and the West Bank, tying displacement, starvation, and destruction to international-law questions.",
+        sourceIndexes: [3],
+      },
+      {
+        title: "U.S. congressional politics are measurable",
+        body: "AIPAC and related pro-Israel vehicles report major candidate support and outside spending, and news reporting has documented large independent expenditures in specific congressional primaries.",
+        sourceIndexes: [5, 6, 7, 8],
+      },
+    ],
+    statusBrief: {
+      headline: "The evidence stack has three layers",
+      summary:
+        "Keep international-law findings, humanitarian facts, and campaign-finance influence separate so each claim can be sourced and updated.",
+      latestDevelopment:
+        "UN reporting in 2025 and 2026 escalated findings around genocide, ethnic cleansing concerns, starvation, and forcible transfer, while pro-Israel spending remains active in U.S. races.",
+      nextDecisionPoint:
+        "Whether U.S. lawmakers condition military aid, enforce human-rights law, disclose lobby-linked funding, or protect criticism of Israeli government policy.",
+      whoCanAct:
+        "Constituents, journalists, campaign-finance researchers, human-rights lawyers, and congressional offices",
+      urgency: "high",
+      lastChecked: "2026-05-19",
+    },
+    actions: [
+      {
+        title: "Ask members for a legal standard",
+        description:
+          "Make offices state how they are evaluating ICJ orders, UN findings, arms transfers, and aid conditions.",
+        audience: "Constituents",
+        difficulty: "10 minutes",
+        urgency: "high",
+        ctaLabel: "Open ICJ Case",
+        ctaUrl: "https://www.icj-cij.org/case/192",
+        script:
+          "What legal standard is this office using to evaluate U.S. military aid to Israel after the ICJ provisional-measures orders and the UN Commission of Inquiry's genocide finding?",
+      },
+      {
+        title: "Track pro-Israel spending by race",
+        description:
+          "Document direct contributions, independent expenditures, bundled support, and spending through named or shell PACs.",
+        audience: "Campaign-finance researchers",
+        difficulty: "30 minutes",
+        urgency: "medium",
+        ctaLabel: "Open FEC Data",
+        ctaUrl: "https://www.fec.gov/data/",
+        script:
+          "For this race, list direct PAC contributions, independent expenditures, top donors, and whether spending supports the candidate or attacks an opponent.",
+      },
+      {
+        title: "Separate antisemitism from policy criticism",
+        description:
+          "Use precise language: criticism of Israeli government actions and lobby spending is not the same as hostility toward Jewish people.",
+        audience: "Organizers",
+        difficulty: "15 minutes",
+        urgency: "high",
+        ctaLabel: "Read UN Report",
+        ctaUrl:
+          "https://www.un.org/unispal/document/commission-of-inquiry-report-genocide-in-gaza-a-hrc-60-crp-3/",
+        script:
+          "This request concerns Israeli government policy, U.S. arms and aid decisions, and campaign-finance influence. It does not target Jewish identity or Jewish communities.",
+      },
+    ],
+    timeline: [
+      {
+        date: "2024-01-26",
+        title: "ICJ orders provisional measures",
+        description:
+          "The Court ordered Israel to prevent acts under the Genocide Convention, prevent and punish incitement, and enable humanitarian assistance.",
+        sourceIndexes: [0],
+      },
+      {
+        date: "2025-09-16",
+        title: "UN Commission of Inquiry issues genocide finding",
+        description:
+          "The Commission concluded that Israeli authorities and security forces committed and continued to commit genocide against Palestinians in Gaza.",
+        sourceIndexes: [1, 2],
+      },
+      {
+        date: "2026-03",
+        title: "Outside spending remains active in congressional primaries",
+        description:
+          "AP and Axios reporting documented AIPAC-linked spending in 2026 races and the continuing debate over pro-Israel PAC influence.",
+        sourceIndexes: [7, 8],
+      },
+    ],
+    updates: [
+      {
+        title:
+          "UN report raises ethnic-cleansing concerns in Gaza and West Bank",
+        publisher: "United Nations Human Rights Office",
+        publishedAt: "2026-02-19",
+        url: "https://palestine.un.org/en/310336-ethnic-cleansing-concerns-gaza-and-west-bank-amid-intensified-violence-and-forcible",
+        summary:
+          "The report links displacement, starvation, and forcible transfer concerns to possible war crimes, crimes against humanity, and genocide analysis.",
+        tag: "Human rights",
+      },
+      {
+        title: "AIPAC-linked spending shapes 2026 Illinois House primaries",
+        publisher: "Associated Press",
+        publishedAt: "2026-03-17",
+        url: "https://apnews.com/article/564cfdd46e0119501939452018be846a",
+        summary:
+          "Reporting shows continuing debate over pro-Israel super PAC spending in Democratic congressional primaries.",
+        tag: "Campaign finance",
+      },
+    ],
+    modules: [
+      {
+        type: "briefing",
+        eyebrow: "Dossier structure",
+        title:
+          "Keep law, humanitarian facts, and U.S. influence in separate lanes",
+        body: [
+          "The page has to be sharper than a general Israel-Palestine explainer. The legal lane asks what courts and UN investigators found, the humanitarian lane asks what happened to civilians, and the U.S. politics lane asks how money, lobbying, aid, and votes interact.",
+          "That separation matters because each lane has a different evidence standard. A UN Commission finding, an ICJ provisional order, a campaign-finance filing, and a congressional vote should not be treated as the same kind of proof.",
+        ],
+        bullets: [
+          "Criticism of Israeli government policy and pro-Israel lobbying is not criticism of Jewish identity.",
+          "Use 'genocide finding,' 'genocide allegation,' and 'pending merits case' precisely.",
+          "Campaign finance can prove influence channels; it does not prove total control.",
+        ],
+        sourceIndexes: [0, 1, 2, 3, 5, 7, 8],
+      },
+      {
+        type: "tracker",
+        eyebrow: "Legal docket",
+        title: "What the international-law record actually contains",
+        columns: ["Forum", "Record", "Status"],
+        rows: [
+          {
+            cells: [
+              "International Court of Justice",
+              "South Africa v. Israel under the Genocide Convention.",
+              "Provisional measures issued; final merits decision remains unresolved.",
+            ],
+            sourceIndexes: [0, 4],
+          },
+          {
+            cells: [
+              "UN Commission of Inquiry",
+              "Report concluded Israeli authorities and security forces committed genocide in Gaza.",
+              "UN investigative finding; Israel rejects the charge.",
+            ],
+            sourceIndexes: [1, 2],
+          },
+          {
+            cells: [
+              "UN human-rights reporting",
+              "Ethnic-cleansing and forcible-transfer concerns in Gaza and the West Bank.",
+              "Ongoing reporting tied to war crimes, crimes against humanity, and genocide analysis.",
+            ],
+            sourceIndexes: [3],
+          },
+        ],
+      },
+      {
+        type: "moneyTrail",
+        eyebrow: "U.S. influence",
+        title:
+          "The congressional influence trail is campaign finance plus policy votes",
+        rows: [
+          {
+            actor: "AIPAC and affiliated PACs",
+            mechanism:
+              "Direct candidate support, independent expenditures, and public endorsement infrastructure.",
+            impact:
+              "Large support and attack spending can reshape primary incentives around Israel policy.",
+            sourceIndexes: [5, 6, 7, 8],
+          },
+          {
+            actor: "United Democracy Project",
+            mechanism:
+              "Super PAC spending that can support favored candidates or attack opponents.",
+            impact:
+              "Outside spending can change the cost of dissent for members and candidates.",
+            sourceIndexes: [5, 6],
+          },
+          {
+            actor: "Congressional offices",
+            mechanism:
+              "Aid votes, arms-transfer oversight, public statements, and committee pressure.",
+            impact:
+              "The policy question is whether U.S. power conditions or enables Israeli government conduct.",
+            sourceIndexes: [0, 1, 3],
+          },
+        ],
+      },
+      {
+        type: "claimLedger",
+        eyebrow: "Language guardrails",
+        title: "Claims that need careful wording",
+        rows: [
+          {
+            claim: "Israel committed genocide in Gaza.",
+            status: "contested",
+            finding:
+              "A UN Commission of Inquiry made that finding, many groups allege it, Israel rejects it, and the ICJ final merits case is pending.",
+            sourceIndexes: [0, 1, 2],
+          },
+          {
+            claim: "Pro-Israel money controls Congress.",
+            status: "unsupported",
+            finding:
+              "Campaign finance records support a claim of major influence and pressure, not a claim of total control.",
+            sourceIndexes: [5, 6, 7, 8],
+          },
+          {
+            claim: "Ethnic cleansing concerns are limited to Gaza.",
+            status: "unsupported",
+            finding:
+              "UN reporting also raised forcible-transfer concerns in the West Bank.",
+            sourceIndexes: [3],
+          },
+        ],
+      },
+      {
+        type: "policyLevers",
+        eyebrow: "Accountability",
+        title: "How U.S. constituents can make the record actionable",
+        levers: [
+          {
+            actor: "Constituents",
+            lever: "Ask members what legal standard governs military aid.",
+            pressurePoint:
+              "Offices should answer how ICJ orders and UN findings affect their aid position.",
+            sourceIndexes: [0, 1, 2],
+          },
+          {
+            actor: "Campaign-finance researchers",
+            lever:
+              "Track direct support and independent expenditures race by race.",
+            pressurePoint:
+              "Influence claims get stronger when tied to specific filings and races.",
+            sourceIndexes: [5, 6, 7, 8],
+          },
+          {
+            actor: "Journalists",
+            lever:
+              "Pair lobbying money with votes, statements, and committee action.",
+            pressurePoint:
+              "Money is not the whole story; the public needs the policy output next to it.",
+            sourceIndexes: [5, 7, 8],
+          },
+        ],
+      },
+    ],
+    sources: [
+      {
+        title:
+          "Application of the Convention on the Prevention and Punishment of the Crime of Genocide in the Gaza Strip",
+        publisher: "International Court of Justice",
+        year: 2026,
+        url: "https://www.icj-cij.org/case/192",
+        note: "Official ICJ docket for South Africa v. Israel.",
+      },
+      {
+        title:
+          "Israel has committed genocide in the Gaza Strip, UN Commission of Inquiry finds",
+        publisher: "United Nations",
+        year: 2025,
+        url: "https://www.un.org/unispal/document/israel-has-committed-genocide-in-the-gaza-strip-un-commission-finds-16sep25/",
+        note: "UN summary of the Commission of Inquiry genocide finding.",
+      },
+      {
+        title: "Commission of Inquiry report: genocide in Gaza, A/HRC/60/CRP.3",
+        publisher: "United Nations",
+        year: 2025,
+        url: "https://www.un.org/unispal/document/commission-of-inquiry-report-genocide-in-gaza-a-hrc-60-crp-3/",
+        note: "Detailed legal analysis behind the UN Commission finding.",
+      },
+      {
+        title:
+          "Ethnic cleansing concerns in Gaza and West Bank amid intensified violence and forcible transfers by Israel",
+        publisher: "United Nations in Palestine",
+        year: 2026,
+        url: "https://palestine.un.org/en/310336-ethnic-cleansing-concerns-gaza-and-west-bank-amid-intensified-violence-and-forcible",
+        note: "UN human-rights reporting on displacement and forcible transfer.",
+      },
+      {
+        title:
+          "Gaza: World court orders Israel to halt military operations in Rafah",
+        publisher: "United Nations Office at Geneva",
+        year: 2024,
+        url: "https://www.ungeneva.org/en/news-media/news/2024/05/93750/gaza-world-court-orders-israel-halt-military-operations-rafah",
+        note: "Summary of ICJ additional provisional measures regarding Rafah.",
+      },
+      {
+        title:
+          "Top Democratic House recipients of AIPAC and United Democracy Project support",
+        publisher: "Factually / FEC and OpenSecrets-based reporting",
+        year: 2026,
+        url: "https://factually.co/fact-checks/politics/top-democratic-house-recipients-aipac-united-democracy-project-2024-468e6b",
+        note: "Campaign-finance summary citing AIPAC, FEC, and OpenSecrets records.",
+      },
+      {
+        title: "Here Is All the Money AIPAC Spent on the 2024 Elections",
+        publisher: "Sludge",
+        year: 2025,
+        url: "https://readsludge.com/2025/01/24/here-is-all-the-money-aipac-spent-on-the-2024-elections/",
+        note: "Race-by-race compilation of AIPAC and United Democracy Project spending.",
+      },
+      {
+        title:
+          "AIPAC faces test of its power in Illinois primary as Democrats debate future of Israel relationship",
+        publisher: "Associated Press",
+        year: 2026,
+        url: "https://apnews.com/article/564cfdd46e0119501939452018be846a",
+        note: "2026 congressional-primary spending context.",
+      },
+      {
+        title: "AIPAC, crypto and AI spend big in Illinois House races",
+        publisher: "Axios Chicago",
+        year: 2026,
+        url: "https://www.axios.com/local/chicago/2026/03/04/super-pacs-for-ai-crypto-and-israel-flood-illinois-congressional-races",
+        note: "Reporting on 2026 super PAC spending and opaque committee names.",
+      },
+    ],
+  },
+  {
+    slug: "voter-fraud-claims-election-rules",
+    topicNumber: "06",
+    title: "Voter Fraud Claims and Election Rule Changes",
+    shortTitle: "Voter Fraud Claims",
+    tagline:
+      "Fraud exists, but the evidence does not support using rare cases as a pretext to block eligible voters.",
+    summary:
+      "Donald Trump has repeatedly used claims of voter fraud, noncitizen voting, and mail-ballot fraud to justify federal election interventions. This topic tracks the difference between documented rare fraud, unsupported claims of widespread fraud, executive orders, court challenges, and the voting-access risks of proof-of-citizenship and mail-ballot restrictions.",
+    region: "United States",
+    status: "Election administration and voting rights",
+    theme: "ethics",
+    updatedAt: "2026-05-19",
+    stats: [
+      {
+        value: "30",
+        label:
+          "Suspected noncitizen-voting incidents referred from 23.5M votes in Brennan Center research",
+        sourceIndexes: [0],
+      },
+      {
+        value: "21.3M",
+        label:
+          "Voting-age U.S. citizens estimated not to have proof-of-citizenship documents readily available",
+        sourceIndexes: [5],
+      },
+      {
+        value: "2026-03-31",
+        label: "Date of Trump's mail-voting executive order",
+        sourceIndexes: [3, 4],
+      },
+    ],
+    arguments: [
+      {
+        title: "Documented fraud is not the same as widespread fraud",
+        claim:
+          "There are real cases of election fraud, including prosecutions and convictions, but available evidence does not show fraud at a scale that justifies broad claims of stolen federal elections.",
+        counterpoint:
+          "The right standard is proportionality: investigate proven cases while rejecting rule changes that disenfranchise large numbers of eligible voters based on inflated or unsupported claims.",
+        sourceIndexes: [0, 1, 2],
+      },
+      {
+        title: "Executive orders are a governance fight",
+        claim:
+          "Trump's 2025 and 2026 election executive orders try to impose proof-of-citizenship, mail-ballot, and federal voter-list changes normally controlled by states and Congress.",
+        counterpoint:
+          "Courts and voting-rights groups argue the president lacks authority to run state election systems, especially when federal data errors could block eligible voters.",
+        sourceIndexes: [3, 4, 5, 6],
+      },
+    ],
+    findings: [
+      {
+        title: "Noncitizen voting is rare in the researched record",
+        body: "Brennan Center research found only about 30 suspected noncitizen-voting incidents referred for further investigation or prosecution among 23.5 million votes in the jurisdictions studied.",
+        sourceIndexes: [0],
+      },
+      {
+        title: "Mail voting is being used as the next fraud frame",
+        body: "Trump's March 31, 2026 order targeted mail ballots, voter eligibility lists, and ballot tracking, prompting lawsuits from Democrats and civil-rights organizations.",
+        sourceIndexes: [3, 4, 6],
+      },
+      {
+        title: "Proof-of-citizenship policy carries access risk",
+        body: "Voting-rights researchers estimate millions of eligible citizens lack ready access to citizenship documents, meaning strict documentation rules can remove lawful voters from the process.",
+        sourceIndexes: [5],
+      },
+    ],
+    statusBrief: {
+      headline: "Rare cases are being used to justify broad restrictions",
+      summary:
+        "The urgent task is to separate actual fraud cases from claims of systemic fraud and to track whether proposed fixes would block eligible voters.",
+      latestDevelopment:
+        "In May 2026, AP reported active litigation over Trump's mail-voting order and a federal push to scan state voter rolls through national eligibility checks.",
+      nextDecisionPoint:
+        "Whether courts block, narrow, or permit federal attempts to reshape mail voting, proof-of-citizenship rules, and voter-list data sharing before the 2026 midterms.",
+      whoCanAct:
+        "Voters, election clerks, secretaries of state, courts, civil-rights groups, and local journalists",
+      urgency: "high",
+      lastChecked: "2026-05-19",
+    },
+    actions: [
+      {
+        title: "Ask for claim-by-claim evidence",
+        description:
+          "Do not debate vague fraud allegations. Ask for names, jurisdictions, counts, case status, and whether any result was affected.",
+        audience: "Journalists and residents",
+        difficulty: "10 minutes",
+        urgency: "high",
+        ctaLabel: "Read Brennan Research",
+        ctaUrl:
+          "https://www.brennancenter.org/our-work/research-reports/noncitizen-voting-vanishingly-rare",
+        script:
+          "What specific fraud allegation is being made, how many ballots are involved, who investigated it, what evidence was verified, and did it affect an election outcome?",
+      },
+      {
+        title: "Track local voter-list requests",
+        description:
+          "Monitor whether federal or outside actors are requesting voter files, citizenship data, driver's license fields, or Social Security fields.",
+        audience: "Election watchdogs",
+        difficulty: "30 minutes",
+        urgency: "high",
+        ctaLabel: "Open AP Coverage",
+        ctaUrl: "https://apnews.com/article/8f78773f583e4404136707c62acc648a",
+        script:
+          "Has this office received federal or third-party requests for voter-roll data, citizenship data, driver's license data, or Social Security fields, and what legal review was performed?",
+      },
+      {
+        title: "Measure access harm before policy support",
+        description:
+          "Require officials to estimate how many eligible voters lack documents, mail access, or correction windows before supporting restrictions.",
+        audience: "Voting-rights groups",
+        difficulty: "20 minutes",
+        urgency: "medium",
+        ctaLabel: "Review EO Status",
+        ctaUrl:
+          "https://www.brennancenter.org/our-work/research-reports/status-trumps-anti-voting-executive-order",
+        script:
+          "Before endorsing this rule, please publish how many eligible citizens could be rejected, delayed, or forced into provisional ballots because of documentation or data-match errors.",
+      },
+    ],
+    timeline: [
+      {
+        date: "2020-11-12",
+        title:
+          "Federal election-security officials reject system-compromise claims",
+        description:
+          "CISA and election partners said there was no evidence that voting systems deleted, lost, changed, or compromised votes in the 2020 election.",
+        sourceIndexes: [2],
+      },
+      {
+        date: "2025-03-25",
+        title: "Trump issues election executive order",
+        description:
+          "The order sought proof-of-citizenship requirements and changes to mail-ballot handling, triggering multiple lawsuits.",
+        sourceIndexes: [4],
+      },
+      {
+        date: "2026-03-31",
+        title: "Trump signs mail-voting executive order",
+        description:
+          "The order directed federal action on citizenship verification, approved mail-ballot lists, and tracking requirements, prompting new litigation.",
+        sourceIndexes: [3, 6],
+      },
+    ],
+    updates: [
+      {
+        title:
+          "Trump administration promotes national voter-eligibility checks",
+        publisher: "Associated Press",
+        publishedAt: "2026-05-17",
+        url: "https://apnews.com/article/8f78773f583e4404136707c62acc648a",
+        summary:
+          "AP reported a broader federal push to scan state voter rolls and promote claims about noncitizen voting even though such cases are rare.",
+        tag: "Voter rolls",
+      },
+      {
+        title: "Court hearing tests Trump's mail-voting order",
+        publisher: "Associated Press",
+        publishedAt: "2026-05-14",
+        url: "https://apnews.com/article/ac61e7d4bb77f9901eb6f1a2c1f4b087",
+        summary:
+          "Democrats and civil-rights groups argued that Trump exceeded his authority by restricting mail-ballot access.",
+        tag: "Litigation",
+      },
+    ],
+    modules: [
+      {
+        type: "briefing",
+        eyebrow: "Threat model",
+        title:
+          "The story is the conversion of rare fraud into broad restriction",
+        body: [
+          "A serious election-integrity page should not claim fraud never happens. It should show that documented fraud cases exist, then ask whether the proposed remedy is proportional to the verified scale.",
+          "Trump's recent voter-fraud frame uses noncitizen voting, mail ballots, and voter-list data matching to justify federal intervention. The civic-risk question is whether eligible voters get blocked by paperwork and database errors while unsupported claims receive official power.",
+        ],
+        bullets: [
+          "Ask every fraud claim for count, jurisdiction, case status, and effect on outcome.",
+          "Separate proven cases from claims of systemic fraud.",
+          "Evaluate restrictions by how many eligible voters they burden.",
+        ],
+        sourceIndexes: [0, 1, 2, 3, 4, 5, 6, 7],
+      },
+      {
+        type: "claimLedger",
+        eyebrow: "Fraud claim ledger",
+        title: "Track the claim, evidence, scale, and remedy",
+        rows: [
+          {
+            claim:
+              "Noncitizen voting is widespread enough to justify national proof-of-citizenship restrictions.",
+            status: "unsupported",
+            finding:
+              "Brennan research found 30 suspected incidents referred from 23.5 million votes in studied jurisdictions.",
+            sourceIndexes: [0],
+          },
+          {
+            claim: "Fraud cases exist and should be prosecuted.",
+            status: "documented",
+            finding:
+              "Case databases document real incidents, but documented cases must be compared against total ballots and actual outcomes.",
+            sourceIndexes: [1],
+          },
+          {
+            claim:
+              "The president can restructure state mail-voting rules by executive order.",
+            status: "contested",
+            finding:
+              "Civil-rights groups and Democrats argue Trump's executive orders exceed presidential authority; litigation is ongoing.",
+            sourceIndexes: [3, 4, 6],
+          },
+        ],
+      },
+      {
+        type: "tracker",
+        eyebrow: "Rule-change tracker",
+        title: "Where the 2026 fight is moving",
+        columns: ["Target", "Trump administration move", "Access risk"],
+        rows: [
+          {
+            cells: [
+              "Proof of citizenship",
+              "Push citizenship verification and eligibility checks through federal data systems.",
+              "Eligible citizens without ready documents or with data mismatches can be delayed or rejected.",
+            ],
+            sourceIndexes: [4, 5, 7],
+          },
+          {
+            cells: [
+              "Mail ballots",
+              "Restrict approved mail-ballot lists and require tracking conditions.",
+              "Voters who rely on mail voting may face narrower access before the midterms.",
+            ],
+            sourceIndexes: [3, 6],
+          },
+          {
+            cells: [
+              "State voter rolls",
+              "Promote national voter-eligibility checks and voter-roll scanning.",
+              "False positives can trigger removals or extra burdens without individualized fraud evidence.",
+            ],
+            sourceIndexes: [7],
+          },
+        ],
+      },
+      {
+        type: "evidenceMatrix",
+        eyebrow: "Proportionality test",
+        title: "How to judge any proposed fraud fix",
+        rows: [
+          {
+            label: "Verified incident count",
+            evidence:
+              "Require named cases, ballots affected, and prosecution or investigation status.",
+            caveat:
+              "Anecdotes should not be scaled into national claims without denominator data.",
+            sourceIndexes: [0, 1],
+          },
+          {
+            label: "System compromise",
+            evidence:
+              "Federal election-security officials found no evidence that voting systems changed or compromised votes in 2020.",
+            caveat:
+              "System-security claims are different from isolated voter or campaign misconduct cases.",
+            sourceIndexes: [2],
+          },
+          {
+            label: "Eligible-voter harm",
+            evidence:
+              "Proof-of-citizenship requirements can burden millions who lack ready documents.",
+            caveat:
+              "Access estimates should be updated state by state as rules change.",
+            sourceIndexes: [5],
+          },
+        ],
+      },
+      {
+        type: "policyLevers",
+        eyebrow: "Defense",
+        title: "What election watchdogs should do now",
+        levers: [
+          {
+            actor: "Local journalists",
+            lever:
+              "Build a fraud-claim spreadsheet with evidence and outcome fields.",
+            pressurePoint:
+              "Officials making broad claims should be forced into verifiable specifics.",
+            sourceIndexes: [0, 1],
+          },
+          {
+            actor: "Election clerks",
+            lever:
+              "Publish how data-match errors are handled before voters are removed.",
+            pressurePoint:
+              "List maintenance must include notice, correction windows, and appeal paths.",
+            sourceIndexes: [4, 7],
+          },
+          {
+            actor: "Civil-rights groups",
+            lever:
+              "Quantify eligible-voter burden before courts and legislatures.",
+            pressurePoint:
+              "Restrictions should be tested against the number of lawful voters affected.",
+            sourceIndexes: [5, 6],
+          },
+        ],
+      },
+    ],
+    sources: [
+      {
+        title: "Noncitizen Voting is Vanishingly Rare",
+        publisher: "Brennan Center for Justice",
+        year: 2017,
+        url: "https://www.brennancenter.org/our-work/research-reports/noncitizen-voting-vanishingly-rare",
+        note: "Research summary on noncitizen-voting allegations.",
+      },
+      {
+        title: "Election Fraud Map",
+        publisher: "The Heritage Foundation",
+        year: 2026,
+        url: "https://electionfraud.heritage.org/",
+        note: "Conservative fraud-case database useful for documented case comparison.",
+      },
+      {
+        title:
+          "Joint Statement from DOJ, DOD, DHS, DNI, FBI, NSA, and CISA on Ensuring Security of 2020 Elections",
+        publisher: "Cybersecurity and Infrastructure Security Agency",
+        year: 2020,
+        url: "https://www.cisa.gov/news-events/news/joint-statement-doj-dod-dhs-dni-fbi-nsa-and-cisa-ensuring-security-2020-elections",
+        note: "Official federal election-security statement.",
+      },
+      {
+        title:
+          "League of Women Voters of Massachusetts v. Trump, March 2026 Mail Voting Executive Order",
+        publisher: "Brennan Center for Justice",
+        year: 2026,
+        url: "https://www.brennancenter.org/our-work/court-cases/league-women-voters-massachusetts-v-trump-march-2026-mail-voting-executive",
+        note: "Case page for legal challenge to Trump's March 31, 2026 order.",
+      },
+      {
+        title: "Status of Trump's Anti-Voting Executive Order",
+        publisher: "Brennan Center for Justice",
+        year: 2026,
+        url: "https://www.brennancenter.org/our-work/research-reports/status-trumps-anti-voting-executive-order",
+        note: "Tracker for 2025 and 2026 election executive-order litigation.",
+      },
+      {
+        title:
+          "The Trump Administration's Campaign to Undermine the Next Election",
+        publisher: "Brennan Center for Justice",
+        year: 2025,
+        url: "https://www.brennancenter.org/our-work/research-reports/trump-administrations-campaign-undermine-next-election",
+        note: "Analysis of voting-access effects and proof-of-citizenship risks.",
+      },
+      {
+        title:
+          "Lawyers urge judge to block Trump order that would create eligible voter list, limit mail ballots",
+        publisher: "Associated Press",
+        year: 2026,
+        url: "https://apnews.com/article/ac61e7d4bb77f9901eb6f1a2c1f4b087",
+        note: "May 2026 litigation update.",
+      },
+      {
+        title:
+          "Trump administration promotes program to check voter eligibility",
+        publisher: "Associated Press",
+        year: 2026,
+        url: "https://apnews.com/article/8f78773f583e4404136707c62acc648a",
+        note: "May 2026 reporting on federal voter-roll scanning.",
       },
     ],
   },
