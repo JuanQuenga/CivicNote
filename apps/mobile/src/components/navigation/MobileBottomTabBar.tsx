@@ -1,8 +1,7 @@
-import { DeviceEventEmitter, Pressable, Text, View } from "react-native"
+import { Pressable, Text, View } from "react-native"
 import { useSafeAreaInsets } from "react-native-safe-area-context"
-import { BookOpen, Home, Map, Menu, Radio } from "lucide-react-native"
+import { BookOpen, ClipboardCheck, Home, Radio } from "lucide-react-native"
 import { usePathname, useRouter } from "expo-router"
-import { MOBILE_OPEN_SIDE_MENU_EVENT } from "./MobileSideMenu"
 
 const ACTIVE_COLOR = "#18181B"
 const INACTIVE_COLOR = "#71717A"
@@ -45,7 +44,7 @@ export function MobileBottomTabBar() {
   const router = useRouter()
   const pathname = usePathname()
   const insets = useSafeAreaInsets()
-  const isTopic = pathname.startsWith("/topics/")
+  const isTopic = pathname.startsWith("/topics")
 
   return (
     <View
@@ -62,28 +61,19 @@ export function MobileBottomTabBar() {
         active={isTopic}
         icon={BookOpen}
         label="Topics"
-        onPress={() => router.replace("/")}
+        onPress={() => router.replace("/topics")}
       />
       <NavButton
-        icon={Map}
-        label="Map"
-        onPress={() => {
-          DeviceEventEmitter.emit("research-map:toggle")
-        }}
+        active={pathname === "/map"}
+        icon={ClipboardCheck}
+        label="Act"
+        onPress={() => router.replace("/map")}
       />
       <NavButton
+        active={pathname === "/briefs"}
         icon={Radio}
         label="Status"
-        onPress={() => {
-          DeviceEventEmitter.emit("research-map:open", { mode: "status" })
-        }}
-      />
-      <NavButton
-        icon={Menu}
-        label="Menu"
-        onPress={() => {
-          DeviceEventEmitter.emit(MOBILE_OPEN_SIDE_MENU_EVENT)
-        }}
+        onPress={() => router.replace("/briefs")}
       />
     </View>
   )

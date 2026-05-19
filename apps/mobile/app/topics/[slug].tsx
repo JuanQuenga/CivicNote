@@ -1,52 +1,12 @@
-import { useLocalSearchParams } from "expo-router"
+import { Link, useLocalSearchParams } from "expo-router"
 import { Linking, Pressable, ScrollView, Text, View } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
-import { getTopicBySlug } from "@/src/lib/topics"
-
-const urgencyClasses = {
-  low: "border-zinc-300 bg-zinc-100 text-zinc-800",
-  medium: "border-amber-300 bg-amber-50 text-amber-900",
-  high: "border-red-300 bg-red-50 text-red-900",
-} as const
-
-function SourceList({
-  indexes,
-  sources,
-}: {
-  indexes: Array<number>
-  sources: Array<{
-    title: string
-    publisher: string
-    year: number
-    url: string
-  }>
-}) {
-  return (
-    <View className="mt-4 gap-2">
-      {indexes.map((index) => {
-        const source = sources[index]
-        if (!source) return null
-
-        return (
-          <Pressable
-            key={`${source.url}-${index}`}
-            className="border-l-2 border-zinc-950 pl-3"
-            onPress={() => {
-              void Linking.openURL(source.url)
-            }}
-          >
-            <Text className="text-xs font-bold text-zinc-950">
-              {source.publisher}, {source.year}
-            </Text>
-            <Text className="mt-1 text-xs leading-5 text-zinc-600">
-              {source.title}
-            </Text>
-          </Pressable>
-        )
-      })}
-    </View>
-  )
-}
+import { getTopicBySlug, topics } from "@/src/lib/topics"
+import {
+  TopicCard,
+  TopicModuleView,
+  urgencyClasses,
+} from "@/src/components/topics/MobileTopicComponents"
 
 export default function TopicScreen() {
   const { slug } = useLocalSearchParams<{ slug: string }>()
@@ -59,11 +19,42 @@ export default function TopicScreen() {
           Topic not found
         </Text>
         <Text className="mt-3 text-center text-base text-zinc-600">
-          That research topic has not been added to the hub.
+          That issue is not in the app yet.
         </Text>
+        <Link href="/topics" asChild>
+          <Pressable className="mt-6 border border-zinc-950 bg-zinc-950 px-5 py-3">
+            <Text className="text-xs font-bold tracking-[1.6px] text-white uppercase">
+              Back to Topics
+            </Text>
+          </Pressable>
+        </Link>
       </SafeAreaView>
     )
   }
+
+  const renderedModules = [
+    ...topic.modules,
+    ...(topic.modules.some((module) => module.type === "actionList")
+      ? []
+      : [
+          {
+            type: "actionList" as const,
+            eyebrow: "Public action",
+            title: "Do the next useful thing",
+            actions: topic.actions,
+          },
+        ]),
+    ...(topic.modules.some((module) => module.type === "timeline")
+      ? []
+      : [
+          {
+            type: "timeline" as const,
+            eyebrow: "Milestones",
+            title: "What moved this topic",
+            items: topic.timeline,
+          },
+        ]),
+  ]
 
   return (
     <SafeAreaView className="flex-1 bg-[#f7f4ee]" edges={["bottom"]}>
@@ -84,7 +75,7 @@ export default function TopicScreen() {
         <View className="bg-zinc-950 px-5 py-6">
           <View className="flex-row flex-wrap items-center gap-3">
             <Text className="text-xs font-bold tracking-[2px] text-zinc-400 uppercase">
-              Current Status
+              Right Now
             </Text>
             <Text
               className={`border px-3 py-1 text-[10px] font-bold tracking-[1.4px] uppercase ${
@@ -100,95 +91,125 @@ export default function TopicScreen() {
           <Text className="mt-4 text-sm leading-6 text-zinc-300">
             {topic.statusBrief.summary}
           </Text>
+          <View className="mt-6 gap-4 border-t border-white/10 pt-5">
+            <View>
+              <Text className="text-xs font-bold tracking-[1.4px] text-zinc-500 uppercase">
+                Latest Update
+              </Text>
+              <Text className="mt-2 text-sm leading-6 text-zinc-200">
+                {topic.statusBrief.latestDevelopment}
+              </Text>
+            </View>
+            <View>
+              <Text className="text-xs font-bold tracking-[1.4px] text-zinc-500 uppercase">
+                Next Thing To Watch
+              </Text>
+              <Text className="mt-2 text-sm leading-6 text-zinc-200">
+                {topic.statusBrief.nextDecisionPoint}
+              </Text>
+            </View>
+            <View>
+              <Text className="text-xs font-bold tracking-[1.4px] text-zinc-500 uppercase">
+                Who Can Do Something
+              </Text>
+              <Text className="mt-2 text-sm leading-6 text-zinc-200">
+                {topic.statusBrief.whoCanAct}
+              </Text>
+            </View>
+          </View>
           <Text className="mt-5 text-xs font-bold tracking-[1.4px] text-zinc-500 uppercase">
             Last checked {topic.statusBrief.lastChecked}
           </Text>
         </View>
 
-        <View className="gap-4 px-5 py-6">
-          {topic.stats.map((stat) => (
-            <View
-              key={stat.label}
-              className="border border-zinc-200 bg-white p-5"
-            >
-              <Text className="text-4xl font-bold text-zinc-950">
-                {stat.value}
-              </Text>
-              <Text className="mt-3 text-sm leading-6 text-zinc-700">
-                {stat.label}
-              </Text>
-              <SourceList
-                indexes={stat.sourceIndexes}
-                sources={topic.sources}
-              />
-            </View>
-          ))}
-        </View>
-
-        <View className="border-y border-zinc-200 bg-white px-5 py-6">
-          <Text className="text-xs font-bold tracking-[2px] text-zinc-500 uppercase">
-            Why it matters
-          </Text>
-          <Text className="mt-4 text-base leading-7 text-zinc-700">
-            {topic.summary}
-          </Text>
-        </View>
-
-        <View className="gap-4 px-5 py-6">
-          <Text className="text-xs font-bold tracking-[2px] text-zinc-500 uppercase">
-            Research Findings
-          </Text>
-          {topic.findings.map((finding) => (
-            <View
-              key={finding.title}
-              className="border border-zinc-200 bg-white p-5"
-            >
-              <Text className="text-xl font-bold text-zinc-950">
-                {finding.title}
-              </Text>
-              <Text className="mt-3 text-sm leading-6 text-zinc-700">
-                {finding.body}
-              </Text>
-              <SourceList
-                indexes={finding.sourceIndexes}
-                sources={topic.sources}
-              />
-            </View>
-          ))}
-        </View>
-
-        <View className="gap-4 border-y border-zinc-200 bg-white px-5 py-6">
-          <Text className="text-xs font-bold tracking-[2px] text-zinc-500 uppercase">
-            Public Action
-          </Text>
-          {topic.actions.map((action) => (
-            <View
-              key={action.title}
-              className="border border-zinc-200 bg-[#f7f4ee] p-5"
-            >
-              <Text className="text-xl font-bold text-zinc-950">
-                {action.title}
-              </Text>
-              <Text className="mt-3 text-sm leading-6 text-zinc-700">
-                {action.description}
-              </Text>
-              <Text className="mt-4 text-xs font-bold tracking-[1.4px] text-red-700 uppercase">
-                {action.audience} / {action.difficulty}
-              </Text>
-              {action.ctaUrl ? (
-                <Pressable
-                  className="mt-4 items-center border border-zinc-950 bg-zinc-950 px-4 py-3"
-                  onPress={() => {
-                    void Linking.openURL(action.ctaUrl!)
-                  }}
-                >
-                  <Text className="text-xs font-bold tracking-[1.6px] text-white uppercase">
-                    {action.ctaLabel}
+        {topic.updates.length ? (
+          <View className="gap-4 px-5 py-6">
+            <Text className="text-xs font-bold tracking-[2px] text-zinc-500 uppercase">
+              Updates
+            </Text>
+            {topic.updates.map((update) => (
+              <Pressable
+                key={update.url}
+                className="border border-zinc-200 bg-white p-5"
+                onPress={() => {
+                  void Linking.openURL(update.url)
+                }}
+              >
+                <View className="flex-row items-start justify-between gap-3">
+                  <Text className="flex-1 text-[10px] font-bold tracking-[1.4px] text-red-700 uppercase">
+                    {update.tag}
                   </Text>
-                </Pressable>
-              ) : null}
-            </View>
+                  <Text className="text-[10px] font-bold tracking-[1.4px] text-zinc-500 uppercase">
+                    {update.publishedAt}
+                  </Text>
+                </View>
+                <Text className="mt-3 text-xl font-bold text-zinc-950">
+                  {update.title}
+                </Text>
+                <Text className="mt-2 text-xs font-bold tracking-[1.2px] text-zinc-500 uppercase">
+                  {update.publisher}
+                </Text>
+                <Text className="mt-3 text-sm leading-6 text-zinc-700">
+                  {update.summary}
+                </Text>
+              </Pressable>
+            ))}
+          </View>
+        ) : null}
+
+        <View className="gap-5 px-5 py-6">
+          {renderedModules.map((module, index) => (
+            <TopicModuleView
+              index={index}
+              key={`${module.type}-${module.title}`}
+              module={module}
+              topic={topic}
+            />
           ))}
+        </View>
+
+        <View className="border-t border-zinc-200 bg-zinc-950 px-5 py-7">
+          <Text className="text-xs font-bold tracking-[2px] text-zinc-400 uppercase">
+            Sources
+          </Text>
+          <Text className="mt-2 text-3xl font-bold text-white">
+            Read it yourself
+          </Text>
+          <View className="mt-5 gap-3">
+            {topic.sources.map((source, index) => (
+              <Pressable
+                key={source.url}
+                className="border border-white/10 bg-zinc-900 p-5"
+                onPress={() => {
+                  void Linking.openURL(source.url)
+                }}
+              >
+                <Text className="text-sm font-bold text-white">
+                  {source.title}
+                </Text>
+                <Text className="mt-2 text-xs font-semibold tracking-[1.2px] text-zinc-400 uppercase">
+                  {source.publisher} / {source.year} / Source {index + 1}
+                </Text>
+                <Text className="mt-3 text-sm leading-6 text-zinc-300">
+                  {source.note}
+                </Text>
+              </Pressable>
+            ))}
+          </View>
+        </View>
+
+        <View className="px-5 py-7">
+          <Text className="text-xs font-bold tracking-[2px] text-zinc-500 uppercase">
+            Related Issues
+          </Text>
+          <View className="mt-3 gap-4">
+            {topics
+              .filter((item) => item.slug !== topic.slug)
+              .slice(0, 2)
+              .map((item) => (
+                <TopicCard compact key={item.slug} topic={item} />
+              ))}
+          </View>
         </View>
       </ScrollView>
     </SafeAreaView>

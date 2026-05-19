@@ -234,13 +234,13 @@ export const seedTopics: Array<ResearchTopic> = [
       },
     ],
     statusBrief: {
-      headline: "The reform path is already written",
+      headline: "The fix is already on the table",
       summary:
-        "This topic is ready for pressure on bill text, discharge efforts, and member positions rather than another round of general awareness.",
+        "This issue needs clear yes-or-no answers from members of Congress, not more vague concern.",
       latestDevelopment:
-        "The public-facing verification point remains official House discharge and disclosure data.",
+        "The most useful check is still the official House record: bill movement, petition signatures, and financial disclosures.",
       nextDecisionPoint:
-        "Whether members will support a ban that covers spouses, dependents, and individual stock ownership.",
+        "Whether members will back a ban that also covers spouses, dependents, and individual stocks.",
       whoCanAct: "Constituents, ethics groups, and congressional offices",
       urgency: "high",
       lastChecked: "2026-05-19",
@@ -260,7 +260,7 @@ export const seedTopics: Array<ResearchTopic> = [
           "Do you support a congressional stock-trading ban that covers members, spouses, and dependents while preserving diversified funds and blind trusts?",
       },
       {
-        title: "Check the official pressure point",
+        title: "Check the official record",
         description:
           "Use the House Clerk source to verify whether a discharge petition is active and who has signed.",
         audience: "Researchers",
@@ -272,7 +272,7 @@ export const seedTopics: Array<ResearchTopic> = [
           "I am tracking the public record for stock-trading reform. Has this office signed or committed to signing any active discharge petition?",
       },
       {
-        title: "Turn disclosures into evidence",
+        title: "Use disclosures to show the problem",
         description:
           "Treat transaction reports as conflict evidence to organize around, not as a substitute for reform.",
         audience: "Watchdogs",
@@ -301,7 +301,7 @@ export const seedTopics: Array<ResearchTopic> = [
       },
       {
         date: "2026",
-        title: "Official House records remain the action tracker",
+        title: "Official House records are the place to check",
         description:
           "The Clerk's discharge-petition and disclosure systems are the source of record for pressure campaigns.",
         sourceIndexes: [2, 3],
@@ -318,7 +318,7 @@ export const seedTopics: Array<ResearchTopic> = [
         tag: "Bill tracking",
       },
       {
-        title: "Financial disclosures remain the conflict evidence base",
+        title: "Financial disclosures show why the rule matters",
         publisher: "U.S. House Clerk",
         publishedAt: "2026-05-19",
         url: "https://disclosures-clerk.house.gov/",
@@ -330,8 +330,8 @@ export const seedTopics: Array<ResearchTopic> = [
     modules: [
       {
         type: "briefing",
-        eyebrow: "Power map",
-        title: "The conflict is structural, not just scandal-driven",
+        eyebrow: "What is wrong",
+        title: "The problem is built into the rules",
         body: [
           "A member can comply with disclosure rules and still hold assets affected by committee work, classified or closed-door briefings, federal contracts, appropriations, and agency oversight.",
           "The useful reform frame is ownership and trading restrictions for officials, spouses, and dependents, with clear carve-outs for broad funds, Treasury securities, and qualified blind trusts.",
@@ -345,8 +345,8 @@ export const seedTopics: Array<ResearchTopic> = [
       },
       {
         type: "claimLedger",
-        eyebrow: "Argument ledger",
-        title: "Separate reform claims from distractions",
+        eyebrow: "Common arguments",
+        title: "Separate real objections from distractions",
         rows: [
           {
             claim:
@@ -375,8 +375,8 @@ export const seedTopics: Array<ResearchTopic> = [
       },
       {
         type: "policyLevers",
-        eyebrow: "Pressure points",
-        title: "Where advocates can move the issue",
+        eyebrow: "Next moves",
+        title: "Where people can push",
         levers: [
           {
             actor: "Constituents",
@@ -502,13 +502,13 @@ export const seedTopics: Array<ResearchTopic> = [
       },
     ],
     statusBrief: {
-      headline: "Oversight has to follow the network",
+      headline: "The rules need to cover the whole network",
       summary:
-        "The near-term fight is not only camera approval. It is retention, sharing, audit logs, outside-agency access, and later AI integrations.",
+        "This is not just about approving cameras. It is about retention, sharing, audit logs, outside access, and the AI tools that can get added later.",
       latestDevelopment:
-        "Michigan reporting and civil-liberties analysis now frame ALPRs as part of a wider searchable surveillance stack.",
+        "Michigan reporting and civil-liberties groups now show ALPRs as part of a wider searchable surveillance system.",
       nextDecisionPoint:
-        "Whether local governments require public approval before adding AI, fusion, real-time crime center, or facial-recognition layers.",
+        "Whether local governments require public approval before adding AI, data-sharing, real-time crime center, or facial-recognition tools.",
       whoCanAct:
         "Residents, city councils, county boards, and public-records requesters",
       urgency: "high",
@@ -516,7 +516,7 @@ export const seedTopics: Array<ResearchTopic> = [
     },
     actions: [
       {
-        title: "Request the operating record",
+        title: "Ask for the operating record",
         description:
           "Ask for contracts, retention schedules, sharing agreements, and audit logs before any expansion vote.",
         audience: "Residents",
@@ -529,7 +529,7 @@ export const seedTopics: Array<ResearchTopic> = [
           "Please provide the current ALPR contract, data-retention policy, outside-agency sharing policy, hotlist policy, and the last 12 months of audit logs.",
       },
       {
-        title: "Demand an integration vote",
+        title: "Ask for a vote before systems are connected",
         description:
           "Separate basic camera use from AI search, data fusion, facial recognition, and real-time crime center integrations.",
         audience: "Local officials",
@@ -542,7 +542,7 @@ export const seedTopics: Array<ResearchTopic> = [
           "Will this agency commit to a public vote before adding AI search, data fusion, facial recognition, or real-time crime center integrations?",
       },
       {
-        title: "Map the connected system",
+        title: "List every connected system",
         description:
           "Document cameras, vendors, connected agencies, and search permissions before debating additional hardware.",
         audience: "Researchers",
@@ -601,7 +601,7 @@ export const seedTopics: Array<ResearchTopic> = [
     modules: [
       {
         type: "briefing",
-        eyebrow: "System view",
+        eyebrow: "How it works",
         title: "The public sees cameras, but the product is query power",
         body: [
           "A license-plate reader debate that stops at camera placement misses the main civil-liberties problem: who can search the scans, which hotlists trigger stops, how long the records live, and what other databases get connected later.",
@@ -616,8 +616,8 @@ export const seedTopics: Array<ResearchTopic> = [
       },
       {
         type: "tracker",
-        eyebrow: "Stack tracker",
-        title: "Which layer needs which oversight question",
+        eyebrow: "System checklist",
+        title: "What to ask about each layer",
         columns: ["Layer", "Risk", "Oversight question"],
         rows: [
           {
@@ -656,8 +656,8 @@ export const seedTopics: Array<ResearchTopic> = [
       },
       {
         type: "evidenceMatrix",
-        eyebrow: "Evidence map",
-        title: "What organizers can prove with records",
+        eyebrow: "Public records",
+        title: "What people can prove with records",
         summary:
           "The most useful record requests ask for operating documents, not generic assurances.",
         rows: [
@@ -689,8 +689,8 @@ export const seedTopics: Array<ResearchTopic> = [
       },
       {
         type: "policyLevers",
-        eyebrow: "Local controls",
-        title: "Rules that stop the stack from expanding quietly",
+        eyebrow: "Local rules",
+        title: "Rules that stop quiet expansion",
         levers: [
           {
             actor: "City council",
@@ -846,13 +846,13 @@ export const seedTopics: Array<ResearchTopic> = [
       },
     ],
     statusBrief: {
-      headline: "Approval leverage exists before the vote",
+      headline: "Communities have leverage before the vote",
       summary:
-        "The practical window is before zoning, utility, tax, and infrastructure commitments are locked in.",
+        "The best time to ask hard questions is before zoning, utility, tax, and infrastructure commitments are locked in.",
       latestDevelopment:
         "Michigan reporting now tracks moratoria, grid impact, and local resistance around major data-center proposals.",
       nextDecisionPoint:
-        "Whether communities require water, power, diesel, noise, tax, and permanent-jobs disclosures before approvals.",
+        "Whether communities require water, power, diesel, noise, tax, and permanent-jobs details before approvals.",
       whoCanAct:
         "Township boards, planning commissions, utility regulators, and residents",
       urgency: "high",
@@ -860,7 +860,7 @@ export const seedTopics: Array<ResearchTopic> = [
     },
     actions: [
       {
-        title: "Require maximum-demand disclosures",
+        title: "Ask for the biggest power-use number",
         description:
           "Get peak electric load, daily water demand, backup-generator plans, and noise modeling into the public packet.",
         audience: "Residents",
@@ -872,7 +872,7 @@ export const seedTopics: Array<ResearchTopic> = [
           "Before any vote, please publish maximum daily water demand, peak electric load, diesel backup plans, generator testing schedules, and noise modeling.",
       },
       {
-        title: "Follow the money",
+        title: "Follow the tax breaks and public costs",
         description:
           "Separate company-paid upgrades from utility-ratepayer exposure and school-revenue losses.",
         audience: "Local officials",
@@ -946,7 +946,7 @@ export const seedTopics: Array<ResearchTopic> = [
     modules: [
       {
         type: "briefing",
-        eyebrow: "Approval window",
+        eyebrow: "Before the vote",
         title:
           "The leverage exists before utility and zoning commitments harden",
         body: [
@@ -962,8 +962,8 @@ export const seedTopics: Array<ResearchTopic> = [
       },
       {
         type: "tracker",
-        eyebrow: "Impact ledger",
-        title: "What each approval document should disclose",
+        eyebrow: "Impact checklist",
+        title: "What each approval should spell out",
         columns: ["Impact", "Document to demand", "Why it matters"],
         rows: [
           {
@@ -1003,7 +1003,7 @@ export const seedTopics: Array<ResearchTopic> = [
       {
         type: "moneyTrail",
         eyebrow: "Who pays",
-        title: "Separate company investment from public exposure",
+        title: "Separate company spending from public costs",
         rows: [
           {
             actor: "Developer",
@@ -1033,7 +1033,7 @@ export const seedTopics: Array<ResearchTopic> = [
       },
       {
         type: "policyLevers",
-        eyebrow: "Local controls",
+        eyebrow: "Local rules",
         title: "Practical standards before a vote",
         levers: [
           {
@@ -1247,9 +1247,9 @@ export const seedTopics: Array<ResearchTopic> = [
       },
     ],
     statusBrief: {
-      headline: "Exposure controls are the common-ground fight",
+      headline: "The practical fight is reducing exposure",
       summary:
-        "The strongest civic frame is not a single slogan about safety. It is a demand for transparent monitoring, safer application rules, and protections for workers and nearby communities.",
+        "The useful question is not one big slogan about safety. It is where glyphosate is used, who is exposed, and what rules would reduce that exposure.",
       latestDevelopment:
         "EPA's glyphosate registration-review materials remain the key U.S. regulatory checkpoint, while IARC's cancer classification remains central to public-health campaigns.",
       nextDecisionPoint:
@@ -1287,7 +1287,7 @@ export const seedTopics: Array<ResearchTopic> = [
           "Will this agency adopt buffer, runoff, drift, and notice standards for glyphosate applications near waterways, playgrounds, schools, homes, and public trails?",
       },
       {
-        title: "Separate scientific claims",
+        title: "Separate what each study is saying",
         description:
           "When organizing, distinguish cancer-hazard classification from regulatory risk findings and use sources for both.",
         audience: "Researchers",
@@ -1358,8 +1358,8 @@ export const seedTopics: Array<ResearchTopic> = [
     modules: [
       {
         type: "briefing",
-        eyebrow: "Research frame",
-        title: "Glyphosate needs a split-screen dossier",
+        eyebrow: "How to read it",
+        title: "Glyphosate needs two questions at once",
         body: [
           "A serious glyphosate page should not collapse the dispute into a single safety slogan. IARC made a cancer-hazard classification, EPA made a U.S. label-based risk assessment, and environmental monitoring asks a third question about where the chemical and AMPA travel after use.",
           "The public-interest frame is exposure governance: which uses are avoidable, which workers and communities carry the burden, and what monitoring exists before agencies approve continued use.",
@@ -1447,7 +1447,7 @@ export const seedTopics: Array<ResearchTopic> = [
       },
       {
         type: "evidenceMatrix",
-        eyebrow: "Diet exposure",
+        eyebrow: "Food exposure",
         title: "What official food testing does and does not prove",
         summary:
           "Dietary exposure is regulated through tolerances and monitoring, but the public needs to see what foods are tested, what is not tested, and how residues compare with legal limits.",
@@ -1480,7 +1480,7 @@ export const seedTopics: Array<ResearchTopic> = [
       },
       {
         type: "tracker",
-        eyebrow: "Exposure pathways",
+        eyebrow: "Exposure routes",
         title: "Who may be exposed and what record proves it",
         columns: ["Pathway", "Evidence to request", "Public-health question"],
         rows: [
@@ -1520,8 +1520,8 @@ export const seedTopics: Array<ResearchTopic> = [
       },
       {
         type: "policyLevers",
-        eyebrow: "Governance",
-        title: "The policy fight can be narrower than a total ban",
+        eyebrow: "Practical rules",
+        title: "The next step can be narrower than a total ban",
         levers: [
           {
             actor: "School board",
@@ -1692,9 +1692,9 @@ export const seedTopics: Array<ResearchTopic> = [
       },
     ],
     statusBrief: {
-      headline: "The evidence stack has three layers",
+      headline: "There are three separate questions",
       summary:
-        "Keep international-law findings, humanitarian facts, and campaign-finance influence separate so each claim can be sourced and updated.",
+        "Keep international-law findings, humanitarian facts, and campaign-finance influence separate so each point can be checked and updated.",
       latestDevelopment:
         "UN reporting in 2025 and 2026 escalated findings around genocide, ethnic cleansing concerns, starvation, and forcible transfer, while pro-Israel spending remains active in U.S. races.",
       nextDecisionPoint:
@@ -1706,7 +1706,7 @@ export const seedTopics: Array<ResearchTopic> = [
     },
     actions: [
       {
-        title: "Ask members for a legal standard",
+        title: "Ask members what rule they are using",
         description:
           "Make offices state how they are evaluating ICJ orders, UN findings, arms transfers, and aid conditions.",
         audience: "Constituents",
@@ -1715,7 +1715,7 @@ export const seedTopics: Array<ResearchTopic> = [
         ctaLabel: "Open ICJ Case",
         ctaUrl: "https://www.icj-cij.org/case/192",
         script:
-          "What legal standard is this office using to evaluate U.S. military aid to Israel after the ICJ provisional-measures orders and the UN Commission of Inquiry's genocide finding?",
+          "What rule is this office using to evaluate U.S. military aid to Israel after the ICJ orders and the UN Commission of Inquiry's genocide finding?",
       },
       {
         title: "Track pro-Israel spending by race",
@@ -1790,7 +1790,7 @@ export const seedTopics: Array<ResearchTopic> = [
     modules: [
       {
         type: "briefing",
-        eyebrow: "Dossier structure",
+        eyebrow: "Keep separate",
         title:
           "Keep law, humanitarian facts, and U.S. influence in separate lanes",
         body: [
@@ -1806,8 +1806,8 @@ export const seedTopics: Array<ResearchTopic> = [
       },
       {
         type: "tracker",
-        eyebrow: "Legal docket",
-        title: "What the international-law record actually contains",
+        eyebrow: "Court record",
+        title: "What the international-law record says",
         columns: ["Forum", "Record", "Status"],
         rows: [
           {
@@ -1838,7 +1838,7 @@ export const seedTopics: Array<ResearchTopic> = [
       },
       {
         type: "moneyTrail",
-        eyebrow: "U.S. influence",
+        eyebrow: "U.S. politics",
         title:
           "The congressional influence trail is campaign finance plus policy votes",
         rows: [
@@ -1870,7 +1870,7 @@ export const seedTopics: Array<ResearchTopic> = [
       },
       {
         type: "claimLedger",
-        eyebrow: "Language guardrails",
+        eyebrow: "Careful wording",
         title: "Claims that need careful wording",
         rows: [
           {
@@ -1898,12 +1898,12 @@ export const seedTopics: Array<ResearchTopic> = [
       },
       {
         type: "policyLevers",
-        eyebrow: "Accountability",
-        title: "How U.S. constituents can make the record actionable",
+        eyebrow: "Next moves",
+        title: "How U.S. constituents can ask clearer questions",
         levers: [
           {
             actor: "Constituents",
-            lever: "Ask members what legal standard governs military aid.",
+            lever: "Ask members what rule guides military aid.",
             pressurePoint:
               "Offices should answer how ICJ orders and UN findings affect their aid position.",
             sourceIndexes: [0, 1, 2],
@@ -2067,9 +2067,9 @@ export const seedTopics: Array<ResearchTopic> = [
       },
     ],
     statusBrief: {
-      headline: "Rare cases are being used to justify broad restrictions",
+      headline: "Rare cases are being used to push broad restrictions",
       summary:
-        "The urgent task is to separate actual fraud cases from claims of systemic fraud and to track whether proposed fixes would block eligible voters.",
+        "The useful work is simple: what happened, how often, what rule is being proposed, and who might be blocked by it.",
       latestDevelopment:
         "In May 2026, AP reported active litigation over Trump's mail-voting order and a federal push to scan state voter rolls through national eligibility checks.",
       nextDecisionPoint:
@@ -2081,7 +2081,7 @@ export const seedTopics: Array<ResearchTopic> = [
     },
     actions: [
       {
-        title: "Ask for claim-by-claim evidence",
+        title: "Ask for evidence claim by claim",
         description:
           "Do not debate vague fraud allegations. Ask for names, jurisdictions, counts, case status, and whether any result was affected.",
         audience: "Journalists and residents",
@@ -2106,7 +2106,7 @@ export const seedTopics: Array<ResearchTopic> = [
           "Has this office received federal or third-party requests for voter-roll data, citizenship data, driver's license data, or Social Security fields, and what legal review was performed?",
       },
       {
-        title: "Measure access harm before policy support",
+        title: "Ask who could be blocked before backing a rule",
         description:
           "Require officials to estimate how many eligible voters lack documents, mail access, or correction windows before supporting restrictions.",
         audience: "Voting-rights groups",
@@ -2167,7 +2167,7 @@ export const seedTopics: Array<ResearchTopic> = [
     modules: [
       {
         type: "briefing",
-        eyebrow: "Threat model",
+        eyebrow: "What is the problem",
         title:
           "The story is the conversion of rare fraud into broad restriction",
         body: [
@@ -2183,8 +2183,8 @@ export const seedTopics: Array<ResearchTopic> = [
       },
       {
         type: "claimLedger",
-        eyebrow: "Fraud claim ledger",
-        title: "Track the claim, evidence, scale, and remedy",
+        eyebrow: "Fraud claim check",
+        title: "Track the claim, proof, size, and proposed fix",
         rows: [
           {
             claim:
@@ -2213,7 +2213,7 @@ export const seedTopics: Array<ResearchTopic> = [
       },
       {
         type: "tracker",
-        eyebrow: "Rule-change tracker",
+        eyebrow: "Rule changes",
         title: "Where the 2026 fight is moving",
         columns: ["Target", "Trump administration move", "Access risk"],
         rows: [
@@ -2245,7 +2245,7 @@ export const seedTopics: Array<ResearchTopic> = [
       },
       {
         type: "evidenceMatrix",
-        eyebrow: "Proportionality test",
+        eyebrow: "Fairness test",
         title: "How to judge any proposed fraud fix",
         rows: [
           {
@@ -2276,7 +2276,7 @@ export const seedTopics: Array<ResearchTopic> = [
       },
       {
         type: "policyLevers",
-        eyebrow: "Defense",
+        eyebrow: "Next moves",
         title: "What election watchdogs should do now",
         levers: [
           {
