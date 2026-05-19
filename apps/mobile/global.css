@@ -1,0 +1,25 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+  .font-normal {
+    font-family: 'Outfit_400Regular';
+    font-weight: 400;
+  }
+
+  .font-medium {
+    font-family: 'Outfit_500Medium';
+    font-weight: 500;
+  }
+
+  .font-semibold {
+    font-family: 'Outfit_600SemiBold';
+    font-weight: 600;
+  }
+
+  .font-bold {
+    font-family: 'Outfit_700Bold';
+    font-weight: 700;
+  }
+}

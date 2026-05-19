@@ -25,6 +25,43 @@ export type TopicFinding = {
   sourceIndexes: Array<number>
 }
 
+export type TopicStatusBrief = {
+  headline: string
+  summary: string
+  latestDevelopment: string
+  nextDecisionPoint: string
+  whoCanAct: string
+  urgency: "low" | "medium" | "high"
+  lastChecked: string
+}
+
+export type TopicAction = {
+  title: string
+  description: string
+  audience: string
+  difficulty: string
+  urgency: "low" | "medium" | "high"
+  ctaLabel: string
+  ctaUrl?: string
+  script: string
+}
+
+export type TopicTimelineItem = {
+  date: string
+  title: string
+  description: string
+  sourceIndexes: Array<number>
+}
+
+export type TopicUpdate = {
+  title: string
+  publisher: string
+  publishedAt: string
+  url: string
+  summary: string
+  tag: string
+}
+
 export type ResearchTopic = {
   slug: string
   topicNumber: string
@@ -39,7 +76,10 @@ export type ResearchTopic = {
   stats: Array<TopicStat>
   arguments: Array<TopicArgument>
   findings: Array<TopicFinding>
-  actions: Array<string>
+  statusBrief: TopicStatusBrief
+  actions: Array<TopicAction>
+  timeline: Array<TopicTimelineItem>
+  updates: Array<TopicUpdate>
   sources: Array<TopicSource>
 }
 
@@ -64,7 +104,8 @@ export const seedTopics: Array<ResearchTopic> = [
       },
       {
         value: "71-77%",
-        label: "Voter support for banning congressional stock trading across party groups",
+        label:
+          "Voter support for banning congressional stock trading across party groups",
         sourceIndexes: [1],
       },
       {
@@ -94,27 +135,113 @@ export const seedTopics: Array<ResearchTopic> = [
     findings: [
       {
         title: "The reform path already exists",
-        body:
-          "Congress can ban covered officials from owning or trading individual stocks while still permitting diversified funds, Treasury securities, and properly structured blind trusts.",
+        body: "Congress can ban covered officials from owning or trading individual stocks while still permitting diversified funds, Treasury securities, and properly structured blind trusts.",
         sourceIndexes: [2, 3],
       },
       {
         title: "The politics are cross-partisan",
-        body:
-          "Polling cited by the original site showed strong support for a ban among Republican, Democratic, and independent voters.",
+        body: "Polling cited by the original site showed strong support for a ban among Republican, Democratic, and independent voters.",
         sourceIndexes: [1],
       },
       {
         title: "Disclosure alone is not a cure",
-        body:
-          "Public transaction reports can reveal trades after the fact, but delayed transparency does not remove the conflict created by owning affected assets while legislating.",
+        body: "Public transaction reports can reveal trades after the fact, but delayed transparency does not remove the conflict created by owning affected assets while legislating.",
         sourceIndexes: [3],
       },
     ],
+    statusBrief: {
+      headline: "The reform path is already written",
+      summary:
+        "This topic is ready for pressure on bill text, discharge efforts, and member positions rather than another round of general awareness.",
+      latestDevelopment:
+        "The public-facing verification point remains official House discharge and disclosure data.",
+      nextDecisionPoint:
+        "Whether members will support a ban that covers spouses, dependents, and individual stock ownership.",
+      whoCanAct: "Constituents, ethics groups, and congressional offices",
+      urgency: "high",
+      lastChecked: "2026-05-19",
+    },
     actions: [
-      "Track current stock-trading-ban bills and discharge-petition efforts.",
-      "Ask your representative whether they support a ban that covers spouses and dependents.",
-      "Treat disclosure databases as evidence for reform, not as the reform itself.",
+      {
+        title: "Ask for a public position",
+        description:
+          "Get your representative on record about a ban that covers spouses and dependents.",
+        audience: "Constituents",
+        difficulty: "5 minutes",
+        urgency: "high",
+        ctaLabel: "Find Representative",
+        ctaUrl:
+          "https://www.house.gov/representatives/find-your-representative",
+        script:
+          "Do you support a congressional stock-trading ban that covers members, spouses, and dependents while preserving diversified funds and blind trusts?",
+      },
+      {
+        title: "Check the official pressure point",
+        description:
+          "Use the House Clerk source to verify whether a discharge petition is active and who has signed.",
+        audience: "Researchers",
+        difficulty: "10 minutes",
+        urgency: "medium",
+        ctaLabel: "Open Clerk",
+        ctaUrl: "https://clerk.house.gov/DischargePetition",
+        script:
+          "I am tracking the public record for stock-trading reform. Has this office signed or committed to signing any active discharge petition?",
+      },
+      {
+        title: "Turn disclosures into evidence",
+        description:
+          "Treat transaction reports as conflict evidence to organize around, not as a substitute for reform.",
+        audience: "Watchdogs",
+        difficulty: "30 minutes",
+        urgency: "medium",
+        ctaLabel: "Open Disclosures",
+        ctaUrl: "https://disclosures-clerk.house.gov/",
+        script:
+          "This disclosure shows why delayed reporting is not enough. Will your office support removing the conflict before trades happen?",
+      },
+    ],
+    timeline: [
+      {
+        date: "2024",
+        title: "Cross-party support stays high",
+        description:
+          "Polling cited by the original project showed large majorities across party groups supporting a congressional stock-trading ban.",
+        sourceIndexes: [1],
+      },
+      {
+        date: "2025",
+        title: "Salary context remains part of the debate",
+        description:
+          "CRS salary material gives the baseline for evaluating claims that member pay requires trading flexibility.",
+        sourceIndexes: [0],
+      },
+      {
+        date: "2026",
+        title: "Official House records remain the action tracker",
+        description:
+          "The Clerk's discharge-petition and disclosure systems are the source of record for pressure campaigns.",
+        sourceIndexes: [2, 3],
+      },
+    ],
+    updates: [
+      {
+        title: "Verify discharge pressure through the House Clerk",
+        publisher: "Office of the Clerk, U.S. House",
+        publishedAt: "2026-05-19",
+        url: "https://clerk.house.gov/DischargePetition",
+        summary:
+          "The most useful current check is whether a reform petition exists and which members have signed.",
+        tag: "Bill tracking",
+      },
+      {
+        title: "Financial disclosures remain the conflict evidence base",
+        publisher: "U.S. House Clerk",
+        publishedAt: "2026-05-19",
+        url: "https://disclosures-clerk.house.gov/",
+        summary:
+          "Transaction disclosures can document conflicts after the fact, which supports the case for preemptive rules.",
+        tag: "Disclosure",
+      },
     ],
     sources: [
       {
@@ -152,7 +279,8 @@ export const seedTopics: Array<ResearchTopic> = [
     topicNumber: "02",
     title: "Map Michigan's Surveillance Stack",
     shortTitle: "Surveillance Stack",
-    tagline: "Flock cameras are the visible layer. The networked data system runs deeper.",
+    tagline:
+      "Flock cameras are the visible layer. The networked data system runs deeper.",
     summary:
       "The DeFlock Michigan work is modeled here as a broader civil-liberties topic: automatic license plate readers, private camera networks, real-time crime centers, data fusion platforms, and AI interfaces that make routine movement searchable across agencies.",
     region: "Michigan",
@@ -197,38 +325,129 @@ export const seedTopics: Array<ResearchTopic> = [
     findings: [
       {
         title: "Michigan deployment is already widespread",
-        body:
-          "State reporting says more than 125 Michigan cities and counties use ALPR cameras, while statewide legal guardrails remain incomplete.",
+        body: "State reporting says more than 125 Michigan cities and counties use ALPR cameras, while statewide legal guardrails remain incomplete.",
         sourceIndexes: [0, 5],
       },
       {
         title: "The vendor stack is broader than Flock",
-        body:
-          "The source project tracks Flock Nova, Palantir Gotham and AIP, Axon Fusus, Rekor Scout, and Clearview AI as related parts of the surveillance marketplace.",
+        body: "The source project tracks Flock Nova, Palantir Gotham and AIP, Axon Fusus, Rekor Scout, and Clearview AI as related parts of the surveillance marketplace.",
         sourceIndexes: [2, 3, 4, 6, 7],
       },
       {
         title: "Auditability is the public-pressure point",
-        body:
-          "Organizers can ask who searched, why they searched, what outside agencies had access, and whether protest or immigration-related lookups occurred.",
+        body: "Organizers can ask who searched, why they searched, what outside agencies had access, and whether protest or immigration-related lookups occurred.",
         sourceIndexes: [1, 5],
       },
     ],
+    statusBrief: {
+      headline: "Oversight has to follow the network",
+      summary:
+        "The near-term fight is not only camera approval. It is retention, sharing, audit logs, outside-agency access, and later AI integrations.",
+      latestDevelopment:
+        "Michigan reporting and civil-liberties analysis now frame ALPRs as part of a wider searchable surveillance stack.",
+      nextDecisionPoint:
+        "Whether local governments require public approval before adding AI, fusion, real-time crime center, or facial-recognition layers.",
+      whoCanAct:
+        "Residents, city councils, county boards, and public-records requesters",
+      urgency: "high",
+      lastChecked: "2026-05-19",
+    },
     actions: [
-      "Ask local officials for the current vendor contract, retention schedule, sharing policy, and audit logs.",
-      "Push for public approval before any AI, fusion, facial-recognition, or real-time-crime-center integration is added.",
-      "Map every camera, vendor, data-sharing agreement, and connected agency before debating expansion.",
+      {
+        title: "Request the operating record",
+        description:
+          "Ask for contracts, retention schedules, sharing agreements, and audit logs before any expansion vote.",
+        audience: "Residents",
+        difficulty: "20 minutes",
+        urgency: "high",
+        ctaLabel: "Read Michigan Reporting",
+        ctaUrl:
+          "https://www.michiganpublic.org/criminal-justice-legal-system/2026-04-08/police-say-license-plate-cameras-help-them-solve-crimes-but-residents-and-lawmakers-raise-concerns-over-privacy-data-sharing",
+        script:
+          "Please provide the current ALPR contract, data-retention policy, outside-agency sharing policy, hotlist policy, and the last 12 months of audit logs.",
+      },
+      {
+        title: "Demand an integration vote",
+        description:
+          "Separate basic camera use from AI search, data fusion, facial recognition, and real-time crime center integrations.",
+        audience: "Local officials",
+        difficulty: "15 minutes",
+        urgency: "high",
+        ctaLabel: "Review AI Policing Risks",
+        ctaUrl:
+          "https://www.brennancenter.org/our-work/research-reports/dangers-unregulated-ai-policing",
+        script:
+          "Will this agency commit to a public vote before adding AI search, data fusion, facial recognition, or real-time crime center integrations?",
+      },
+      {
+        title: "Map the connected system",
+        description:
+          "Document cameras, vendors, connected agencies, and search permissions before debating additional hardware.",
+        audience: "Researchers",
+        difficulty: "1-2 hours",
+        urgency: "medium",
+        ctaLabel: "Open EFF Analysis",
+        ctaUrl:
+          "https://www.eff.org/deeplinks/2025/11/how-cops-are-using-flock-safetys-alpr-network-surveil-protesters-and-activists",
+        script:
+          "A camera map is incomplete without the data-sharing map. Which agencies can search local scans, and under what written limits?",
+      },
+    ],
+    timeline: [
+      {
+        date: "2025",
+        title: "AI policing warnings sharpen",
+        description:
+          "Policy groups warned that unregulated AI tools can turn ordinary police records into broader investigative profiles.",
+        sourceIndexes: [4],
+      },
+      {
+        date: "2026",
+        title: "Michigan ALPR deployment is publicly documented",
+        description:
+          "State reporting placed ALPR use across more than 125 Michigan cities and counties.",
+        sourceIndexes: [0, 5],
+      },
+      {
+        date: "2026",
+        title: "Audit logs become the accountability lever",
+        description:
+          "EFF analysis of Flock audit logs put searches, outside agencies, and protest-related use at the center of the oversight debate.",
+        sourceIndexes: [1],
+      },
+    ],
+    updates: [
+      {
+        title: "Michigan ALPR privacy concerns move into mainstream reporting",
+        publisher: "Michigan Public",
+        publishedAt: "2026-04-08",
+        url: "https://www.michiganpublic.org/criminal-justice-legal-system/2026-04-08/police-say-license-plate-cameras-help-them-solve-crimes-but-residents-and-lawmakers-raise-concerns-over-privacy-data-sharing",
+        summary:
+          "Coverage highlights local law-enforcement claims, resident privacy concerns, and data-sharing questions.",
+        tag: "Michigan",
+      },
+      {
+        title: "Civil-liberties groups focus on Flock audit logs",
+        publisher: "Electronic Frontier Foundation",
+        publishedAt: "2025-11-01",
+        url: "https://www.eff.org/deeplinks/2025/11/how-cops-are-using-flock-safetys-alpr-network-surveil-protesters-and-activists",
+        summary:
+          "Audit-log analysis turns the oversight question toward who searched, why, and across which agencies.",
+        tag: "Audit logs",
+      },
     ],
     sources: [
       {
-        title: "Police say license plate cameras help them solve crimes, but residents and lawmakers raise concerns",
+        title:
+          "Police say license plate cameras help them solve crimes, but residents and lawmakers raise concerns",
         publisher: "Michigan Public",
         year: 2026,
         url: "https://www.michiganpublic.org/criminal-justice-legal-system/2026-04-08/police-say-license-plate-cameras-help-them-solve-crimes-but-residents-and-lawmakers-raise-concerns-over-privacy-data-sharing",
         note: "Michigan deployment and privacy reporting.",
       },
       {
-        title: "How Cops Are Using Flock Safety's ALPR Network to Surveil Protesters and Activists",
+        title:
+          "How Cops Are Using Flock Safety's ALPR Network to Surveil Protesters and Activists",
         publisher: "Electronic Frontier Foundation",
         year: 2026,
         url: "https://www.eff.org/deeplinks/2025/11/how-cops-are-using-flock-safetys-alpr-network-surveil-protesters-and-activists",
@@ -256,7 +475,8 @@ export const seedTopics: Array<ResearchTopic> = [
         note: "Policy analysis of AI policing risks.",
       },
       {
-        title: "Unregulated license plate readers are tracking Michigan drivers",
+        title:
+          "Unregulated license plate readers are tracking Michigan drivers",
         publisher: "Michigan Advance",
         year: 2026,
         url: "https://michiganadvance.com/2026/03/06/unregulated-license-plate-readers-are-tracking-michigan-drivers-heres-whats-at-stake/",
@@ -283,7 +503,8 @@ export const seedTopics: Array<ResearchTopic> = [
     topicNumber: "03",
     title: "Michigan Before Megawatts",
     shortTitle: "Data Centers",
-    tagline: "Communities should know the water, power, noise, and tax tradeoffs before approvals.",
+    tagline:
+      "Communities should know the water, power, noise, and tax tradeoffs before approvals.",
     summary:
       "The Michigan data-center site becomes an infrastructure-accountability topic in the combined hub. It tracks local impacts from AI and cloud data-center buildouts: water demand, grid upgrades, ratepayer exposure, diesel backup, noise, land use, tax breaks, and jobs claims.",
     region: "Michigan",
@@ -298,7 +519,8 @@ export const seedTopics: Array<ResearchTopic> = [
       },
       {
         value: "176 TWh",
-        label: "U.S. data-center electricity use in 2023, estimated by Berkeley Lab",
+        label:
+          "U.S. data-center electricity use in 2023, estimated by Berkeley Lab",
         sourceIndexes: [3],
       },
       {
@@ -328,27 +550,117 @@ export const seedTopics: Array<ResearchTopic> = [
     findings: [
       {
         title: "Power demand is now a planning topic",
-        body:
-          "Berkeley Lab reported U.S. data centers used 176 TWh of electricity in 2023 and projected major increases by 2028.",
+        body: "Berkeley Lab reported U.S. data centers used 176 TWh of electricity in 2023 and projected major increases by 2028.",
         sourceIndexes: [3],
       },
       {
         title: "Water, noise, and diesel backup are quality-of-life topics",
-        body:
-          "The source project links cooling demand, generator testing, constant equipment noise, and diesel exhaust to everyday local impacts that zoning rules can address.",
+        body: "The source project links cooling demand, generator testing, constant equipment noise, and diesel exhaust to everyday local impacts that zoning rules can address.",
         sourceIndexes: [4, 5, 6, 8],
       },
       {
         title: "Michigan communities need approval leverage",
-        body:
-          "Local governments can use moratoria, special land-use standards, utility disclosures, tax-transparency rules, and enforceable community-benefit agreements before approvals are locked in.",
+        body: "Local governments can use moratoria, special land-use standards, utility disclosures, tax-transparency rules, and enforceable community-benefit agreements before approvals are locked in.",
         sourceIndexes: [1, 2, 11, 12],
       },
     ],
+    statusBrief: {
+      headline: "Approval leverage exists before the vote",
+      summary:
+        "The practical window is before zoning, utility, tax, and infrastructure commitments are locked in.",
+      latestDevelopment:
+        "Michigan reporting now tracks moratoria, grid impact, and local resistance around major data-center proposals.",
+      nextDecisionPoint:
+        "Whether communities require water, power, diesel, noise, tax, and permanent-jobs disclosures before approvals.",
+      whoCanAct:
+        "Township boards, planning commissions, utility regulators, and residents",
+      urgency: "high",
+      lastChecked: "2026-05-19",
+    },
     actions: [
-      "Ask for maximum daily water demand, peak electric load, backup-generator plans, and noise modeling before any vote.",
-      "Require disclosure of tax abatements, special rates, grid-upgrade costs, and school-revenue impacts.",
-      "Separate temporary construction jobs from permanent local operations jobs in every public claim.",
+      {
+        title: "Require maximum-demand disclosures",
+        description:
+          "Get peak electric load, daily water demand, backup-generator plans, and noise modeling into the public packet.",
+        audience: "Residents",
+        difficulty: "15 minutes",
+        urgency: "high",
+        ctaLabel: "Open Local Guide",
+        ctaUrl: "https://graham.umich.edu/product/michigan-data-centers-guide",
+        script:
+          "Before any vote, please publish maximum daily water demand, peak electric load, diesel backup plans, generator testing schedules, and noise modeling.",
+      },
+      {
+        title: "Follow the money",
+        description:
+          "Separate company-paid upgrades from utility-ratepayer exposure and school-revenue losses.",
+        audience: "Local officials",
+        difficulty: "30 minutes",
+        urgency: "high",
+        ctaLabel: "Review Tax Report",
+        ctaUrl:
+          "https://goodjobsfirst.org/wp-content/uploads/2026/04/Data-Center-Tax-Abatements-Why-States-and-Localities-Must-Disclose-These-Soaring-Revenue-Losses.pdf",
+        script:
+          "What tax abatements, special rates, grid upgrades, road upgrades, and school-revenue impacts are attached to this project, and who pays for each?",
+      },
+      {
+        title: "Split construction from permanent jobs",
+        description:
+          "Require separate counts for temporary construction labor, permanent operations roles, and enforceable local hiring.",
+        audience: "Journalists",
+        difficulty: "10 minutes",
+        urgency: "medium",
+        ctaLabel: "Read Rural Impact Analysis",
+        ctaUrl:
+          "https://www.brookings.edu/articles/local-implications-data-centers-rural-communities-us/",
+        script:
+          "Please separate temporary construction jobs from permanent local operations jobs and identify which jobs are enforceable local commitments.",
+      },
+    ],
+    timeline: [
+      {
+        date: "2025",
+        title: "Community-impact research sets the checklist",
+        description:
+          "University and public-policy sources documented water, power, noise, tax, and local-control considerations.",
+        sourceIndexes: [0, 1],
+      },
+      {
+        date: "2026",
+        title: "Michigan tracker follows moratoria and grid concerns",
+        description:
+          "Public media coverage created a running reference point for legislation, moratoria, and grid-impact debates.",
+        sourceIndexes: [2],
+      },
+      {
+        date: "2026",
+        title: "Large Michigan proposals escalate local stakes",
+        description:
+          "Reporting on the Saline Township proposal connected farmland, energy, climate, and local approval politics.",
+        sourceIndexes: [11, 12],
+      },
+    ],
+    updates: [
+      {
+        title:
+          "Michigan tracker follows moratoria, legislation, and grid impact",
+        publisher: "WKAR Public Media",
+        publishedAt: "2026-02-27",
+        url: "https://www.wkar.org/wkar-news/2026-02-27/michigan-data-center-tracker-moratoria-legislation-and-grid-impact",
+        summary:
+          "The tracker gives organizers a practical way to follow local policy movement and infrastructure concerns.",
+        tag: "Tracker",
+      },
+      {
+        title:
+          "Saline Township proposal raises farmland and local-control questions",
+        publisher: "Fortune",
+        publishedAt: "2026-05-06",
+        url: "https://fortune.com/2026/05/06/ai-data-center-michigan-saline-politics-farmland/",
+        summary:
+          "Coverage of the proposed OpenAI-Oracle campus shows why approvals need scrutiny before commitments become durable.",
+        tag: "Local fight",
+      },
     ],
     sources: [
       {
@@ -373,7 +685,8 @@ export const seedTopics: Array<ResearchTopic> = [
         note: "Tracker for moratoria, legislation, and grid impact.",
       },
       {
-        title: "Berkeley Lab Report Evaluates Increase in Electricity Demand from Data Centers",
+        title:
+          "Berkeley Lab Report Evaluates Increase in Electricity Demand from Data Centers",
         publisher: "Lawrence Berkeley National Laboratory",
         year: 2025,
         url: "https://eta.lbl.gov/news/berkeley-lab-report-evaluates-increase-electricity-demand-data-centers",
@@ -387,7 +700,8 @@ export const seedTopics: Array<ResearchTopic> = [
         note: "Water-consumption overview.",
       },
       {
-        title: "Communities Are Raising Noise Pollution Concerns About Data Centers",
+        title:
+          "Communities Are Raising Noise Pollution Concerns About Data Centers",
         publisher: "Environmental and Energy Study Institute",
         year: 2026,
         url: "https://www.eesi.org/articles/view/communities-are-raising-noise-pollution-concernsabout-data-centers",
@@ -401,7 +715,8 @@ export const seedTopics: Array<ResearchTopic> = [
         note: "Health-risk baseline for diesel backup generators.",
       },
       {
-        title: "Data Center Power Demands Are Contributing to Higher Energy Bills",
+        title:
+          "Data Center Power Demands Are Contributing to Higher Energy Bills",
         publisher: "Environmental and Energy Study Institute",
         year: 2026,
         url: "https://www.eesi.org/articles/view/h",
@@ -422,14 +737,16 @@ export const seedTopics: Array<ResearchTopic> = [
         note: "Tax-abatement transparency report.",
       },
       {
-        title: "The local implications of data centers for rural communities in the US",
+        title:
+          "The local implications of data centers for rural communities in the US",
         publisher: "Brookings",
         year: 2026,
         url: "https://www.brookings.edu/articles/local-implications-data-centers-rural-communities-us/",
         note: "Rural community impact analysis.",
       },
       {
-        title: "A Michigan farm town voted down plans for a giant OpenAI-Oracle data center",
+        title:
+          "A Michigan farm town voted down plans for a giant OpenAI-Oracle data center",
         publisher: "Fortune",
         year: 2026,
         url: "https://fortune.com/2026/05/06/ai-data-center-michigan-saline-politics-farmland/",

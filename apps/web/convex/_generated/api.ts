@@ -13,9 +13,11 @@ import type {
 import { anyApi } from "convex/server"
 
 import type * as seed from "../seed.js"
+import type * as news from "../news.js"
 import type * as topics from "../topics.js"
 
 const fullApi: ApiFromModules<{
+  news: typeof news
   seed: typeof seed
   topics: typeof topics
 }> = anyApi as any

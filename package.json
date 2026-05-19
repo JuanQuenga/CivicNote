@@ -5,6 +5,9 @@
   "scripts": {
     "build": "turbo build",
     "dev": "turbo dev",
+    "dev:mobile": "pnpm --filter @civic-research-hub/mobile dev",
+    "dev:mobile:tunnel": "pnpm --filter @civic-research-hub/mobile dev:tunnel",
+    "dev:mobile:go": "pnpm --filter @civic-research-hub/mobile dev:go",
     "lint": "turbo lint",
     "format": "turbo format",
     "typecheck": "turbo typecheck"

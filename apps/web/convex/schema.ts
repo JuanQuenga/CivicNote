@@ -28,6 +28,43 @@ const finding = v.object({
   sourceIndexes: v.array(v.number()),
 })
 
+const statusBrief = v.object({
+  headline: v.string(),
+  summary: v.string(),
+  latestDevelopment: v.string(),
+  nextDecisionPoint: v.string(),
+  whoCanAct: v.string(),
+  urgency: v.union(v.literal("low"), v.literal("medium"), v.literal("high")),
+  lastChecked: v.string(),
+})
+
+const action = v.object({
+  title: v.string(),
+  description: v.string(),
+  audience: v.string(),
+  difficulty: v.string(),
+  urgency: v.union(v.literal("low"), v.literal("medium"), v.literal("high")),
+  ctaLabel: v.string(),
+  ctaUrl: v.optional(v.string()),
+  script: v.string(),
+})
+
+const timelineItem = v.object({
+  date: v.string(),
+  title: v.string(),
+  description: v.string(),
+  sourceIndexes: v.array(v.number()),
+})
+
+const update = v.object({
+  title: v.string(),
+  publisher: v.string(),
+  publishedAt: v.string(),
+  url: v.string(),
+  summary: v.string(),
+  tag: v.string(),
+})
+
 export default defineSchema({
   topics: defineTable({
     slug: v.string(),
@@ -42,13 +79,28 @@ export default defineSchema({
       v.literal("ethics"),
       v.literal("surveillance"),
       v.literal("infrastructure"),
-      v.literal("future"),
+      v.literal("future")
     ),
     updatedAt: v.string(),
     stats: v.array(stat),
     arguments: v.array(argument),
     findings: v.array(finding),
-    actions: v.array(v.string()),
+    statusBrief,
+    actions: v.array(action),
+    timeline: v.array(timelineItem),
+    updates: v.array(update),
     sources: v.array(source),
   }).index("by_slug", ["slug"]),
+  topicNewsItems: defineTable({
+    topicSlug: v.string(),
+    title: v.string(),
+    publisher: v.string(),
+    publishedAt: v.string(),
+    url: v.string(),
+    summary: v.string(),
+    tag: v.string(),
+    fetchedAt: v.string(),
+  })
+    .index("by_topic", ["topicSlug"])
+    .index("by_url", ["url"]),
 })

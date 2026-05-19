@@ -1,0 +1,66 @@
+{
+  "expo": {
+    "name": "Civic Research Hub",
+    "slug": "civic-research-hub-mobile",
+    "scheme": "civicresearchhub",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "dark",
+    "icon": "./assets/icon.png",
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#F11A23"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "org.civicresearchhub.mobile",
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "Civic Research Hub uses your location to show nearby venues, events, and members.",
+        "NSLocationAlwaysAndWhenInUseUsageDescription": "Civic Research Hub uses your location to show nearby venues, events, and members.",
+        "NSMicrophoneUsageDescription": "Civic Research Hub uses the microphone for voice messages and audio/video calls.",
+        "NSCameraUsageDescription": "Civic Research Hub uses the camera for video calls.",
+        "NSPhotoLibraryUsageDescription": "Civic Research Hub uses your photo library when you upload photos to albums.",
+        "UIBackgroundModes": ["audio", "voip"]
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#F11A23"
+      },
+      "package": "org.civicresearchhub.mobile",
+      "permissions": [
+        "ACCESS_COARSE_LOCATION",
+        "ACCESS_FINE_LOCATION",
+        "CAMERA",
+        "MODIFY_AUDIO_SETTINGS",
+        "RECORD_AUDIO",
+        "BLUETOOTH_CONNECT"
+      ]
+    },
+    "plugins": [
+      "expo-router",
+      "@livekit/react-native-expo-plugin",
+      "@config-plugins/react-native-webrtc",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Civic Research Hub uses your photo library when you upload photos to albums."
+        }
+      ],
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Allow Civic Research Hub to use your location to show nearby venues, events, and members.",
+          "locationAlwaysPermission": "Allow Civic Research Hub to use your location to show nearby venues, events, and members.",
+          "locationWhenInUsePermission": "Allow Civic Research Hub to use your location to show nearby venues, events, and members."
+        }
+      ]
+    ],
+    "experiments": {
+      "autolinkingModuleResolution": true,
+      "typedRoutes": true
+    }
+  }
+}
