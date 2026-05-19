@@ -4,6 +4,8 @@ import { Link, createFileRoute } from "@tanstack/react-router"
 import { SiteHeader } from "@/components/SiteHeader"
 import { SourceLinks } from "@/components/SourceLinks"
 import { getAllStats, topics } from "@/lib/topics"
+import { getServiceActions, getServiceUpdates, searchService } from "@/lib/service"
+import { useSavedTopics } from "@/lib/useSavedTopics"
 
 export const Route = createFileRoute("/")({ component: Home })
 
@@ -25,7 +27,12 @@ const themeLabels = {
 function Home() {
   const [query, setQuery] = useState("")
   const [theme, setTheme] = useState<keyof typeof themeLabels>("all")
+  const { savedSlugs, isSaved, toggleSaved } = useSavedTopics()
   const stats = getAllStats().slice(0, 6)
+  const serviceUpdates = getServiceUpdates().slice(0, 4)
+  const serviceActions = getServiceActions().slice(0, 3)
+  const searchResults = searchService(query).slice(0, 6)
+  const savedTopics = topics.filter((topic) => savedSlugs.includes(topic.slug))
   const filteredTopics = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase()
 
@@ -109,6 +116,89 @@ function Home() {
           </div>
         </section>
 
+        <section className="border-b border-zinc-200 bg-zinc-950 text-white">
+          <div className="mx-auto grid max-w-7xl gap-8 px-4 py-10 sm:px-6 lg:grid-cols-[0.9fr_1.1fr] lg:px-8">
+            <div>
+              <p className="text-xs font-black tracking-[0.2em] text-zinc-400 uppercase">
+                Civic dashboard
+              </p>
+              <h2 className="mt-3 text-3xl font-black sm:text-4xl">
+                Your watched issues, latest changes, and next moves.
+              </h2>
+              <p className="mt-4 text-sm leading-6 text-zinc-300">
+                Follow topics from the directory to turn the hub into a working
+                dashboard. This first version saves locally in your browser.
+              </p>
+              <div className="mt-6 grid gap-3">
+                {savedTopics.length ? (
+                  savedTopics.map((topic) => (
+                    <Link
+                      key={topic.slug}
+                      to="/topics/$slug"
+                      params={{ slug: topic.slug }}
+                      className="border border-white/10 bg-zinc-900 p-4 hover:bg-zinc-800"
+                    >
+                      <p className="text-sm font-black">{topic.shortTitle}</p>
+                      <p className="mt-2 text-xs leading-5 text-zinc-400">
+                        {topic.statusBrief.nextDecisionPoint}
+                      </p>
+                    </Link>
+                  ))
+                ) : (
+                  <div className="border border-white/10 bg-zinc-900 p-4">
+                    <p className="text-sm font-black">No saved topics yet</p>
+                    <p className="mt-2 text-xs leading-5 text-zinc-400">
+                      Use Follow on topic cards to build a personal watchlist.
+                    </p>
+                  </div>
+                )}
+              </div>
+            </div>
+            <div className="grid gap-4 md:grid-cols-2">
+              <div className="border border-white/10 bg-white p-5 text-zinc-950">
+                <p className="text-xs font-black tracking-[0.16em] text-red-700 uppercase">
+                  Latest feed
+                </p>
+                <div className="mt-4 grid gap-4">
+                  {serviceUpdates.map((update) => (
+                    <Link
+                      key={update.url}
+                      to="/topics/$slug"
+                      params={{ slug: update.slug }}
+                      className="border-t border-zinc-200 pt-4 first:border-t-0 first:pt-0"
+                    >
+                      <p className="text-sm font-black">{update.title}</p>
+                      <p className="mt-1 text-[10px] font-black tracking-[0.12em] text-zinc-500 uppercase">
+                        {update.topic} / {update.publishedAt}
+                      </p>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+              <div className="border border-white/10 bg-white p-5 text-zinc-950">
+                <p className="text-xs font-black tracking-[0.16em] text-red-700 uppercase">
+                  Action queue
+                </p>
+                <div className="mt-4 grid gap-4">
+                  {serviceActions.map((action) => (
+                    <Link
+                      key={`${action.slug}-${action.title}`}
+                      to="/topics/$slug"
+                      params={{ slug: action.slug }}
+                      className="border-t border-zinc-200 pt-4 first:border-t-0 first:pt-0"
+                    >
+                      <p className="text-sm font-black">{action.title}</p>
+                      <p className="mt-1 text-[10px] font-black tracking-[0.12em] text-zinc-500 uppercase">
+                        {action.topic} / {action.difficulty}
+                      </p>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
         <section
           id="topics"
           className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8"
@@ -169,6 +259,23 @@ function Home() {
             <p className="mt-3 text-xs font-semibold text-zinc-500">
               Showing {filteredTopics.length} of {topics.length} topics
             </p>
+            {searchResults.length ? (
+              <div className="mt-4 grid gap-2 border-t border-zinc-200 pt-4 md:grid-cols-2">
+                {searchResults.map((result) => (
+                  <Link
+                    key={result.id}
+                    to="/topics/$slug"
+                    params={{ slug: result.slug }}
+                    className="border border-zinc-200 bg-[#f7f4ee] p-3 hover:border-zinc-950"
+                  >
+                    <p className="text-[10px] font-black tracking-[0.14em] text-red-700 uppercase">
+                      {result.type} / {result.topic}
+                    </p>
+                    <p className="mt-1 text-sm font-black">{result.title}</p>
+                  </Link>
+                ))}
+              </div>
+            ) : null}
           </div>
 
           <div className="grid gap-px overflow-hidden border border-zinc-200 bg-zinc-200 lg:grid-cols-2">
@@ -191,7 +298,20 @@ function Home() {
                   </p>
                 </div>
 
-                <div className="flex min-h-[280px] flex-col p-5">
+                  <div className="flex min-h-[280px] flex-col p-5">
+                  <div className="mb-4 flex justify-end">
+                    <button
+                      type="button"
+                      onClick={() => toggleSaved(topic.slug)}
+                      className={`h-9 border px-3 text-[10px] font-black tracking-[0.14em] uppercase ${
+                        isSaved(topic.slug)
+                          ? "border-red-700 bg-red-700 text-white"
+                          : "border-zinc-300 bg-white text-zinc-700 hover:border-zinc-950"
+                      }`}
+                    >
+                      {isSaved(topic.slug) ? "Following" : "Follow"}
+                    </button>
+                  </div>
                   <h3 className="text-2xl leading-tight font-black">
                     {topic.title}
                   </h3>

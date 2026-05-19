@@ -4,7 +4,7 @@ import { SafeAreaView } from "react-native-safe-area-context"
 
 export default function NotFoundScreen() {
   return (
-    <SafeAreaView className="flex-1 bg-[#f7f4ee]">
+    <SafeAreaView className="flex-1 bg-[#f7f4ee]" edges={["top"]}>
       <View className="flex-1 justify-center px-6">
         <Text className="text-4xl font-bold text-zinc-950">Not found</Text>
         <Text className="mt-3 text-base leading-7 text-zinc-600">

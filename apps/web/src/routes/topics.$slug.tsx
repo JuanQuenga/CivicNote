@@ -6,6 +6,7 @@ import type { ResearchTopic, TopicModule } from "../../convex/seedTopics"
 import { SiteHeader } from "@/components/SiteHeader"
 import { SourceLinks } from "@/components/SourceLinks"
 import { getTopicBySlug, topics } from "@/lib/topics"
+import { useSavedTopics } from "@/lib/useSavedTopics"
 
 export const Route = createFileRoute("/topics/$slug")({
   component: TopicPage,
@@ -20,6 +21,7 @@ const urgencyStyles = {
 function TopicPage() {
   const { slug } = Route.useParams()
   const topic = getTopicBySlug(slug)
+  const { isSaved, toggleSaved } = useSavedTopics()
 
   if (!topic) {
     return (
@@ -60,6 +62,17 @@ function TopicPage() {
               <p className="mt-6 text-xl leading-8 text-zinc-700">
                 {topic.tagline}
               </p>
+              <button
+                type="button"
+                onClick={() => toggleSaved(topic.slug)}
+                className={`mt-7 h-11 border px-5 text-xs font-black tracking-[0.16em] uppercase ${
+                  isSaved(topic.slug)
+                    ? "border-red-700 bg-red-700 text-white"
+                    : "border-zinc-950 bg-zinc-950 text-white hover:bg-white hover:text-zinc-950"
+                }`}
+              >
+                {isSaved(topic.slug) ? "Following Topic" : "Follow Topic"}
+              </button>
             </div>
           </div>
         </section>

@@ -81,6 +81,10 @@ function RootNavigation() {
             options={{ title: "Sources", headerShown: false }}
           />
           <Stack.Screen
+            name="methodology"
+            options={{ title: "Methodology", headerShown: false }}
+          />
+          <Stack.Screen
             name="topics/[slug]"
             options={{ title: "Topic", headerBackTitle: "Topics" }}
           />

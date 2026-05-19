@@ -3,6 +3,7 @@ import { useMemo, useState } from "react"
 import { Pressable, ScrollView, Text, TextInput, View } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 import { topics } from "@/src/lib/topics"
+import { useSavedTopics } from "@/src/lib/useSavedTopics"
 import {
   TopicCard,
   urgencyClasses,
@@ -20,6 +21,7 @@ type ThemeFilter = "all" | keyof typeof themeLabels
 export default function TopicsIndexScreen() {
   const [query, setQuery] = useState("")
   const [theme, setTheme] = useState<ThemeFilter>("all")
+  const { isSaved, toggleSaved } = useSavedTopics()
 
   const filteredTopics = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase()
@@ -45,8 +47,8 @@ export default function TopicsIndexScreen() {
   }, [query, theme])
 
   return (
-    <SafeAreaView className="flex-1 bg-[#f7f4ee]">
-      <ScrollView contentContainerClassName="pb-10">
+    <SafeAreaView className="flex-1 bg-[#f7f4ee]" edges={["top"]}>
+      <ScrollView>
         <View className="border-b border-zinc-200 bg-white px-5 pt-6 pb-8">
           <Text className="text-xs font-bold tracking-[2px] text-red-700 uppercase">
             Topics
@@ -117,7 +119,25 @@ export default function TopicsIndexScreen() {
           </View>
           <View className="mt-3 gap-4">
             {filteredTopics.map((topic) => (
-              <TopicCard key={topic.slug} topic={topic} />
+              <View key={topic.slug}>
+                <TopicCard topic={topic} />
+                <Pressable
+                  className={`border-x border-b px-4 py-3 ${
+                    isSaved(topic.slug)
+                      ? "border-red-300 bg-red-50"
+                      : "border-zinc-200 bg-white"
+                  }`}
+                  onPress={() => toggleSaved(topic.slug)}
+                >
+                  <Text
+                    className={`text-center text-[10px] font-bold tracking-[1.4px] uppercase ${
+                      isSaved(topic.slug) ? "text-red-900" : "text-zinc-700"
+                    }`}
+                  >
+                    {isSaved(topic.slug) ? "Following" : "Follow topic"}
+                  </Text>
+                </Pressable>
+              </View>
             ))}
           </View>
         </View>

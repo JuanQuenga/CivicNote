@@ -21,6 +21,7 @@ import {
   FileText,
   Home,
   Radio,
+  ShieldCheck,
 } from "lucide-react-native"
 import { topics } from "@/src/lib/topics"
 import type { ReactNode } from "react"
@@ -129,6 +130,12 @@ function SideMenuContent({
           label="Sources"
           meta="Where the facts come from"
           onPress={() => navigate("/sources")}
+        />
+        <MenuItem
+          icon={ShieldCheck}
+          label="Methodology"
+          meta="Claim rules and corrections"
+          onPress={() => navigate("/methodology")}
         />
 
         <Text className="mt-7 text-xs font-bold tracking-[2px] text-zinc-500 uppercase">

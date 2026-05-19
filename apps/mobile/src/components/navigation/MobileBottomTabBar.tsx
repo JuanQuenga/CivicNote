@@ -1,6 +1,6 @@
 import { Pressable, Text, View } from "react-native"
 import { useSafeAreaInsets } from "react-native-safe-area-context"
-import { BookOpen, ClipboardCheck, Home, Radio } from "lucide-react-native"
+import { BookOpen, ClipboardCheck, Home, Radio, ShieldCheck } from "lucide-react-native"
 import { usePathname, useRouter } from "expo-router"
 
 const ACTIVE_COLOR = "#18181B"
@@ -74,6 +74,12 @@ export function MobileBottomTabBar() {
         icon={Radio}
         label="Status"
         onPress={() => router.replace("/briefs")}
+      />
+      <NavButton
+        active={pathname === "/methodology"}
+        icon={ShieldCheck}
+        label="Trust"
+        onPress={() => router.replace("/methodology")}
       />
     </View>
   )

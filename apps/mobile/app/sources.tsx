@@ -5,8 +5,8 @@ import { topics } from "@/src/lib/topics"
 
 export default function SourcesScreen() {
   return (
-    <SafeAreaView className="flex-1 bg-[#f7f4ee]">
-      <ScrollView contentContainerClassName="pb-10">
+    <SafeAreaView className="flex-1 bg-[#f7f4ee]" edges={["top"]}>
+      <ScrollView>
         <View className="border-b border-zinc-200 bg-zinc-950 px-5 pt-6 pb-8">
           <Text className="text-xs font-bold tracking-[2px] text-red-400 uppercase">
             Sources

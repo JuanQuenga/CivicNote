@@ -2,6 +2,7 @@ import { Link, useLocalSearchParams } from "expo-router"
 import { Linking, Pressable, ScrollView, Text, View } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 import { getTopicBySlug, topics } from "@/src/lib/topics"
+import { useSavedTopics } from "@/src/lib/useSavedTopics"
 import {
   TopicCard,
   TopicModuleView,
@@ -11,10 +12,11 @@ import {
 export default function TopicScreen() {
   const { slug } = useLocalSearchParams<{ slug: string }>()
   const topic = slug ? getTopicBySlug(slug) : undefined
+  const { isSaved, toggleSaved } = useSavedTopics()
 
   if (!topic) {
     return (
-      <SafeAreaView className="flex-1 items-center justify-center bg-[#f7f4ee] px-6">
+      <SafeAreaView className="flex-1 items-center justify-center bg-[#f7f4ee] px-6" edges={["top"]}>
         <Text className="text-center text-3xl font-bold text-zinc-950">
           Topic not found
         </Text>
@@ -57,8 +59,8 @@ export default function TopicScreen() {
   ]
 
   return (
-    <SafeAreaView className="flex-1 bg-[#f7f4ee]" edges={["bottom"]}>
-      <ScrollView contentContainerClassName="pb-10">
+    <SafeAreaView className="flex-1 bg-[#f7f4ee]" edges={[]}>
+      <ScrollView>
         <View className="border-b border-zinc-200 bg-white px-5 py-7">
           <Text className="text-xs font-bold tracking-[2px] text-red-700 uppercase">
             Topic {topic.topicNumber} / {topic.region} / Updated{" "}
@@ -70,6 +72,18 @@ export default function TopicScreen() {
           <Text className="mt-4 text-lg leading-7 text-zinc-700">
             {topic.tagline}
           </Text>
+          <Pressable
+            className={`mt-5 items-center border px-4 py-3 ${
+              isSaved(topic.slug)
+                ? "border-red-700 bg-red-700"
+                : "border-zinc-950 bg-zinc-950"
+            }`}
+            onPress={() => toggleSaved(topic.slug)}
+          >
+            <Text className="text-xs font-bold tracking-[1.6px] text-white uppercase">
+              {isSaved(topic.slug) ? "Following Topic" : "Follow Topic"}
+            </Text>
+          </Pressable>
         </View>
 
         <View className="bg-zinc-950 px-5 py-6">

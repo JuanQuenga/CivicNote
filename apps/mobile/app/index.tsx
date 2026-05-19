@@ -2,29 +2,26 @@ import { Link } from "expo-router"
 import { Pressable, ScrollView, Text, View } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 import { getAllStats, topics } from "@/src/lib/topics"
+import { getServiceActions, getServiceUpdates } from "@/src/lib/service"
+import { useSavedTopics } from "@/src/lib/useSavedTopics"
 import {
   TopicCard,
   urgencyClasses,
 } from "@/src/components/topics/MobileTopicComponents"
 
 export default function HomeScreen() {
+  const { savedSlugs, isSaved, toggleSaved } = useSavedTopics()
   const urgentTopics = topics.filter(
     (topic) => topic.statusBrief.urgency === "high"
   )
   const stats = getAllStats().slice(0, 3)
-  const latestUpdates = topics
-    .flatMap((topic) =>
-      topic.updates.slice(0, 1).map((update) => ({
-        ...update,
-        slug: topic.slug,
-        topic: topic.shortTitle,
-      }))
-    )
-    .slice(0, 3)
+  const latestUpdates = getServiceUpdates().slice(0, 3)
+  const actionQueue = getServiceActions().slice(0, 2)
+  const savedTopics = topics.filter((topic) => savedSlugs.includes(topic.slug))
 
   return (
-    <SafeAreaView className="flex-1 bg-[#f7f4ee]">
-      <ScrollView contentContainerClassName="pb-10">
+    <SafeAreaView className="flex-1 bg-[#f7f4ee]" edges={["top"]}>
+      <ScrollView>
         <View className="border-b border-zinc-200 bg-white px-5 pt-6 pb-8">
           <Text className="text-xs font-bold tracking-[2px] text-red-700 uppercase">
             Civic Research Hub
@@ -39,6 +36,39 @@ export default function HomeScreen() {
         </View>
 
         <View className="gap-4 px-5 py-6">
+          <View className="border border-zinc-200 bg-zinc-950 p-5">
+            <Text className="text-xs font-bold tracking-[2px] text-red-400 uppercase">
+              Today
+            </Text>
+            <Text className="mt-2 text-2xl font-bold text-white">
+              {savedTopics.length
+                ? `${savedTopics.length} watched issue${
+                    savedTopics.length === 1 ? "" : "s"
+                  }`
+                : "Build your watchlist"}
+            </Text>
+            <Text className="mt-3 text-sm leading-6 text-zinc-300">
+              Follow topics to keep urgent updates, action scripts, and source
+              links close when you are preparing for a call, email, or meeting.
+            </Text>
+            {savedTopics.length ? (
+              <View className="mt-4 gap-3">
+                {savedTopics.slice(0, 3).map((topic) => (
+                  <Link href={`/topics/${topic.slug}`} key={topic.slug} asChild>
+                    <Pressable className="border border-white/10 bg-zinc-900 p-4">
+                      <Text className="text-sm font-bold text-white">
+                        {topic.shortTitle}
+                      </Text>
+                      <Text className="mt-2 text-xs leading-5 text-zinc-400">
+                        {topic.statusBrief.nextDecisionPoint}
+                      </Text>
+                    </Pressable>
+                  </Link>
+                ))}
+              </View>
+            ) : null}
+          </View>
+
           <View className="flex-row items-end justify-between gap-4">
             <View>
               <Text className="text-xs font-bold tracking-[2px] text-zinc-500 uppercase">
@@ -58,7 +88,25 @@ export default function HomeScreen() {
           </View>
           {(urgentTopics.length ? urgentTopics : topics.slice(0, 2)).map(
             (topic) => (
-              <TopicCard compact key={topic.slug} topic={topic} />
+              <View key={topic.slug}>
+                <TopicCard compact topic={topic} />
+                <Pressable
+                  className={`border-x border-b px-4 py-3 ${
+                    isSaved(topic.slug)
+                      ? "border-red-300 bg-red-50"
+                      : "border-zinc-200 bg-white"
+                  }`}
+                  onPress={() => toggleSaved(topic.slug)}
+                >
+                  <Text
+                    className={`text-center text-[10px] font-bold tracking-[1.4px] uppercase ${
+                      isSaved(topic.slug) ? "text-red-900" : "text-zinc-700"
+                    }`}
+                  >
+                    {isSaved(topic.slug) ? "Following" : "Follow topic"}
+                  </Text>
+                </Pressable>
+              </View>
             )
           )}
         </View>
@@ -115,6 +163,33 @@ export default function HomeScreen() {
                   </Text>
                   <Text className="mt-2 text-sm leading-6 text-zinc-700">
                     {update.summary}
+                  </Text>
+                </Pressable>
+              </Link>
+            ))}
+          </View>
+        </View>
+
+        <View className="border-y border-zinc-200 bg-white px-5 py-6">
+          <Text className="text-xs font-bold tracking-[2px] text-zinc-500 uppercase">
+            Action Queue
+          </Text>
+          <View className="mt-3 gap-3">
+            {actionQueue.map((action) => (
+              <Link
+                href={`/topics/${action.slug}`}
+                key={`${action.slug}-${action.title}`}
+                asChild
+              >
+                <Pressable className="border border-zinc-200 bg-[#f7f4ee] p-4">
+                  <Text className="text-[10px] font-bold tracking-[1.4px] text-red-700 uppercase">
+                    {action.topic} / {action.difficulty}
+                  </Text>
+                  <Text className="mt-2 text-xl font-bold text-zinc-950">
+                    {action.title}
+                  </Text>
+                  <Text className="mt-2 text-sm leading-6 text-zinc-700">
+                    {action.description}
                   </Text>
                 </Pressable>
               </Link>

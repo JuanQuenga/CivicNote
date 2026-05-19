@@ -14,14 +14,21 @@ export function SiteHeader() {
           <Link to="/" className="hover:text-zinc-950">
             Topics
           </Link>
-          <a
-            href="https://dashboard.convex.dev/"
-            className="hidden hover:text-zinc-950 sm:inline"
-            target="_blank"
-            rel="noreferrer"
+          <Link to="/updates" className="hidden hover:text-zinc-950 sm:inline">
+            Updates
+          </Link>
+          <Link to="/actions" className="hidden hover:text-zinc-950 sm:inline">
+            Actions
+          </Link>
+          <Link to="/sources" className="hidden hover:text-zinc-950 sm:inline">
+            Sources
+          </Link>
+          <Link
+            to="/methodology"
+            className="hidden hover:text-zinc-950 md:inline"
           >
-            Convex
-          </a>
+            Method
+          </Link>
         </nav>
       </div>
     </header>
