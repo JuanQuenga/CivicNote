@@ -1167,7 +1167,7 @@ export const seedTopics: Array<ResearchTopic> = [
     tagline:
       "The fight is not only whether glyphosate works. It is who bears the exposure risk.",
     summary:
-      "Glyphosate is the most widely used herbicide in the United States and a recurring fight over cancer risk, environmental exposure, worker safety, labeling, litigation, and regulatory trust. This topic tracks the split between hazard findings, regulatory risk assessments, environmental monitoring, and local policy options.",
+      "Glyphosate is the most widely used herbicide in the United States and a recurring fight over cancer risk, environmental exposure, worker safety, food residues, labeling, litigation, and regulatory trust. This topic tracks the split between hazard findings, regulatory risk assessments, environmental monitoring, dietary exposure, and local policy options.",
     region: "United States",
     status: "Pesticide regulation and public-health oversight",
     theme: "future",
@@ -1191,6 +1191,12 @@ export const seedTopics: Array<ResearchTopic> = [
           "EPA's public glyphosate page was still tracking registration-review mitigation",
         sourceIndexes: [1],
       },
+      {
+        value: "59%",
+        label:
+          "Approximate share of FDA corn and soy glyphosate-assignment samples with glyphosate or glufosinate residues",
+        sourceIndexes: [6],
+      },
     ],
     arguments: [
       {
@@ -1209,6 +1215,14 @@ export const seedTopics: Array<ResearchTopic> = [
           "Local policy can focus on reducing avoidable exposure near schools, parks, waterways, workers, and drift-prone applications without pretending the scientific dispute is simple.",
         sourceIndexes: [2, 4],
       },
+      {
+        title: "Food residues are a legal design choice",
+        claim:
+          "Glyphosate can make it back to consumers through residues in or on treated food and feed commodities, especially where crops are engineered for glyphosate tolerance or treated close to harvest under allowed labels.",
+        counterpoint:
+          "EPA treats this as a tolerance-setting and dietary-risk problem, so the public fight is whether tolerances, monitoring, crop-specific uses, and enforcement reflect real diets and cumulative exposure.",
+        sourceIndexes: [5, 6, 7, 8],
+      },
     ],
     findings: [
       {
@@ -1220,6 +1234,11 @@ export const seedTopics: Array<ResearchTopic> = [
         title: "The public record supports exposure reduction",
         body: "USGS monitoring and summaries describe glyphosate and AMPA moving off-site from agricultural and urban sources into streams, soil, air, and water systems.",
         sourceIndexes: [2, 4],
+      },
+      {
+        title: "Food monitoring is narrower than consumer exposure",
+        body: "FDA's special glyphosate assignment found residues in corn and soybean samples while USDA's broader residue program reports most sampled foods below EPA benchmarks; both facts matter because legal compliance is not the same as zero residue.",
+        sourceIndexes: [6, 7, 8],
       },
       {
         title: "Regulatory decisions are still the pressure point",
@@ -1279,6 +1298,19 @@ export const seedTopics: Array<ResearchTopic> = [
         script:
           "This campaign is tracking both the IARC hazard finding and EPA's risk-assessment position. Which standard is the agency relying on, and why?",
       },
+      {
+        title: "Ask what is tested in food",
+        description:
+          "Press agencies and retailers for crop-specific glyphosate residue testing, especially grains, beans, and processed foods made from treated commodity crops.",
+        audience: "Consumers and researchers",
+        difficulty: "20 minutes",
+        urgency: "medium",
+        ctaLabel: "Read FDA Glyphosate Q&A",
+        ctaUrl:
+          "https://www.fda.gov/food/pesticides/questions-and-answers-glyphosate",
+        script:
+          "Which foods are being tested for glyphosate and AMPA residues, how often are grain and soybean-derived products tested, and are results published by commodity and brand-independent sample type?",
+      },
     ],
     timeline: [
       {
@@ -1334,10 +1366,11 @@ export const seedTopics: Array<ResearchTopic> = [
         ],
         bullets: [
           "Hazard classification and regulatory risk assessment answer different questions.",
-          "Environmental occurrence turns this from a farm-only issue into a water, parks, schools, and rights-of-way issue.",
+          "Food residues turn this from a farm-only issue into a grocery-store and diet-exposure issue.",
+          "Environmental occurrence turns this into a water, parks, schools, and rights-of-way issue.",
           "Local campaigns can win disclosure and public-space limits even while federal science disputes continue.",
         ],
-        sourceIndexes: [0, 1, 2, 3, 4],
+        sourceIndexes: [0, 1, 2, 3, 4, 5, 6, 8],
       },
       {
         type: "evidenceMatrix",
@@ -1374,6 +1407,79 @@ export const seedTopics: Array<ResearchTopic> = [
       },
       {
         type: "tracker",
+        eyebrow: "Food residue route",
+        title: "How glyphosate can move from the field back onto your plate",
+        columns: ["Step", "How residue can remain", "What to demand"],
+        rows: [
+          {
+            cells: [
+              "Field use on tolerant crops",
+              "Glyphosate can be sprayed over crops engineered or selected to tolerate it, leaving residues governed by crop-specific legal tolerances.",
+              "Publish crop-by-crop use, tolerance, and residue-monitoring data together instead of treating them as separate systems.",
+            ],
+            sourceIndexes: [5, 8],
+          },
+          {
+            cells: [
+              "Late-season or harvest-adjacent uses",
+              "Where labels allow pre-harvest applications, residues can remain on grain, beans, or other commodities entering storage and processing.",
+              "Require clear reporting of pre-harvest uses, pre-harvest intervals, and residue testing for grain and legume commodities.",
+            ],
+            sourceIndexes: [5, 6, 8],
+          },
+          {
+            cells: [
+              "Processing into common foods",
+              "Residues on corn, soybeans, oats, wheat, or other commodities can move into ingredients used in processed foods, animal feed, and grocery staples.",
+              "Test finished foods and commodity ingredients, not only raw agricultural samples.",
+            ],
+            sourceIndexes: [6, 7],
+          },
+          {
+            cells: [
+              "Legal tolerance compliance",
+              "A residue can be legal and still be present; EPA tolerances define the maximum allowed amount, not a promise of no residue.",
+              "Show consumers the detected amount, the legal tolerance, and how often that food is tested.",
+            ],
+            sourceIndexes: [5, 8],
+          },
+        ],
+      },
+      {
+        type: "evidenceMatrix",
+        eyebrow: "Diet exposure",
+        title: "What official food testing does and does not prove",
+        summary:
+          "Dietary exposure is regulated through tolerances and monitoring, but the public needs to see what foods are tested, what is not tested, and how residues compare with legal limits.",
+        rows: [
+          {
+            label: "EPA tolerance system",
+            evidence:
+              "EPA sets legal residue limits for pesticide residues that may remain in or on food and feed commodities.",
+            caveat:
+              "A tolerance is a legal maximum based on risk assessment assumptions; it is not a zero-residue standard.",
+            sourceIndexes: [5, 8],
+          },
+          {
+            label: "FDA glyphosate assignment",
+            evidence:
+              "FDA reported that roughly 59% of corn and soy samples in its glyphosate/glufosinate assignment had residues, all below EPA tolerances.",
+            caveat:
+              "That assignment focused on corn, soy, milk, and eggs; it does not answer every processed-food or produce pathway question.",
+            sourceIndexes: [6],
+          },
+          {
+            label: "USDA residue monitoring",
+            evidence:
+              "USDA's 2022 PDP summary reported more than 99% of tested samples below EPA benchmark levels.",
+            caveat:
+              "The PDP rotates commodities and pesticides; low exceedance rates do not mean every food type is routinely tested for glyphosate.",
+            sourceIndexes: [7],
+          },
+        ],
+      },
+      {
+        type: "tracker",
         eyebrow: "Exposure pathways",
         title: "Who may be exposed and what record proves it",
         columns: ["Pathway", "Evidence to request", "Public-health question"],
@@ -1393,6 +1499,14 @@ export const seedTopics: Array<ResearchTopic> = [
               "Can avoidable public-space exposure be reduced or replaced?",
             ],
             sourceIndexes: [1, 2],
+          },
+          {
+            cells: [
+              "Food and produce residues",
+              "EPA tolerances, FDA/USDA residue data, crop labels, and commodity-specific testing results.",
+              "Which foods are tested for glyphosate or AMPA, and are results reported in a way consumers can understand?",
+            ],
+            sourceIndexes: [5, 6, 7, 8],
           },
           {
             cells: [
@@ -1432,6 +1546,14 @@ export const seedTopics: Array<ResearchTopic> = [
               "Occurrence data makes monitoring a concrete, source-backed ask.",
             sourceIndexes: [2, 4],
           },
+          {
+            actor: "Retailers and food agencies",
+            lever:
+              "Publish glyphosate and AMPA testing for high-use commodity foods and finished products.",
+            pressurePoint:
+              "Consumers cannot evaluate dietary exposure if monitoring is hidden in broad compliance summaries.",
+            sourceIndexes: [6, 7, 8],
+          },
         ],
       },
     ],
@@ -1470,6 +1592,34 @@ export const seedTopics: Array<ResearchTopic> = [
         year: 2019,
         url: "https://www.usgs.gov/news/herbicide-glyphosate-prevalent-us-streams-and-rivers",
         note: "Stream and river monitoring context.",
+      },
+      {
+        title: "Glyphosate; tolerances for residues, 40 CFR 180.364",
+        publisher: "Electronic Code of Federal Regulations",
+        year: 2026,
+        url: "https://www.ecfr.gov/current/title-40/chapter-I/subchapter-E/part-180/subpart-C/section-180.364",
+        note: "Legal residue tolerances for glyphosate in or on listed food and feed commodities.",
+      },
+      {
+        title: "Questions and Answers on Glyphosate",
+        publisher: "U.S. Food and Drug Administration",
+        year: 2026,
+        url: "https://www.fda.gov/food/pesticides/questions-and-answers-glyphosate",
+        note: "FDA summary of glyphosate residue testing in corn, soybeans, milk, and eggs.",
+      },
+      {
+        title: "USDA Releases 2022 Pesticide Data Program Annual Summary",
+        publisher: "U.S. Department of Agriculture",
+        year: 2024,
+        url: "https://www.ams.usda.gov/press-release/usda-releases-2022-pesticide-data-program-annual-summary",
+        note: "USDA residue-monitoring compliance summary for tested food samples.",
+      },
+      {
+        title: "Setting Tolerances for Pesticide Residues in Foods",
+        publisher: "U.S. Environmental Protection Agency",
+        year: 2025,
+        url: "https://www.epa.gov/pesticide-tolerances/setting-tolerances-pesticide-residues-foods",
+        note: "EPA explanation of how legal residue limits are set for foods and animal feeds.",
       },
     ],
   },
