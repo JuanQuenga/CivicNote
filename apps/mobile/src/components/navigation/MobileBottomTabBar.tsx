@@ -1,78 +1,90 @@
-import { useRouter } from 'expo-router'
-import { Images, MapPin, MessageCircle, Users } from 'lucide-react-native'
-import { Pressable, View } from 'react-native'
-import { useSafeAreaInsets } from 'react-native-safe-area-context'
-import { BarnIcon } from '../icons/BarnIcon'
+import { DeviceEventEmitter, Pressable, Text, View } from "react-native"
+import { useSafeAreaInsets } from "react-native-safe-area-context"
+import { BookOpen, Home, Map, Menu, Radio } from "lucide-react-native"
+import { usePathname, useRouter } from "expo-router"
+import { MOBILE_OPEN_SIDE_MENU_EVENT } from "./MobileSideMenu"
 
-export type MobileBottomTabRoute =
-  | 'map'
-  | 'members'
-  | 'barn'
-  | 'messages'
-  | 'photos'
+const ACTIVE_COLOR = "#18181B"
+const INACTIVE_COLOR = "#71717A"
 
-const ACTIVE_COLOR = '#E7E9EA'
-const INACTIVE_COLOR = '#8B98A5'
+function NavButton({
+  active,
+  icon: Icon,
+  label,
+  onPress,
+}: {
+  active?: boolean
+  icon: React.ComponentType<{
+    color: string
+    size: number
+    strokeWidth?: number
+  }>
+  label: string
+  onPress: () => void
+}) {
+  const color = active ? ACTIVE_COLOR : INACTIVE_COLOR
 
-interface MobileBottomTabBarProps {
-  activeRoute?: MobileBottomTabRoute
+  return (
+    <Pressable
+      className="flex-1 items-center justify-center gap-1"
+      onPress={onPress}
+    >
+      <Icon color={color} size={22} strokeWidth={2.2} />
+      <Text
+        className={`text-[10px] font-bold tracking-[0.8px] uppercase ${
+          active ? "text-zinc-950" : "text-zinc-500"
+        }`}
+      >
+        {label}
+      </Text>
+    </Pressable>
+  )
 }
 
-export function MobileBottomTabBar({ activeRoute }: MobileBottomTabBarProps) {
+export function MobileBottomTabBar() {
   const router = useRouter()
+  const pathname = usePathname()
   const insets = useSafeAreaInsets()
-
-  const navigate = (target: MobileBottomTabRoute) => {
-    router.replace(`/(tabs)/${target}` as never)
-  }
-
-  const colorFor = (target: MobileBottomTabRoute) =>
-    target === activeRoute ? ACTIVE_COLOR : INACTIVE_COLOR
+  const isTopic = pathname.startsWith("/topics/")
 
   return (
     <View
-      style={{
-        height: 48 + insets.bottom,
-        paddingBottom: insets.bottom,
-        paddingTop: 4,
-        backgroundColor: '#000000',
-      }}
-      className="flex-row items-stretch"
+      style={{ height: 58 + insets.bottom, paddingBottom: insets.bottom }}
+      className="flex-row border-t border-zinc-200 bg-white"
     >
-      <Pressable
-        className="flex-1 items-center justify-center"
-        onPress={() => navigate('map')}
-      >
-        <MapPin color={colorFor('map')} size={24} strokeWidth={2.2} />
-      </Pressable>
-      <Pressable
-        className="flex-1 items-center justify-center"
-        onPress={() => navigate('members')}
-      >
-        <Users color={colorFor('members')} size={24} strokeWidth={2.2} />
-      </Pressable>
-      <Pressable
-        className="flex-1 items-center justify-center"
-        onPress={() => navigate('barn')}
-      >
-        <BarnIcon color={colorFor('barn')} size={24} />
-      </Pressable>
-      <Pressable
-        className="flex-1 items-center justify-center"
-        onPress={() => navigate('messages')}
-      >
-        <MessageCircle
-          color={colorFor('messages')}
-          size={24}
-          strokeWidth={2.2}
-        />
-      </Pressable>
-      <Pressable
-        className="flex-1 items-center justify-center"
-        onPress={() => navigate('photos')}
-      >
-        <Images color={colorFor('photos')} size={24} strokeWidth={2.2} />
-      </Pressable>
+      <NavButton
+        active={pathname === "/"}
+        icon={Home}
+        label="Home"
+        onPress={() => router.replace("/")}
+      />
+      <NavButton
+        active={isTopic}
+        icon={BookOpen}
+        label="Topics"
+        onPress={() => router.replace("/")}
+      />
+      <NavButton
+        icon={Map}
+        label="Map"
+        onPress={() => {
+          DeviceEventEmitter.emit("research-map:toggle")
+        }}
+      />
+      <NavButton
+        icon={Radio}
+        label="Status"
+        onPress={() => {
+          DeviceEventEmitter.emit("research-map:open", { mode: "status" })
+        }}
+      />
+      <NavButton
+        icon={Menu}
+        label="Menu"
+        onPress={() => {
+          DeviceEventEmitter.emit(MOBILE_OPEN_SIDE_MENU_EVENT)
+        }}
+      />
     </View>
   )
 }

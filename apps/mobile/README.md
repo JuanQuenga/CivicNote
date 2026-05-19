@@ -10,11 +10,10 @@ From repo root:
 pnpm dev:mobile
 ```
 
-This now targets the development build by default so WorkOS auth can return to
-`civicresearchhub://auth/callback`.
+This app reads the same seeded civic research topics used by the web app and
+does not require a backend or authentication provider for local browsing.
 
-Before that will work on a device or simulator, install a native development
-build once:
+If you need a native development build, run:
 
 ```bash
 cd apps/mobile
@@ -44,28 +43,13 @@ If you explicitly want Expo Go instead of the development build, use:
 pnpm dev:mobile:go
 ```
 
-If you need Expo Go over a tunnel so WorkOS can return through the Expo URL, use:
+If you explicitly want Expo Go over a tunnel, use:
 
 ```bash
 pnpm dev:mobile:go:tunnel
 ```
 
-Or from this folder:
-
-```bash
-EXPO_PUBLIC_CONVEX_URL=https://your-deployment.convex.cloud pnpm dev
-```
-
-## Required env
-
-- `EXPO_PUBLIC_CONVEX_URL`
-- `EXPO_PUBLIC_WORKOS_CLIENT_ID`
-
-Optional:
-
-- `EXPO_PUBLIC_WORKOS_API_HOSTNAME` (defaults to `api.workos.com`)
-- `EXPO_PUBLIC_WORKOS_REDIRECT_URI` (defaults to `civicresearchhub://auth/callback`)
-- `EXPO_PUBLIC_GIPHY_API_KEY` (enables GIF search in messages)
+No mobile-specific environment variables are required.
 
 ## Native build prerequisites
 
@@ -77,40 +61,12 @@ Optional:
 
 - Expo + Expo Router
 - NativeWind v4
-- Convex React client using `@civic-research-hub/web` generated API
-- WorkOS AuthKit via OAuth PKCE (`/user_management/authorize`)
+- Static topic data shared from `@civic-research-hub/web`
 
 ## Core Screens
 
-- `Spots`: native nearby map for community spots and member discovery with quick filters
-- `Onboarding`: required profile setup, age confirmation, and location permission
-- `Spot`: spot creation, detail, favorite, directions, and check-in/check-out
-- `Meetups`: upcoming/active meetup list, detail, join requests, chat links, and host controls
-- `The Barn`: community feed with posting and Looking Now
-- `News`: LGBTQ+ news, health resources, safety resources, and crisis support
-- `Health`: editable HIV/PrEP profile status and nearby testing clinics
-- `Members`: recommended profiles and search by name
-- `Messages`: conversation list
-- `New Group`: create Pro/Ultra group conversations from recent chat partners
-- `Conversation`: message thread with text, image, GIF, voice, location, spot/member/album sharing, reactions, edits, smart replies, and paid send options
-- `Calls`: call minutes, incoming/outgoing call state, and web live-room handoff
-- `Appeal`: submit moderation appeals and review appeal history
-- `Moderation Updates`: account warnings, restrictions, and appeal decisions
-- `Photos`: received albums, uploads, album management, and photo upload
-- `Profile`: view/edit profile basics and sign out
-- `Settings`: privacy, status, notification, subscription, and account controls
-- `Controls`: location privacy radius, NSFW media blur, and explore-area controls
-- `Subscription`: current plan, Pro/Ultra comparison, referral Ultra state, and web billing links
-- `Subscription Success`: post-checkout billing sync and premium activation confirmation
-- `Referrals`: code sharing, reward progress, and referral history
-- `Join`: native referral invite link capture and signup/signin handoff
-- `Blocked Users`: unblock people previously blocked from member profiles
-
-## WorkOS setup
-
-In WorkOS Redirects, add the mobile callback URI:
-
-`civicresearchhub://auth/callback`
+- `Home`: research hub overview, signal stats, and active topic cards
+- `Topic`: status brief, evidence stats, source links, findings, and public actions
 
 ## Dependency decisions
 

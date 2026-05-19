@@ -10,51 +10,29 @@
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
-      "backgroundColor": "#F11A23"
+      "backgroundColor": "#F7F4EE"
     },
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "org.civicresearchhub.mobile",
       "infoPlist": {
-        "NSLocationWhenInUseUsageDescription": "Civic Research Hub uses your location to show nearby venues, events, and members.",
-        "NSLocationAlwaysAndWhenInUseUsageDescription": "Civic Research Hub uses your location to show nearby venues, events, and members.",
-        "NSMicrophoneUsageDescription": "Civic Research Hub uses the microphone for voice messages and audio/video calls.",
-        "NSCameraUsageDescription": "Civic Research Hub uses the camera for video calls.",
-        "NSPhotoLibraryUsageDescription": "Civic Research Hub uses your photo library when you upload photos to albums.",
-        "UIBackgroundModes": ["audio", "voip"]
+        "NSPhotoLibraryUsageDescription": "Civic Research Hub uses your photo library only when you choose an image to attach to research notes."
       }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#F11A23"
+        "backgroundColor": "#F7F4EE"
       },
       "package": "org.civicresearchhub.mobile",
-      "permissions": [
-        "ACCESS_COARSE_LOCATION",
-        "ACCESS_FINE_LOCATION",
-        "CAMERA",
-        "MODIFY_AUDIO_SETTINGS",
-        "RECORD_AUDIO",
-        "BLUETOOTH_CONNECT"
-      ]
+      "permissions": []
     },
     "plugins": [
       "expo-router",
-      "@livekit/react-native-expo-plugin",
-      "@config-plugins/react-native-webrtc",
       [
         "expo-image-picker",
         {
-          "photosPermission": "Civic Research Hub uses your photo library when you upload photos to albums."
-        }
-      ],
-      [
-        "expo-location",
-        {
-          "locationAlwaysAndWhenInUsePermission": "Allow Civic Research Hub to use your location to show nearby venues, events, and members.",
-          "locationAlwaysPermission": "Allow Civic Research Hub to use your location to show nearby venues, events, and members.",
-          "locationWhenInUsePermission": "Allow Civic Research Hub to use your location to show nearby venues, events, and members."
+          "photosPermission": "Civic Research Hub uses your photo library only when you choose an image to attach to research notes."
         }
       ]
     ],

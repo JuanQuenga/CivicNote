@@ -1,19 +1,21 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef } from "react"
 import {
   Animated,
   Pressable,
   StyleSheet,
   View,
   useWindowDimensions,
-} from 'react-native'
-import type { ReactNode } from 'react'
+} from "react-native"
+import type { ReactNode } from "react"
 
 export function MobileMapOverlay({
   children,
   isOpen,
+  onClose,
 }: {
   children: ReactNode
   isOpen: boolean
+  onClose: () => void
 }) {
   const { height } = useWindowDimensions()
   const translateY = useRef(new Animated.Value(height)).current
@@ -28,46 +30,37 @@ export function MobileMapOverlay({
   }, [height, isOpen, translateY])
 
   return (
-    <Pressable
-      pointerEvents={isOpen ? 'box-none' : 'none'}
-      style={styles.overlay}
-    >
+    <View pointerEvents={isOpen ? "auto" : "none"} style={styles.overlay}>
+      <Pressable className="flex-1 bg-black/35" onPress={onClose} />
       <Animated.View
         style={[
           styles.sheet,
           {
-            bottom: 0,
-            height,
+            height: Math.min(height * 0.88, 760),
             transform: [{ translateY }],
           },
         ]}
       >
-        <Pressable style={styles.sheetSurface} onPress={() => {}}>
-          <View style={styles.sheetContent}>{children}</View>
-        </Pressable>
+        {children}
       </Animated.View>
-    </Pressable>
+    </View>
   )
 }
 
 const styles = StyleSheet.create({
   overlay: {
     ...StyleSheet.absoluteFillObject,
-    zIndex: 20,
-    justifyContent: 'flex-end',
+    zIndex: 40,
+    justifyContent: "flex-end",
   },
   sheet: {
-    position: 'absolute',
     left: 0,
     right: 0,
-    backgroundColor: 'transparent',
-  },
-  sheetSurface: {
-    flex: 1,
-    overflow: 'hidden',
-    backgroundColor: '#000000',
-  },
-  sheetContent: {
-    flex: 1,
+    bottom: 0,
+    position: "absolute",
+    overflow: "hidden",
+    backgroundColor: "#F7F4EE",
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
   },
 })
