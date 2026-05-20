@@ -8,7 +8,7 @@ export default function NotFoundScreen() {
       <View className="flex-1 justify-center px-6">
         <Text className="text-4xl font-bold text-zinc-950">Not found</Text>
         <Text className="mt-3 text-base leading-7 text-zinc-600">
-          This mobile screen is not part of Civic Research Hub.
+          This mobile screen is not part of CivicNote.
         </Text>
         <Link href="/" asChild>
           <Pressable className="mt-8 border border-zinc-950 bg-zinc-950 px-5 py-4">

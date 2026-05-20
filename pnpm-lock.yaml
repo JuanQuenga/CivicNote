@@ -23,7 +23,7 @@ importers:
 
   apps/mobile:
     dependencies:
-      '@civic-research-hub/web':
+      '@civicnote/web':
         specifier: workspace:*
         version: link:../web
       '@expo-google-fonts/outfit':

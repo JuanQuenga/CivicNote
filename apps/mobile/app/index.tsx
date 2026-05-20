@@ -24,7 +24,7 @@ export default function HomeScreen() {
       <ScrollView>
         <View className="border-b border-zinc-200 bg-white px-5 pt-6 pb-8">
           <Text className="text-xs font-bold tracking-[2px] text-red-700 uppercase">
-            Civic Research Hub
+            CivicNote
           </Text>
           <Text className="mt-4 text-5xl leading-[52px] font-bold text-zinc-950">
             A clearer way to follow messy public issues.

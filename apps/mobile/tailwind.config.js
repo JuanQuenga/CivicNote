@@ -8,7 +8,7 @@ module.exports = {
         sans: ['Outfit_400Regular'],
       },
       colors: {
-        // Civic Research Hub brand colors matching web theme
+        // CivicNote brand colors matching web theme
         background: '#000000',
         foreground: '#FAFAFA', // oklch(0.98 0 0)
 

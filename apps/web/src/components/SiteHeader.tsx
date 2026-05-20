@@ -8,7 +8,7 @@ export function SiteHeader() {
           to="/"
           className="text-sm font-black uppercase tracking-[0.22em] text-zinc-950"
         >
-          Civic Research Hub
+          CivicNote
         </Link>
         <nav className="flex items-center gap-5 text-xs font-semibold uppercase tracking-[0.16em] text-zinc-600">
           <Link to="/" className="hover:text-zinc-950">

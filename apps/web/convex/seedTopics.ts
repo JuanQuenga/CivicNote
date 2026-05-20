@@ -175,7 +175,7 @@ export const seedTopics: Array<ResearchTopic> = [
     shortTitle: "Congressional Stock Trading",
     tagline: "Public office should not double as a private market advantage.",
     summary:
-      "The original Corruption in Congress site focused on the case for banning individual stock trading by members of Congress, their spouses, and dependents. The combined version keeps the salary argument, the public-support argument, and the bill-tracking frame in one reusable topic page.",
+      "This topic tracks the case for banning individual stock trading by members of Congress, their spouses, and dependents, including the salary argument, the public-support record, and the bill-tracking path for forcing floor action.",
     region: "United States",
     status: "Federal ethics reform",
     theme: "ethics",
@@ -224,7 +224,7 @@ export const seedTopics: Array<ResearchTopic> = [
       },
       {
         title: "The politics are cross-partisan",
-        body: "Polling cited by the original site showed strong support for a ban among Republican, Democratic, and independent voters.",
+        body: "Polling has shown strong support for a ban among Republican, Democratic, and independent voters.",
         sourceIndexes: [1],
       },
       {
@@ -289,7 +289,7 @@ export const seedTopics: Array<ResearchTopic> = [
         date: "2024",
         title: "Cross-party support stays high",
         description:
-          "Polling cited by the original project showed large majorities across party groups supporting a congressional stock-trading ban.",
+          "Polling has shown large majorities across party groups supporting a congressional stock-trading ban.",
         sourceIndexes: [1],
       },
       {
@@ -411,14 +411,14 @@ export const seedTopics: Array<ResearchTopic> = [
         publisher: "Congressional Research Service",
         year: 2025,
         url: "https://crsreports.congress.gov/",
-        note: "Salary baseline used by the original topic site.",
+        note: "Salary baseline for member-compensation claims.",
       },
       {
         title: "Congressional Stock Trading Polling",
         publisher: "YouGov / The Economist",
         year: 2024,
         url: "https://today.yougov.com/",
-        note: "Cross-party public-support snapshot cited in the source project.",
+        note: "Cross-party public-support snapshot.",
       },
       {
         title: "House Discharge Petitions",
@@ -444,7 +444,7 @@ export const seedTopics: Array<ResearchTopic> = [
     tagline:
       "Flock cameras are the visible layer. The networked data system runs deeper.",
     summary:
-      "The DeFlock Michigan work is modeled here as a broader civil-liberties topic: automatic license plate readers, private camera networks, real-time crime centers, data fusion platforms, and AI interfaces that make routine movement searchable across agencies.",
+      "This civil-liberties topic tracks automatic license plate readers, private camera networks, real-time crime centers, data fusion platforms, and AI interfaces that make routine movement searchable across agencies.",
     region: "Michigan",
     status: "Local surveillance oversight",
     theme: "surveillance",
@@ -492,7 +492,7 @@ export const seedTopics: Array<ResearchTopic> = [
       },
       {
         title: "The vendor stack is broader than Flock",
-        body: "The source project tracks Flock Nova, Palantir Gotham and AIP, Axon Fusus, Rekor Scout, and Clearview AI as related parts of the surveillance marketplace.",
+        body: "Flock Nova, Palantir Gotham and AIP, Axon Fusus, Rekor Scout, and Clearview AI are related parts of the surveillance marketplace.",
         sourceIndexes: [2, 3, 4, 6, 7],
       },
       {
@@ -782,16 +782,16 @@ export const seedTopics: Array<ResearchTopic> = [
   {
     slug: "michigan-data-centers",
     topicNumber: "03",
-    title: "Michigan Before Megawatts",
+    title: "Data Centers Before Megawatts",
     shortTitle: "Data Centers",
     tagline:
       "Communities should know the water, power, noise, and tax tradeoffs before approvals.",
     summary:
-      "The Michigan data-center site becomes an infrastructure-accountability topic in the combined hub. It tracks local impacts from AI and cloud data-center buildouts: water demand, grid upgrades, ratepayer exposure, diesel backup, noise, land use, tax breaks, and jobs claims.",
-    region: "Michigan",
+      "This infrastructure-accountability topic tracks local impacts from AI and cloud data-center buildouts: water demand, grid upgrades, ratepayer exposure, diesel backup, waste heat, noise, land use, tax breaks, rushed approvals, and jobs claims.",
+    region: "Michigan and U.S.",
     status: "Land use, utilities, and local control",
     theme: "infrastructure",
-    updatedAt: "2026-05-06",
+    updatedAt: "2026-05-19",
     stats: [
       {
         value: "5M",
@@ -805,9 +805,9 @@ export const seedTopics: Array<ResearchTopic> = [
         sourceIndexes: [3],
       },
       {
-        value: "$7B+",
-        label: "Reported Stargate Michigan investment scale",
-        sourceIndexes: [11, 12],
+        value: "9 GW",
+        label: "Full-buildout power scale proposed for Utah's Stratos campus",
+        sourceIndexes: [13, 14],
       },
     ],
     arguments: [
@@ -830,14 +830,14 @@ export const seedTopics: Array<ResearchTopic> = [
     ],
     findings: [
       {
-        title: "Power demand is now a planning topic",
-        body: "Berkeley Lab reported U.S. data centers used 176 TWh of electricity in 2023 and projected major increases by 2028.",
-        sourceIndexes: [3],
+        title: "Power and heat are now planning topics",
+        body: "Berkeley Lab reported U.S. data centers used 176 TWh of electricity in 2023, while Utah's proposed Stratos campus shows how hyperscale projects can raise local questions about gigawatt-scale power plants, waste heat, and thermal plumes.",
+        sourceIndexes: [3, 13, 14],
       },
       {
         title: "Water, noise, and diesel backup are quality-of-life topics",
-        body: "The source project links cooling demand, generator testing, constant equipment noise, and diesel exhaust to everyday local impacts that zoning rules can address.",
-        sourceIndexes: [4, 5, 6, 8],
+        body: "Cooling demand, generator testing, constant equipment noise, diesel exhaust, and dry-cooling tradeoffs can all become everyday local impacts that zoning rules and environmental permits can address.",
+        sourceIndexes: [4, 5, 6, 8, 15],
       },
       {
         title: "Michigan communities need approval leverage",
@@ -850,9 +850,9 @@ export const seedTopics: Array<ResearchTopic> = [
       summary:
         "The best time to ask hard questions is before zoning, utility, tax, and infrastructure commitments are locked in.",
       latestDevelopment:
-        "Michigan reporting now tracks moratoria, grid impact, and local resistance around major data-center proposals.",
+        "Utah's Stratos debate added a new warning sign: local approvals can move faster than independent public analysis of power, water, heat, air, and wildlife impacts.",
       nextDecisionPoint:
-        "Whether communities require water, power, diesel, noise, tax, and permanent-jobs details before approvals.",
+        "Whether communities require water, power, waste-heat, air, diesel, noise, tax, and permanent-jobs details before approvals.",
       whoCanAct:
         "Township boards, planning commissions, utility regulators, and residents",
       urgency: "high",
@@ -862,14 +862,14 @@ export const seedTopics: Array<ResearchTopic> = [
       {
         title: "Ask for the biggest power-use number",
         description:
-          "Get peak electric load, daily water demand, backup-generator plans, and noise modeling into the public packet.",
+          "Get peak electric load, daily water demand, waste-heat assumptions, backup-generator plans, and noise modeling into the public packet.",
         audience: "Residents",
         difficulty: "15 minutes",
         urgency: "high",
         ctaLabel: "Open Local Guide",
         ctaUrl: "https://graham.umich.edu/product/michigan-data-centers-guide",
         script:
-          "Before any vote, please publish maximum daily water demand, peak electric load, diesel backup plans, generator testing schedules, and noise modeling.",
+          "Before any vote, please publish maximum daily water demand, peak electric load, waste-heat assumptions, diesel backup plans, generator testing schedules, and noise modeling.",
       },
       {
         title: "Follow the tax breaks and public costs",
@@ -915,6 +915,13 @@ export const seedTopics: Array<ResearchTopic> = [
       },
       {
         date: "2026",
+        title: "Utah Stratos debate exposes heat-island concerns",
+        description:
+          "Salt Lake Tribune coverage and public technical analysis focused attention on gigawatt-scale waste heat, Great Salt Lake vulnerability, water-rights claims, and air-pollution estimates.",
+        sourceIndexes: [13, 14, 15],
+      },
+      {
+        date: "2026",
         title: "Large Michigan proposals escalate local stakes",
         description:
           "Reporting on the Saline Township proposal connected farmland, energy, climate, and local approval politics.",
@@ -942,6 +949,15 @@ export const seedTopics: Array<ResearchTopic> = [
           "Coverage of the proposed OpenAI-Oracle campus shows why approvals need scrutiny before commitments become durable.",
         tag: "Local fight",
       },
+      {
+        title: "Utah Stratos proposal raises heat, water, and air questions",
+        publisher: "The Salt Lake Tribune",
+        publishedAt: "2026-05-07",
+        url: "https://www.sltrib.com/news/environment/2026/05/07/utahs-data-center-could-create/",
+        summary:
+          "Scientists warned that the proposed hyperscale campus could create a major heat-island problem near the Great Salt Lake.",
+        tag: "Utah watch",
+      },
     ],
     modules: [
       {
@@ -951,6 +967,7 @@ export const seedTopics: Array<ResearchTopic> = [
           "The leverage exists before utility and zoning commitments harden",
         body: [
           "Data-center fights are often presented as ordinary land-use decisions, but the real deal stack includes zoning, water withdrawals, sewer capacity, electric load, transmission upgrades, backup generation, abatements, and emergency services.",
+          "The Stratos debate in Utah shows why communities also need waste-heat and air-quality assumptions in the record, especially when projects propose on-site power generation at a scale usually handled by utility planning.",
           "Once a township, utility, and company align on infrastructure assumptions, residents are left debating details after the largest commitments have already become politically expensive to unwind.",
         ],
         bullets: [
@@ -958,7 +975,7 @@ export const seedTopics: Array<ResearchTopic> = [
           "Demand maximum-demand numbers, not average-use talking points.",
           "Make companies disclose who pays for grid, road, water, sewer, and tax costs.",
         ],
-        sourceIndexes: [0, 1, 2, 9, 10],
+        sourceIndexes: [0, 1, 2, 9, 10, 13, 14, 15],
       },
       {
         type: "tracker",
@@ -969,10 +986,18 @@ export const seedTopics: Array<ResearchTopic> = [
           {
             cells: [
               "Electric load",
-              "Peak MW, expansion phases, substation and transmission plans.",
-              "Ratepayer risk and grid reliability depend on maximum demand.",
+              "Peak MW, expansion phases, generation source, substation and transmission plans.",
+              "Ratepayer risk, grid reliability, fuel demand, and air permits depend on maximum demand.",
             ],
-            sourceIndexes: [2, 3, 7],
+            sourceIndexes: [2, 3, 7, 14, 15],
+          },
+          {
+            cells: [
+              "Waste heat",
+              "Thermal-output estimates, cooling design, plume modeling, and wildlife review.",
+              "Large heat releases can become local land-use and ecosystem issues, not just building-engineering details.",
+            ],
+            sourceIndexes: [13, 14],
           },
           {
             cells: [
@@ -980,7 +1005,7 @@ export const seedTopics: Array<ResearchTopic> = [
               "Maximum daily withdrawal, cooling design, discharge and drought assumptions.",
               "A campus can stress local systems before residents see benefits.",
             ],
-            sourceIndexes: [1, 4, 8],
+            sourceIndexes: [1, 4, 8, 15],
           },
           {
             cells: [
@@ -1118,7 +1143,7 @@ export const seedTopics: Array<ResearchTopic> = [
         publisher: "Environmental and Energy Study Institute",
         year: 2026,
         url: "https://www.eesi.org/articles/view/h",
-        note: "Ratepayer-risk overview from the source project.",
+        note: "Ratepayer-risk overview.",
       },
       {
         title: "Researcher explores how data centers affect water supply",
@@ -1156,6 +1181,29 @@ export const seedTopics: Array<ResearchTopic> = [
         year: 2025,
         url: "https://planetdetroit.org/2025/11/dte-openai-saline-township/",
         note: "Climate and energy planning coverage.",
+      },
+      {
+        title:
+          "'Hyperscale' data center could create massive heat island near Great Salt Lake",
+        publisher: "The Salt Lake Tribune",
+        year: 2026,
+        url: "https://www.sltrib.com/news/environment/2026/05/07/utahs-data-center-could-create/",
+        note: "Reporting on Stratos heat-island and Great Salt Lake concerns.",
+      },
+      {
+        title: "The Stratos Project",
+        publisher: "Utah's Next Chapter",
+        year: 2026,
+        url: "https://thestratosproject.com/",
+        note: "Public technical overview of proposed Stratos scale, power, heat, and timeline.",
+      },
+      {
+        title:
+          "Estimated Emissions and Water Consumption from the Proposed Stratos Data Center",
+        publisher: "Utah Clean Energy",
+        year: 2026,
+        url: "https://utahcleanenergy.org/estimated-emissions-and-water-consumption-from-the-proposed-stratos-data-center/",
+        note: "Analysis of likely Stratos gas, NOx, emissions, and water impacts based on limited public information.",
       },
     ],
   },

@@ -4,7 +4,8 @@
     "strict": true,
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./*"]
+      "@/*": ["./*"],
+      "@civicnote/web/*": ["../web/*"]
     },
     "types": ["nativewind/types"]
   },

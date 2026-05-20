@@ -1,11 +1,9 @@
-# Civic Research Hub
+# CivicNote
 
-A TanStack Start + shadcn monorepo scaffold for a combined civic research site.
-The first three seeded topics came from:
-
-- `corruptionincongress`
-- `deflock-michigan`
-- `mi-data-center-fight`
+A TanStack Start + shadcn monorepo scaffold for a civic research site.
+The seeded topics cover congressional stock trading, surveillance oversight,
+data-center infrastructure, glyphosate exposure, Israel/Gaza and U.S.
+influence, and election-rule claims.
 
 ## Structure
 

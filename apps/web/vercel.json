@@ -1,0 +1,5 @@
+{
+  "buildCommand": "cd ../.. && VERCEL=1 pnpm --filter @civicnote/web build",
+  "installCommand": "cd ../.. && pnpm install --frozen-lockfile",
+  "framework": "tanstack-start"
+}

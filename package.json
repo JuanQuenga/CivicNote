@@ -1,13 +1,13 @@
 {
-  "name": "civic-research-hub",
+  "name": "civicnote",
   "version": "0.0.1",
   "private": true,
   "scripts": {
     "build": "turbo build",
     "dev": "turbo dev",
-    "dev:mobile": "pnpm --filter @civic-research-hub/mobile dev",
-    "dev:mobile:tunnel": "pnpm --filter @civic-research-hub/mobile dev:tunnel",
-    "dev:mobile:go": "pnpm --filter @civic-research-hub/mobile dev:go",
+    "dev:mobile": "pnpm --filter @civicnote/mobile dev",
+    "dev:mobile:tunnel": "pnpm --filter @civicnote/mobile dev:tunnel",
+    "dev:mobile:go": "pnpm --filter @civicnote/mobile dev:go",
     "lint": "turbo lint",
     "format": "turbo format",
     "typecheck": "turbo typecheck"

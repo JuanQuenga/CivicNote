@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react"
 import * as SecureStore from "expo-secure-store"
 
-const STORAGE_KEY = "civic-research-hub:saved-topics"
+const STORAGE_KEY = "civicnote:saved-topics"
 
 export function useSavedTopics() {
   const [savedSlugs, setSavedSlugs] = useState<Array<string>>([])

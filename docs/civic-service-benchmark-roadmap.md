@@ -1,10 +1,10 @@
-# Civic Research Hub benchmark and service roadmap
+# CivicNote benchmark and service roadmap
 
 Date: 2026-05-19
 
 ## Current product baseline
 
-Civic Research Hub already has a useful foundation: topic dossiers, source-linked stats and findings, claim ledgers, timelines, updates, issue urgency, and action scripts shared across web and mobile. The current seeded topics are:
+CivicNote already has a useful foundation: topic dossiers, source-linked stats and findings, claim ledgers, timelines, updates, issue urgency, and action scripts shared across web and mobile. The current seeded topics are:
 
 - Congressional stock trading and federal ethics
 - Michigan surveillance infrastructure

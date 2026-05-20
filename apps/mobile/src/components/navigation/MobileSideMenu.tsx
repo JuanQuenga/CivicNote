@@ -99,7 +99,7 @@ function SideMenuContent({
     >
       <View className="px-5">
         <Text className="text-xs font-bold tracking-[2px] text-red-400 uppercase">
-          Civic Research Hub
+          CivicNote
         </Text>
         <Text className="mt-3 text-3xl leading-8 font-bold text-white">
           Plain-English notes for issues that need attention.

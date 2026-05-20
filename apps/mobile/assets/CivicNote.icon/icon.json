@@ -1,0 +1,32 @@
+{
+  "groups" : [
+    {
+      "layers" : [
+        {
+          "blend-mode" : "normal",
+          "image-name" : "adaptive-icon.svg",
+          "name" : "adaptive-icon"
+        },
+        {
+          "glass" : false,
+          "image-name" : "icon-composer-background.svg",
+          "name" : "icon-composer-background"
+        }
+      ],
+      "shadow" : {
+        "kind" : "neutral",
+        "opacity" : 0.5
+      },
+      "translucency" : {
+        "enabled" : true,
+        "value" : 0.5
+      }
+    }
+  ],
+  "supported-platforms" : {
+    "circles" : [
+      "watchOS"
+    ],
+    "squares" : "shared"
+  }
+}

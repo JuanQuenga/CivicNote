@@ -62,7 +62,7 @@ function RootNavigation() {
         >
           <Stack.Screen
             name="index"
-            options={{ title: "Civic Research Hub", headerShown: false }}
+            options={{ title: "CivicNote", headerShown: false }}
           />
           <Stack.Screen
             name="topics/index"

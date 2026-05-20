@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "Civic Research Hub",
-    "slug": "civic-research-hub-mobile",
-    "scheme": "civicresearchhub",
+    "name": "CivicNote",
+    "slug": "civicnote-mobile",
+    "scheme": "civicnote",
     "version": "1.0.0",
     "orientation": "portrait",
     "userInterfaceStyle": "dark",
@@ -10,35 +10,44 @@
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
-      "backgroundColor": "#F7F4EE"
+      "backgroundColor": "#D9151E"
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "org.civicresearchhub.mobile",
+      "icon": "./assets/icon.png",
+      "bundleIdentifier": "org.civicnote.mobile",
       "infoPlist": {
-        "NSPhotoLibraryUsageDescription": "Civic Research Hub uses your photo library only when you choose an image to attach to research notes."
+        "NSPhotoLibraryUsageDescription": "CivicNote uses your photo library only when you choose an image to attach to research notes."
       }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#F7F4EE"
+        "backgroundColor": "#D9151E"
       },
-      "package": "org.civicresearchhub.mobile",
-      "permissions": []
+      "package": "org.civicnote.mobile",
+      "permissions": [
+        "android.permission.RECORD_AUDIO"
+      ]
     },
     "plugins": [
       "expo-router",
       [
         "expo-image-picker",
         {
-          "photosPermission": "Civic Research Hub uses your photo library only when you choose an image to attach to research notes."
+          "photosPermission": "CivicNote uses your photo library only when you choose an image to attach to research notes."
         }
       ]
     ],
     "experiments": {
       "autolinkingModuleResolution": true,
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "a98349dd-8f69-4f43-bfc7-d22b646e0b5b"
+      }
     }
   }
 }

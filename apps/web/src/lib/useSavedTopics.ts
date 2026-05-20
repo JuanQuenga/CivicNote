@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react"
 
-const STORAGE_KEY = "civic-research-hub:saved-topics"
+const STORAGE_KEY = "civicnote:saved-topics"
 
 function readSavedTopics() {
   if (typeof window === "undefined") return []
