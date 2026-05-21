@@ -8,6 +8,7 @@ import {
   TopicModuleView,
   urgencyClasses,
 } from "@/src/components/topics/MobileTopicComponents"
+import { SurveillanceMapLauncher } from "@/src/components/topics/SurveillanceMapOverlay"
 
 export default function TopicScreen() {
   const { slug } = useLocalSearchParams<{ slug: string }>()
@@ -135,6 +136,7 @@ export default function TopicScreen() {
             Last checked {topic.statusBrief.lastChecked}
           </Text>
         </View>
+        <SurveillanceMapLauncher topicSlug={topic.slug} />
 
         {topic.updates.length ? (
           <View className="gap-4 px-5 py-6">

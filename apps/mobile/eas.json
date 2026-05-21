@@ -18,10 +18,20 @@
       "ios": {
         "simulator": false
       }
+    },
+    "testflight": {
+      "autoIncrement": true,
+      "environment": "development",
+      "ios": {
+        "simulator": false
+      }
     }
   },
   "submit": {
     "production": {
+      "ios": {}
+    },
+    "testflight": {
       "ios": {}
     }
   },

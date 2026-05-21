@@ -49,7 +49,23 @@ If you explicitly want Expo Go over a tunnel, use:
 pnpm dev:mobile:go:tunnel
 ```
 
-No mobile-specific environment variables are required.
+The TestFlight build profile pulls EAS environment variables from the
+`development` environment while still producing a store-compatible iOS archive.
+Use Expo public variables for values that must be embedded in the JavaScript
+bundle:
+
+```bash
+cd apps/mobile
+pnpm dlx eas-cli@latest env:create \
+  --environment development \
+  --name EXPO_PUBLIC_CONVEX_URL \
+  --value "https://your-convex-deployment.convex.cloud" \
+  --visibility plaintext
+```
+
+If you already have `VITE_CONVEX_URL` configured for the web app, copy the same
+URL value into `EXPO_PUBLIC_CONVEX_URL` for mobile. Expo only exposes variables
+prefixed with `EXPO_PUBLIC_` to app code.
 
 ## Native build prerequisites
 
@@ -59,7 +75,9 @@ No mobile-specific environment variables are required.
 
 ## TestFlight
 
-The app is configured for EAS iOS production builds in `eas.json`.
+The app is configured for EAS iOS TestFlight builds in `eas.json`. The
+`testflight` profile uses the `development` EAS environment for variables, but
+it is not a development-client build.
 
 From `apps/mobile`, sign in to Expo and build the iOS archive:
 

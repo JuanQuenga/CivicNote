@@ -19,8 +19,8 @@
     "preweb": "pnpm icons:export",
     "web": "expo start --web",
     "prebuild:ios:testflight": "pnpm icons:export",
-    "build:ios:testflight": "pnpm dlx eas-cli@latest build --platform ios --profile production",
-    "submit:ios:testflight": "pnpm dlx eas-cli@latest submit --platform ios --profile production --latest",
+    "build:ios:testflight": "pnpm dlx eas-cli@latest build --platform ios --profile testflight",
+    "submit:ios:testflight": "pnpm dlx eas-cli@latest submit --platform ios --profile testflight --latest",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

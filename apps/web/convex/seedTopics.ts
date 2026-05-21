@@ -439,20 +439,20 @@ export const seedTopics: Array<ResearchTopic> = [
   {
     slug: "michigan-surveillance-stack",
     topicNumber: "02",
-    title: "Map Michigan's Surveillance Stack",
+    title: "Map America's Surveillance Stack",
     shortTitle: "Surveillance Stack",
     tagline:
       "Flock cameras are the visible layer. The networked data system runs deeper.",
     summary:
-      "This civil-liberties topic tracks automatic license plate readers, private camera networks, real-time crime centers, data fusion platforms, and AI interfaces that make routine movement searchable across agencies.",
-    region: "Michigan",
-    status: "Local surveillance oversight",
+      "This civil-liberties topic tracks automatic license plate readers, private camera networks, real-time crime centers, data fusion platforms, and AI interfaces that make routine movement searchable across agencies and state lines.",
+    region: "United States",
+    status: "State and local surveillance oversight",
     theme: "surveillance",
     updatedAt: "2026-05-13",
     stats: [
       {
         value: "125+",
-        label: "Michigan cities and counties reported using ALPR cameras",
+        label: "Michigan cities and counties reported using ALPR cameras, with similar deployments tracked nationwide",
         sourceIndexes: [0],
       },
       {
@@ -486,8 +486,8 @@ export const seedTopics: Array<ResearchTopic> = [
     ],
     findings: [
       {
-        title: "Michigan deployment is already widespread",
-        body: "State reporting says more than 125 Michigan cities and counties use ALPR cameras, while statewide legal guardrails remain incomplete.",
+        title: "ALPR deployment is already widespread",
+        body: "State reporting says more than 125 Michigan cities and counties use ALPR cameras, while crowdsourced maps and public records show similar systems across the country.",
         sourceIndexes: [0, 5],
       },
       {
@@ -506,7 +506,7 @@ export const seedTopics: Array<ResearchTopic> = [
       summary:
         "This is not just about approving cameras. It is about retention, sharing, audit logs, outside access, and the AI tools that can get added later.",
       latestDevelopment:
-        "Michigan reporting and civil-liberties groups now show ALPRs as part of a wider searchable surveillance system.",
+        "State reporting, crowdsourced camera maps, and civil-liberties groups now show ALPRs as part of a wider searchable surveillance system.",
       nextDecisionPoint:
         "Whether local governments require public approval before adding AI, data-sharing, real-time crime center, or facial-recognition tools.",
       whoCanAct:
@@ -522,7 +522,7 @@ export const seedTopics: Array<ResearchTopic> = [
         audience: "Residents",
         difficulty: "20 minutes",
         urgency: "high",
-        ctaLabel: "Read Michigan Reporting",
+        ctaLabel: "Read ALPR Reporting",
         ctaUrl:
           "https://www.michiganpublic.org/criminal-justice-legal-system/2026-04-08/police-say-license-plate-cameras-help-them-solve-crimes-but-residents-and-lawmakers-raise-concerns-over-privacy-data-sharing",
         script:
@@ -565,9 +565,9 @@ export const seedTopics: Array<ResearchTopic> = [
       },
       {
         date: "2026",
-        title: "Michigan ALPR deployment is publicly documented",
+        title: "ALPR deployment is publicly documented",
         description:
-          "State reporting placed ALPR use across more than 125 Michigan cities and counties.",
+          "State reporting placed ALPR use across more than 125 Michigan cities and counties, while public mapping projects track reported ALPR locations across all states.",
         sourceIndexes: [0, 5],
       },
       {
@@ -580,7 +580,7 @@ export const seedTopics: Array<ResearchTopic> = [
     ],
     updates: [
       {
-        title: "Michigan ALPR privacy concerns move into mainstream reporting",
+        title: "ALPR privacy concerns move into mainstream reporting",
         publisher: "Michigan Public",
         publishedAt: "2026-04-08",
         url: "https://www.michiganpublic.org/criminal-justice-legal-system/2026-04-08/police-say-license-plate-cameras-help-them-solve-crimes-but-residents-and-lawmakers-raise-concerns-over-privacy-data-sharing",
@@ -605,7 +605,7 @@ export const seedTopics: Array<ResearchTopic> = [
         title: "The public sees cameras, but the product is query power",
         body: [
           "A license-plate reader debate that stops at camera placement misses the main civil-liberties problem: who can search the scans, which hotlists trigger stops, how long the records live, and what other databases get connected later.",
-          "The Michigan issue is therefore a stack: ALPR collection, vendor-hosted storage, outside-agency access, audit logs, fusion platforms, real-time crime center integration, and AI search interfaces.",
+          "The national issue is therefore a stack: ALPR collection, vendor-hosted storage, outside-agency access, audit logs, fusion platforms, real-time crime center integration, and AI search interfaces.",
         ],
         bullets: [
           "Camera approval should not silently authorize data fusion.",
@@ -626,7 +626,7 @@ export const seedTopics: Array<ResearchTopic> = [
               "Routine travel becomes searchable location history.",
               "What is captured, retained, and deleted?",
             ],
-            sourceIndexes: [0, 5],
+            sourceIndexes: [0, 5, 8],
           },
           {
             cells: [
@@ -664,7 +664,7 @@ export const seedTopics: Array<ResearchTopic> = [
           {
             label: "Deployment scale",
             evidence:
-              "Michigan reporting places ALPR use across more than 125 local governments.",
+              "Michigan reporting places ALPR use across more than 125 local governments, and public camera maps track reported ALPR/Flock locations nationally.",
             caveat:
               "Counts change quickly as contracts are signed, cancelled, or expanded.",
             sourceIndexes: [0, 5],
@@ -776,6 +776,13 @@ export const seedTopics: Array<ResearchTopic> = [
         year: 2026,
         url: "https://www.clearview.ai/clearview-2-0",
         note: "Vendor page describing facial-recognition search.",
+      },
+      {
+        title: "DeFlock ALPR Map",
+        publisher: "DeFlock / ALPR Watch",
+        year: 2026,
+        url: "https://deflock.me/map",
+        note: "Crowdsourced national map for reported ALPR and Flock camera locations.",
       },
     ],
   },
