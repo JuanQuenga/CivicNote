@@ -354,19 +354,19 @@ const cameraClusters: Array<CameraCluster> = [
   },
 ]
 
-const DARK_MAP_STYLE = [
-  { elementType: "geometry", stylers: [{ color: "#161616" }] },
-  { elementType: "labels.text.fill", stylers: [{ color: "#8A8A8A" }] },
-  { elementType: "labels.text.stroke", stylers: [{ color: "#0A0A0B" }] },
+const CIVIC_MAP_STYLE = [
+  { elementType: "geometry", stylers: [{ color: "#f7f4ee" }] },
+  { elementType: "labels.text.fill", stylers: [{ color: "#52525b" }] },
+  { elementType: "labels.text.stroke", stylers: [{ color: "#ffffff" }] },
   {
     featureType: "administrative",
     elementType: "geometry.stroke",
-    stylers: [{ color: "#2A2A2A" }],
+    stylers: [{ color: "#d4d4d8" }],
   },
   {
     featureType: "landscape",
     elementType: "geometry",
-    stylers: [{ color: "#121212" }],
+    stylers: [{ color: "#f3f0e8" }],
   },
   {
     featureType: "poi",
@@ -375,7 +375,7 @@ const DARK_MAP_STYLE = [
   {
     featureType: "road",
     elementType: "geometry",
-    stylers: [{ color: "#242424" }],
+    stylers: [{ color: "#ffffff" }],
   },
   {
     featureType: "road",
@@ -389,7 +389,7 @@ const DARK_MAP_STYLE = [
   {
     featureType: "water",
     elementType: "geometry",
-    stylers: [{ color: "#050505" }],
+    stylers: [{ color: "#dbeafe" }],
   },
 ]
 
@@ -607,7 +607,7 @@ function SurveillanceMap({ onClose }: { onClose: () => void }) {
   return (
     <View style={styles.container}>
       <MapView
-        customMapStyle={DARK_MAP_STYLE}
+        customMapStyle={CIVIC_MAP_STYLE}
         initialRegion={NATIONAL_REGION}
         mapType="standard"
         provider={Platform.OS === "android" ? PROVIDER_GOOGLE : undefined}
@@ -617,7 +617,7 @@ function SurveillanceMap({ onClose }: { onClose: () => void }) {
         showsPointsOfInterest={false}
         showsUserLocation={Boolean(userLocation)}
         style={StyleSheet.absoluteFillObject}
-        userInterfaceStyle="dark"
+        userInterfaceStyle="light"
         onPress={() => setSelectedClusterId(null)}
       >
         {Platform.OS === "android" && visibleClusters.length ? (
@@ -691,14 +691,14 @@ function SurveillanceMap({ onClose }: { onClose: () => void }) {
                 void Linking.openURL(LIVE_ALPR_MAP_URL)
               }}
             >
-              <ExternalLink color="#FAFAFA" size={20} />
+              <ExternalLink color="#18181b" size={20} />
             </Pressable>
             <Pressable
               accessibilityLabel="Close map"
               style={styles.headerButton}
               onPress={onClose}
             >
-              <X color="#FAFAFA" size={21} />
+              <X color="#18181b" size={21} />
             </Pressable>
           </View>
         </View>
@@ -792,14 +792,14 @@ function MobileMapBottomPanel({
               style={styles.iconButton}
               onPress={onRefreshLocation}
             >
-              <LocateFixed color="#FAFAFA" size={19} />
+              <LocateFixed color="#18181b" size={19} />
             </Pressable>
             <Pressable
               accessibilityLabel="Close map"
               style={styles.closeButton}
               onPress={onClose}
             >
-              <X color="#FAFAFA" size={18} />
+              <X color="#18181b" size={18} />
               <Text style={styles.closeButtonText}>Close</Text>
             </Pressable>
           </View>
@@ -914,14 +914,14 @@ const styles = StyleSheet.create({
   sheetSurface: {
     flex: 1,
     overflow: "hidden",
-    backgroundColor: "#000000",
+    backgroundColor: "#f7f4ee",
   },
   sheetContent: {
     flex: 1,
   },
   container: {
     flex: 1,
-    backgroundColor: "#000000",
+    backgroundColor: "#f7f4ee",
   },
   topHeader: {
     position: "absolute",
@@ -942,12 +942,12 @@ const styles = StyleSheet.create({
     gap: 8,
     borderRadius: 22,
     borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.10)",
-    backgroundColor: "rgba(3,3,4,0.82)",
+    borderColor: "#d4d4d8",
+    backgroundColor: "rgba(255,255,255,0.92)",
     paddingHorizontal: 14,
   },
   headerBadgeText: {
-    color: "#FAFAFA",
+    color: "#18181b",
     fontSize: 13,
     fontWeight: "800",
   },
@@ -963,8 +963,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     borderRadius: 22,
     borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.10)",
-    backgroundColor: "rgba(3,3,4,0.82)",
+    borderColor: "#d4d4d8",
+    backgroundColor: "rgba(255,255,255,0.92)",
   },
   bottomControls: {
     position: "absolute",
@@ -976,12 +976,12 @@ const styles = StyleSheet.create({
     gap: 12,
     borderRadius: 38,
     borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.10)",
-    backgroundColor: "rgba(3,3,4,0.96)",
+    borderColor: "#d4d4d8",
+    backgroundColor: "rgba(255,255,255,0.96)",
     padding: 14,
     shadowColor: "#000000",
     shadowOffset: { width: 0, height: 16 },
-    shadowOpacity: 0.48,
+    shadowOpacity: 0.18,
     shadowRadius: 30,
     elevation: 18,
   },
@@ -1005,7 +1005,7 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   titleText: {
-    color: "#FAFAFA",
+    color: "#18181b",
     fontSize: 15,
     fontWeight: "800",
   },
@@ -1017,7 +1017,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
   statPillText: {
-    color: "#FAFAFA",
+    color: "#18181b",
     fontSize: 12,
     fontWeight: "800",
   },
@@ -1028,8 +1028,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     borderRadius: 22,
     borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.10)",
-    backgroundColor: "#0A0A0B",
+    borderColor: "#d4d4d8",
+    backgroundColor: "#ffffff",
   },
   closeButton: {
     height: 40,
@@ -1039,12 +1039,12 @@ const styles = StyleSheet.create({
     gap: 6,
     borderRadius: 22,
     borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.10)",
-    backgroundColor: "#0A0A0B",
+    borderColor: "#d4d4d8",
+    backgroundColor: "#ffffff",
     paddingHorizontal: 14,
   },
   closeButtonText: {
-    color: "#FAFAFA",
+    color: "#18181b",
     fontSize: 13,
     fontWeight: "700",
   },
@@ -1062,8 +1062,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     borderRadius: 18,
     borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.10)",
-    backgroundColor: "#0A0A0B",
+    borderColor: "#d4d4d8",
+    backgroundColor: "#ffffff",
     paddingHorizontal: 12,
   },
   selectedStateChip: {
@@ -1071,7 +1071,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(241, 26, 35, 0.22)",
   },
   stateChipText: {
-    color: "#FAFAFA",
+    color: "#18181b",
     fontSize: 12,
     fontWeight: "900",
   },
@@ -1085,19 +1085,19 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     borderRadius: 26,
     borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.10)",
-    backgroundColor: "#0A0A0B",
+    borderColor: "#d4d4d8",
+    backgroundColor: "#ffffff",
     paddingHorizontal: 14,
     paddingVertical: 10,
   },
   itemTitle: {
-    color: "#FAFAFA",
+    color: "#18181b",
     fontSize: 14,
     fontWeight: "800",
   },
   itemMeta: {
     marginTop: 3,
-    color: "#A1A1AA",
+    color: "#71717a",
     fontSize: 12,
     fontWeight: "600",
   },
@@ -1110,7 +1110,7 @@ const styles = StyleSheet.create({
   },
   footerText: {
     flex: 1,
-    color: "#A1A1AA",
+    color: "#71717a",
     fontSize: 12,
     fontWeight: "600",
   },
@@ -1122,7 +1122,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
   },
   liveMapButtonText: {
-    color: "#FAFAFA",
+    color: "#ffffff",
     fontSize: 12,
     fontWeight: "800",
   },
@@ -1133,8 +1133,8 @@ const styles = StyleSheet.create({
     gap: 12,
     borderRadius: 24,
     borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.10)",
-    backgroundColor: "#0A0A0B",
+    borderColor: "#d4d4d8",
+    backgroundColor: "#ffffff",
     padding: 12,
   },
   cardIcon: {
@@ -1146,7 +1146,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(241, 26, 35, 0.18)",
   },
   cardIconText: {
-    color: "#FAFAFA",
+    color: "#18181b",
     fontSize: 16,
     fontWeight: "900",
   },
@@ -1155,13 +1155,13 @@ const styles = StyleSheet.create({
     minWidth: 0,
   },
   cardTitle: {
-    color: "#EDEDED",
+    color: "#18181b",
     fontSize: 15,
     fontWeight: "800",
   },
   cardSubtitle: {
     marginTop: 2,
-    color: "#A1A1AA",
+    color: "#71717a",
     fontSize: 12,
     fontWeight: "600",
   },
