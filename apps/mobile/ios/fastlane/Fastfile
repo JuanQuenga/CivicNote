@@ -1,0 +1,73 @@
+default_platform(:ios)
+
+PROJECT = "CivicNote.xcodeproj"
+SCHEME = "CivicNote"
+
+platform :ios do
+  desc "Simulator build + unit and UI smoke tests"
+  lane :verify do
+    run_tests(
+      project: PROJECT,
+      scheme: SCHEME,
+      devices: ["iPhone 16 Pro"],
+      xcargs: "CODE_SIGNING_ALLOWED=NO"
+    )
+  end
+
+  desc "Capture deterministic App Store screenshots via UI tests"
+  lane :screenshots do
+    capture_screenshots(project: PROJECT, scheme: SCHEME)
+  end
+
+  desc "Frame raw screenshots with device art and marketing headlines"
+  lane :frame do
+    frame_screenshots(path: "./fastlane/screenshots")
+  end
+
+  desc "Archive Release and upload to TestFlight"
+  lane :beta do
+    ensure_signing_configured
+    increment_build_number(xcodeproj: PROJECT)
+    build_app(
+      project: PROJECT,
+      scheme: SCHEME,
+      configuration: "Release",
+      export_method: "app-store"
+    )
+    upload_to_testflight(skip_waiting_for_build_processing: true)
+  end
+
+  desc "Upload the validated build, metadata, and screenshots to App Store Connect (no auto-release)"
+  lane :release do
+    ensure_signing_configured
+    build_app(
+      project: PROJECT,
+      scheme: SCHEME,
+      configuration: "Release",
+      export_method: "app-store"
+    )
+    upload_to_app_store(
+      submit_for_review: false,
+      automatic_release: false,
+      precheck_include_in_app_purchases: false,
+      overwrite_screenshots: true,
+      run_precheck_before_submit: true
+    )
+  end
+
+  private_lane :ensure_signing_configured do
+    if ENV["CIVICNOTE_TEAM_ID"].to_s.empty?
+      UI.user_error!(
+        "Set CIVICNOTE_TEAM_ID / CIVICNOTE_APPLE_ID (see fastlane/Appfile) " \
+        "and configure an App Store Connect API key before uploading."
+      )
+    end
+    if ENV["APP_STORE_CONNECT_API_KEY_KEY_ID"]
+      app_store_connect_api_key(
+        key_id: ENV.fetch("APP_STORE_CONNECT_API_KEY_KEY_ID"),
+        issuer_id: ENV.fetch("APP_STORE_CONNECT_API_KEY_ISSUER_ID"),
+        key_filepath: ENV.fetch("APP_STORE_CONNECT_API_KEY_KEY_FILEPATH")
+      )
+    end
+  end
+end

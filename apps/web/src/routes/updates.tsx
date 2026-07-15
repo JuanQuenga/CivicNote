@@ -2,6 +2,7 @@ import { useState } from "react"
 import { createFileRoute } from "@tanstack/react-router"
 
 import { CivicAlertCard } from "@/components/CivicAlertCard"
+import { CivicFeedStatus } from "@/components/CivicFeedStatus"
 import { SiteHeader } from "@/components/SiteHeader"
 import { useCivicPreferences } from "@/lib/useCivicPreferences"
 import { useLiveCivicAlerts } from "@/lib/useLiveCivicAlerts"
@@ -15,7 +16,7 @@ type FeedFilter = (typeof feedFilters)[number]
 function UpdatesPage() {
   const { savedSlugs } = useSavedTopics()
   const { preferences } = useCivicPreferences()
-  const { alerts, isLive } = useLiveCivicAlerts(preferences.state)
+  const { alerts, fetchedAt, status } = useLiveCivicAlerts(preferences.state)
   const [filter, setFilter] = useState<FeedFilter>("all")
 
   const filteredAlerts = alerts.filter((alert) => {
@@ -35,11 +36,12 @@ function UpdatesPage() {
       <main>
         <section className="overflow-hidden border-b border-zinc-800 bg-zinc-950 text-white">
           <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 sm:py-20 lg:px-8">
-            <div className="flex flex-wrap items-center gap-2">
-              <span className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1.5 text-[11px] font-black text-zinc-200">
-                <span className="size-1.5 rounded-full bg-emerald-500" />
-                {isLive ? "Live monitor connected" : "Verified library mode"}
-              </span>
+            <div className="flex flex-wrap items-start justify-between gap-3">
+              <CivicFeedStatus
+                status={status}
+                fetchedAt={fetchedAt}
+                dark
+              />
               <span className="rounded-full bg-red-500/15 px-3 py-1.5 text-[11px] font-black text-red-300">
                 {alerts.length} verified developments
               </span>

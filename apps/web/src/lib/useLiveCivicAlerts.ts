@@ -1,10 +1,13 @@
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { ConvexHttpClient } from "convex/browser"
 import { makeFunctionReference } from "convex/server"
 
 import type { CivicAlert } from "@/lib/service"
 import { getCivicAlerts } from "@/lib/service"
+import { readAlertFeed, writeAlertFeed } from "@/lib/offlineFeedStore"
 import { topics } from "@/lib/topics"
+
+export type CivicFeedStatus = "live" | "stale" | "offline" | "loading"
 
 type BackendEvent = {
   key: string
@@ -28,6 +31,15 @@ type BackendEvent = {
   publishedAt: string
   sourceDocumentIds: Array<string>
 }
+
+type FeedResult = {
+  key: string
+  alerts: Array<CivicAlert>
+  fetchedAt: number | null
+  refreshFailed: boolean
+}
+
+const STALE_AFTER_MS = 15 * 60 * 1000
 
 const listPublishedRef = makeFunctionReference<
   "query",
@@ -99,54 +111,129 @@ const stateCodes: Record<string, string> = {
   "District of Columbia": "dc",
 }
 
-export function useLiveCivicAlerts(state: string) {
-  const [liveResult, setLiveResult] = useState<{
-    jurisdictionKey: string | undefined
-    alerts: Array<CivicAlert>
-  } | null>(null)
+export function useLiveCivicAlerts(state: string): {
+  alerts: Array<CivicAlert>
+  fetchedAt: number | null
+  status: CivicFeedStatus
+} {
   const jurisdictionKey = stateCodes[state]
     ? `us-${stateCodes[state]}`
     : undefined
+  const feedKey = jurisdictionKey ?? "us"
+  const relevantFallback = useMemo(
+    () =>
+      !state || state === "Michigan"
+        ? fallbackAlerts
+        : fallbackAlerts.filter((alert) => alert.scope === "National"),
+    [state]
+  )
+  const [online, setOnline] = useState(true)
+  const [clock, setClock] = useState(() => Date.now())
+  const [result, setResult] = useState<FeedResult>({
+    key: feedKey,
+    alerts: relevantFallback,
+    fetchedAt: null,
+    refreshFailed: false,
+  })
 
   useEffect(() => {
-    if (!client) return
+    const updateConnection = () => setOnline(navigator.onLine)
+    updateConnection()
+    window.addEventListener("online", updateConnection)
+    window.addEventListener("offline", updateConnection)
+    return () => {
+      window.removeEventListener("online", updateConnection)
+      window.removeEventListener("offline", updateConnection)
+    }
+  }, [])
+
+  useEffect(() => {
+    const interval = window.setInterval(() => setClock(Date.now()), 60_000)
+    return () => window.clearInterval(interval)
+  }, [])
+
+  useEffect(() => {
     let active = true
-    const refresh = () => {
-      client
-        .query(listPublishedRef, {
+
+    const refresh = async () => {
+      if (!client || !online) return
+      try {
+        const events = await client.query(listPublishedRef, {
           jurisdictionKeys: jurisdictionKey ? [jurisdictionKey] : undefined,
           limit: 100,
         })
-        .then((events) => {
-          if (active) {
-            setLiveResult({
-              jurisdictionKey,
-              alerts: events.map(toCivicAlert),
-            })
-          }
+        if (!active) return
+        const fetchedAt = Date.now()
+        const alerts = events.map(toCivicAlert)
+        setResult({
+          key: feedKey,
+          alerts,
+          fetchedAt,
+          refreshFailed: false,
         })
-        .catch(() => {
-          if (active) setLiveResult(null)
-        })
+        await writeAlertFeed({ key: feedKey, alerts, fetchedAt })
+      } catch {
+        if (active) {
+          setResult((current) => ({
+            ...(current.key === feedKey
+              ? current
+              : {
+                  key: feedKey,
+                  alerts: relevantFallback,
+                  fetchedAt: null,
+                }),
+            refreshFailed: true,
+          }))
+        }
+      }
     }
-    refresh()
-    const interval = window.setInterval(refresh, 60_000)
+
+    const hydrateThenRefresh = async () => {
+      const cached = await readAlertFeed(feedKey)
+      if (!active) return
+      if (cached) {
+        setResult({ ...cached, refreshFailed: false })
+      } else {
+        setResult({
+          key: feedKey,
+          alerts: relevantFallback,
+          fetchedAt: null,
+          refreshFailed: false,
+        })
+      }
+      await refresh()
+    }
+
+    void hydrateThenRefresh()
+    const interval = window.setInterval(() => void refresh(), 60_000)
     return () => {
       active = false
       window.clearInterval(interval)
     }
-  }, [jurisdictionKey])
+  }, [feedKey, jurisdictionKey, online, relevantFallback])
 
-  const currentResult =
-    liveResult?.jurisdictionKey === jurisdictionKey ? liveResult : null
-  const relevantFallback =
-    !state || state === "Michigan"
-      ? fallbackAlerts
-      : fallbackAlerts.filter((alert) => alert.scope === "National")
+  const current =
+    result.key === feedKey
+      ? result
+      : {
+          key: feedKey,
+          alerts: relevantFallback,
+          fetchedAt: null,
+          refreshFailed: false,
+        }
+  const age = current.fetchedAt ? clock - current.fetchedAt : Number.POSITIVE_INFINITY
+  const status: CivicFeedStatus = !online
+    ? "offline"
+    : !current.fetchedAt && client && !current.refreshFailed
+      ? "loading"
+      : !client || current.refreshFailed || age > STALE_AFTER_MS
+        ? "stale"
+        : "live"
 
   return {
-    alerts: currentResult?.alerts ?? relevantFallback,
-    isLive: currentResult !== null,
+    alerts: current.alerts,
+    fetchedAt: current.fetchedAt,
+    status,
   }
 }
 

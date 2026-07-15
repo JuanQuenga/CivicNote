@@ -1,6 +1,7 @@
 import { v } from "convex/values"
 
 import { internalMutation } from "./_generated/server"
+import { jurisdictionForRegion, normalizeRegionCode } from "./lib/installations"
 import { enforceRateLimit } from "./rateLimit"
 
 const cadence = v.union(
@@ -47,23 +48,19 @@ export const register = internalMutation({
       : []
 
     if (regionCode) {
-      const key = jurisdictionKeys[0]
-      if (key) {
-        const existingJurisdiction = await ctx.db
-          .query("jurisdictions")
-          .withIndex("by_key", (q) => q.eq("key", key))
-          .unique()
-        if (!existingJurisdiction) {
-          await ctx.db.insert("jurisdictions", {
-            key,
-            name: regionCode === "MI" ? "Michigan" : regionCode,
-            kind: "state",
-            countryCode: "US",
-            stateCode: regionCode,
-            parentKey: "us",
-            timezone: regionCode === "MI" ? "America/Detroit" : "UTC",
-          })
-        }
+      const jurisdiction = jurisdictionForRegion(regionCode)
+      const existingJurisdiction = await ctx.db
+        .query("jurisdictions")
+        .withIndex("by_key", (q) => q.eq("key", jurisdiction.key))
+        .unique()
+      if (!existingJurisdiction) {
+        await ctx.db.insert("jurisdictions", {
+          ...jurisdiction,
+          kind: "state",
+          countryCode: "US",
+          stateCode: regionCode,
+          parentKey: "us",
+        })
       }
     }
 
@@ -101,6 +98,7 @@ export const register = internalMutation({
     const device = {
       profileId,
       token: args.token,
+      provider: "expo" as const,
       platform: args.platform,
       appVersion: cleanOptional(args.appVersion, 50),
       deviceLabel: cleanOptional(args.locationLabel, 100),
@@ -164,11 +162,6 @@ export const register = internalMutation({
     return { profileId, subscriptions: activeSubscriptions, jurisdictionKeys }
   },
 })
-
-function normalizeRegionCode(value: string | undefined) {
-  const code = value?.trim().toUpperCase()
-  return code && /^[A-Z]{2}$/.test(code) ? code : undefined
-}
 
 function cleanOptional(value: string | undefined, maxLength: number) {
   const cleaned = value?.trim()

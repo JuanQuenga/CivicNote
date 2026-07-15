@@ -1,0 +1,32 @@
+{
+  "default": {
+    "title": {
+      "color": "#1c1917"
+    },
+    "background": "#f8f5ef",
+    "padding": 60,
+    "show_complete_frame": true
+  },
+  "data": [
+    {
+      "filter": "Today",
+      "title": { "text": "Know before they vote" }
+    },
+    {
+      "filter": "Detail",
+      "title": { "text": "Every alert backed by evidence" }
+    },
+    {
+      "filter": "Topics",
+      "title": { "text": "Follow the issues you care about" }
+    },
+    {
+      "filter": "NearYou",
+      "title": { "text": "Local decisions, before they happen" }
+    },
+    {
+      "filter": "Settings",
+      "title": { "text": "Alerts without the noise" }
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+name: CI
+
+on:
+  push:
+    branches: [master, release/**]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  web:
+    name: Web + Convex checks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter @civicnote/web lint
+      - run: pnpm --filter @civicnote/web typecheck
+      - run: pnpm --filter @civicnote/web build
+
+  ios:
+    name: iOS simulator build + tests
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build (unsigned)
+        run: |
+          xcodebuild \
+            -project apps/mobile/ios/CivicNote.xcodeproj \
+            -scheme CivicNote \
+            -sdk iphonesimulator \
+            -destination 'platform=iOS Simulator,name=iPhone 16 Pro' \
+            CODE_SIGNING_ALLOWED=NO \
+            build
+      - name: Unit tests
+        run: |
+          xcodebuild \
+            -project apps/mobile/ios/CivicNote.xcodeproj \
+            -scheme CivicNote \
+            -sdk iphonesimulator \
+            -destination 'platform=iOS Simulator,name=iPhone 16 Pro' \
+            CODE_SIGNING_ALLOWED=NO \
+            test

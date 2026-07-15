@@ -6,6 +6,7 @@ import {
   internalMutation,
   internalQuery,
 } from "./_generated/server"
+import { deviceProvider } from "./lib/pushProviders"
 import { enforceRateLimit } from "./rateLimit"
 import type { MutationCtx } from "./_generated/server"
 import type { Doc, Id } from "./_generated/dataModel"
@@ -19,7 +20,12 @@ type ClaimedDelivery = {
   candidateId: Id<"notificationCandidates">
   deliveryId: Id<"notificationDeliveries">
   deviceId: Id<"pushDevices">
+  provider: "expo" | "apns" | "webpush"
   token: string
+  apnsEnvironment?: "development" | "production"
+  webPushEndpoint?: string
+  webPushP256dh?: string
+  webPushAuth?: string
   title: string
   body: string
   deepLinkPath: string
@@ -83,6 +89,23 @@ const expireAcceptedTicketsRef = makeFunctionReference<
   number
 >("push:expireAcceptedTickets")
 
+const sendApnsBatchRef = makeFunctionReference<
+  "action",
+  {
+    deliveries: Array<{
+      deliveryId: Id<"notificationDeliveries">
+      token: string
+      apnsEnvironment?: "development" | "production"
+      title: string
+      body: string
+      deepLinkPath: string
+      eventKey: string
+      urgency: "low" | "medium" | "high" | "critical"
+    }>
+  },
+  Array<ProviderResult>
+>("apnsNode:sendBatch")
+
 export const registerDevice = internalMutation({
   args: {
     installationId: v.string(),
@@ -112,6 +135,7 @@ export const registerDevice = internalMutation({
     const device = {
       profileId: profile._id,
       token: args.token,
+      provider: "expo" as const,
       platform: args.platform,
       appVersion: cleanOptional(args.appVersion, 50),
       deviceLabel: cleanOptional(args.deviceLabel, 100),
@@ -160,14 +184,54 @@ export const dispatchPending = internalAction({
     const deliveries = await ctx.runMutation(claimDueDeliveriesRef, {})
     if (deliveries.length === 0) return { attempted: 0, accepted: 0 }
 
-    let accepted = 0
-    for (let offset = 0; offset < deliveries.length; offset += MAX_BATCH_SIZE) {
-      const batch = deliveries.slice(offset, offset + MAX_BATCH_SIZE)
-      const results = await sendExpoBatch(batch)
-      accepted += results.filter((result) => result.ok).length
-      await ctx.runMutation(recordProviderResultsRef, { results })
+    const expoDeliveries = deliveries.filter(
+      (delivery) => delivery.provider === "expo"
+    )
+    const apnsDeliveries = deliveries.filter(
+      (delivery) => delivery.provider === "apns"
+    )
+    const webPushDeliveries = deliveries.filter(
+      (delivery) => delivery.provider === "webpush"
+    )
+    const providerResults: Array<ProviderResult> = []
+
+    for (
+      let offset = 0;
+      offset < expoDeliveries.length;
+      offset += MAX_BATCH_SIZE
+    ) {
+      providerResults.push(
+        ...(await sendExpoBatch(
+          expoDeliveries.slice(offset, offset + MAX_BATCH_SIZE)
+        ))
+      )
     }
-    return { attempted: deliveries.length, accepted }
+    if (apnsDeliveries.length > 0) {
+      providerResults.push(
+        ...(await ctx.runAction(sendApnsBatchRef, {
+          deliveries: apnsDeliveries.map((delivery) => ({
+            deliveryId: delivery.deliveryId,
+            token: delivery.token,
+            apnsEnvironment: delivery.apnsEnvironment,
+            title: delivery.title,
+            body: delivery.body,
+            deepLinkPath: delivery.deepLinkPath,
+            eventKey: delivery.eventKey,
+            urgency: delivery.urgency,
+          })),
+        }))
+      )
+    }
+    providerResults.push(...sendWebPushStub(webPushDeliveries))
+    if (providerResults.length > 0) {
+      await ctx.runMutation(recordProviderResultsRef, {
+        results: providerResults,
+      })
+    }
+    return {
+      attempted: deliveries.length,
+      accepted: providerResults.filter((result) => result.ok).length,
+    }
   },
 })
 
@@ -197,7 +261,7 @@ export const listAcceptedTickets = internalQuery({
       .order("desc")
       .take(1000)
     return deliveries.flatMap((delivery) =>
-      delivery.providerTicketId
+      delivery.provider === "expo" && delivery.providerTicketId
         ? [{ deliveryId: delivery._id, ticketId: delivery.providerTicketId }]
         : []
     )
@@ -215,6 +279,7 @@ export const expireAcceptedTickets = internalMutation({
     let expired = 0
     for (const delivery of deliveries) {
       if (delivery.attemptedAt >= args.olderThan) break
+      if (delivery.provider !== "expo") continue
       await ctx.db.patch(delivery._id, {
         status: "failed",
         errorCode: "ReceiptExpired",
@@ -352,11 +417,12 @@ export const claimDueDeliveries = internalMutation({
         ).length
         if (attempts >= MAX_ATTEMPTS) continue
 
+        const provider = deviceProvider(device)
         const deliveryId = await ctx.db.insert("notificationDeliveries", {
           candidateId: candidate._id,
           deviceId: device._id,
           attempt: attempts + 1,
-          provider: "expo",
+          provider,
           status: "sending",
           attemptedAt: nowIso,
         })
@@ -365,7 +431,12 @@ export const claimDueDeliveries = internalMutation({
           candidateId: candidate._id,
           deliveryId,
           deviceId: device._id,
+          provider,
           token: device.token,
+          apnsEnvironment: device.apnsEnvironment,
+          webPushEndpoint: device.webPushEndpoint,
+          webPushP256dh: device.webPushP256dh,
+          webPushAuth: device.webPushAuth,
           title: digest ? "Your CivicNote brief" : candidate.title,
           body: digest
             ? `${digest.length} updates, starting with: ${candidate.title}`.slice(
@@ -441,11 +512,14 @@ export const recordProviderResults = internalMutation({
         completedAt: now,
       })
       if (result.ok) {
-        await ctx.db.patch(delivery.deviceId, { lastAcceptedAt: now })
-      } else if (result.errorCode === "DeviceNotRegistered") {
+        await ctx.db.patch(delivery.deviceId, {
+          lastAcceptedAt: now,
+          ...(delivery.provider === "apns" ? { lastDeliveredAt: now } : {}),
+        })
+      } else if (isPermanentDeviceError(result.errorCode)) {
         await ctx.db.patch(delivery.deviceId, {
           isActive: false,
-          disabledReason: "DeviceNotRegistered",
+          disabledReason: result.errorCode,
         })
       }
     }
@@ -469,9 +543,7 @@ export const recordProviderResults = internalMutation({
       const retryable = deliveries.some(
         (delivery) =>
           delivery.attempt < MAX_ATTEMPTS &&
-          delivery.errorCode !== "DeviceNotRegistered" &&
-          delivery.errorCode !== "MessageTooBig" &&
-          delivery.errorCode !== "InvalidCredentials"
+          isRetryableProviderError(delivery.errorCode)
       )
       const scheduledAt = new Date(Date.now() + 5 * 60 * 1000).toISOString()
       await ctx.db.patch(
@@ -506,7 +578,13 @@ export const recordReceiptResults = internalMutation({
     const now = new Date().toISOString()
     for (const result of args.results) {
       const delivery = await ctx.db.get(result.deliveryId)
-      if (!delivery || delivery.status !== "accepted") continue
+      if (
+        !delivery ||
+        delivery.provider !== "expo" ||
+        delivery.status !== "accepted"
+      ) {
+        continue
+      }
       await ctx.db.patch(delivery._id, {
         status: result.delivered ? "delivered" : "failed",
         errorCode: result.errorCode,
@@ -515,17 +593,16 @@ export const recordReceiptResults = internalMutation({
       })
       if (result.delivered) {
         await ctx.db.patch(delivery.deviceId, { lastDeliveredAt: now })
-      } else if (result.errorCode === "DeviceNotRegistered") {
+      } else if (isPermanentDeviceError(result.errorCode)) {
         await ctx.db.patch(delivery.deviceId, {
           isActive: false,
-          disabledReason: "DeviceNotRegistered",
+          disabledReason: result.errorCode,
         })
       }
       if (!result.delivered) {
         const retryable =
           delivery.attempt < MAX_ATTEMPTS &&
-          result.errorCode !== "MessageTooBig" &&
-          result.errorCode !== "InvalidCredentials"
+          isRetryableProviderError(result.errorCode)
         const scheduledAt = new Date(Date.now() + 5 * 60 * 1000).toISOString()
         await ctx.db.patch(
           delivery.candidateId,
@@ -544,6 +621,18 @@ export const recordReceiptResults = internalMutation({
     return null
   },
 })
+
+function sendWebPushStub(
+  deliveries: Array<ClaimedDelivery>
+): Array<ProviderResult> {
+  // TODO: configure VAPID_PUBLIC_KEY, VAPID_PRIVATE_KEY, and VAPID_SUBJECT.
+  return deliveries.map((delivery) => ({
+    deliveryId: delivery.deliveryId,
+    ok: false,
+    errorCode: "WebPushNotConfigured",
+    errorMessage: "Web Push delivery is not configured",
+  }))
+}
 
 async function sendExpoBatch(
   deliveries: Array<ClaimedDelivery>
@@ -744,7 +833,34 @@ async function settleDigestFollowers(
 }
 
 function toCivicNoteUrl(path: string) {
-  return `civicnote://${path.replace(/^\//, "")}`
+  return `https://civicnote.org${path.startsWith("/") ? path : `/${path}`}`
+}
+
+function isPermanentDeviceError(
+  errorCode: string | undefined
+): errorCode is "DeviceNotRegistered" | "BadDeviceToken" | "Unregistered" {
+  return (
+    errorCode === "DeviceNotRegistered" ||
+    errorCode === "BadDeviceToken" ||
+    errorCode === "Unregistered"
+  )
+}
+
+function isRetryableProviderError(errorCode: string | undefined) {
+  if (!errorCode) return true
+  if (
+    isPermanentDeviceError(errorCode) ||
+    errorCode === "MessageTooBig" ||
+    errorCode === "InvalidCredentials" ||
+    errorCode === "ApnsAuthError" ||
+    errorCode === "WebPushNotConfigured"
+  ) {
+    return false
+  }
+  if (errorCode.startsWith("Apns") && errorCode !== "ApnsNetworkError") {
+    return /^ApnsHttp(?:429|5\d\d)$/.test(errorCode)
+  }
+  return true
 }
 
 function getQuietHoursEnd(

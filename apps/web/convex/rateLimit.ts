@@ -31,7 +31,7 @@ export async function enforceRateLimit(
   }
 
   if (existing.count >= limit) {
-    throw new Error("Too many registration requests. Please try again shortly.")
+    throw new Error("Too many requests. Please try again shortly.")
   }
 
   await ctx.db.patch(existing._id, {

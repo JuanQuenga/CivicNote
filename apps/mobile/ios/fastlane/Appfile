@@ -1,0 +1,8 @@
+# App Store Connect identity for CivicNote.
+#
+# Fill these in locally (or via environment variables) before running the
+# beta/release lanes. Never commit real credentials.
+app_identifier("org.civicnote.mobile")
+apple_id(ENV["CIVICNOTE_APPLE_ID"]) # Apple ID email used for App Store Connect
+team_id(ENV["CIVICNOTE_TEAM_ID"]) # Developer Portal team ID
+itc_team_id(ENV["CIVICNOTE_ITC_TEAM_ID"]) # App Store Connect team ID (if different)

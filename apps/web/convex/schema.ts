@@ -305,9 +305,18 @@ export default defineSchema({
   pushDevices: defineTable({
     profileId: v.id("civicProfiles"),
     token: v.string(),
+    provider: v.optional(
+      v.union(v.literal("expo"), v.literal("apns"), v.literal("webpush"))
+    ),
     platform: v.union(v.literal("ios"), v.literal("android"), v.literal("web")),
     appVersion: v.optional(v.string()),
     deviceLabel: v.optional(v.string()),
+    apnsEnvironment: v.optional(
+      v.union(v.literal("development"), v.literal("production"))
+    ),
+    webPushEndpoint: v.optional(v.string()),
+    webPushP256dh: v.optional(v.string()),
+    webPushAuth: v.optional(v.string()),
     isActive: v.boolean(),
     lastRegisteredAt: v.string(),
     lastAcceptedAt: v.optional(v.string()),
@@ -537,7 +546,11 @@ export default defineSchema({
     candidateId: v.id("notificationCandidates"),
     deviceId: v.id("pushDevices"),
     attempt: v.number(),
-    provider: v.literal("expo"),
+    provider: v.union(
+      v.literal("expo"),
+      v.literal("apns"),
+      v.literal("webpush")
+    ),
     status: v.union(
       v.literal("sending"),
       v.literal("accepted"),

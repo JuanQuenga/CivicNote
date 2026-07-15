@@ -1,48 +1,57 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="24093.7" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="CIVIC-VIEWCONTROLLER-1">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="24093.7" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="launch-controller">
     <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24053.1"/>
-        <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
-        <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <scene sceneID="CIVIC-SCENE-1">
+        <scene sceneID="launch-scene">
             <objects>
-                <viewController storyboardIdentifier="SplashScreenViewController" id="CIVIC-VIEWCONTROLLER-1" sceneMemberID="viewController">
-                    <view key="view" userInteractionEnabled="NO" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="CIVIC-ContainerView" userLabel="ContainerView">
+                <viewController id="launch-controller" sceneMemberID="viewController">
+                    <view key="view" userInteractionEnabled="NO" contentMode="scaleToFill" id="launch-view">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView id="CIVIC-SplashScreen" userLabel="SplashScreenLegacy" image="SplashScreenLegacy" contentMode="scaleAspectFit" clipsSubviews="true" userInteractionEnabled="false" translatesAutoresizingMaskIntoConstraints="false">
-                                <rect key="frame" x="0" y="0" width="414" height="736"/>
-                            </imageView>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="mark">
+                                <rect key="frame" x="160.5" y="377.5" width="72" height="72"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="C" textAlignment="center" lineBreakMode="tailTruncation" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="mark-label">
+                                        <rect key="frame" x="0.0" y="0.0" width="72" height="72"/>
+                                        <fontDescription key="fontDescription" type="system" weight="heavy" pointSize="34"/>
+                                        <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                    </label>
+                                </subviews>
+                                <color key="backgroundColor" red="0.768627451" green="0.07843137255" blue="0.09803921569" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="72" id="mark-width"/>
+                                    <constraint firstAttribute="height" constant="72" id="mark-height"/>
+                                    <constraint firstItem="mark-label" firstAttribute="leading" secondItem="mark" secondAttribute="leading" id="label-leading"/>
+                                    <constraint firstItem="mark-label" firstAttribute="trailing" secondItem="mark" secondAttribute="trailing" id="label-trailing"/>
+                                    <constraint firstItem="mark-label" firstAttribute="top" secondItem="mark" secondAttribute="top" id="label-top"/>
+                                    <constraint firstItem="mark-label" firstAttribute="bottom" secondItem="mark" secondAttribute="bottom" id="label-bottom"/>
+                                </constraints>
+                            </view>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="CivicNote" textAlignment="center" lineBreakMode="tailTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="wordmark">
+                                <rect key="frame" x="134.5" y="465.5" width="124" height="29"/>
+                                <fontDescription key="fontDescription" type="system" weight="bold" pointSize="24"/>
+                                <color key="textColor" red="0.08" green="0.09" blue="0.11" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            </label>
                         </subviews>
-                        <viewLayoutGuide key="safeArea" id="Rmq-lb-GrQ"/>
+                        <viewLayoutGuide key="safeArea" id="safe-area"/>
+                        <color key="backgroundColor" red="0.9725490196" green="0.9607843137" blue="0.937254902" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstItem="CIVIC-SplashScreen" firstAttribute="top" secondItem="CIVIC-ContainerView" secondAttribute="top" id="83fcb9b545b870ba44c24f0feeb116490c499c52"/>
-                            <constraint firstItem="CIVIC-SplashScreen" firstAttribute="leading" secondItem="CIVIC-ContainerView" secondAttribute="leading" id="61d16215e44b98e39d0a2c74fdbfaaa22601b12c"/>
-                            <constraint firstItem="CIVIC-SplashScreen" firstAttribute="trailing" secondItem="CIVIC-ContainerView" secondAttribute="trailing" id="f934da460e9ab5acae3ad9987d5b676a108796c1"/>
-                            <constraint firstItem="CIVIC-SplashScreen" firstAttribute="bottom" secondItem="CIVIC-ContainerView" secondAttribute="bottom" id="d6a0be88096b36fb132659aa90203d39139deda9"/>
+                            <constraint firstItem="mark" firstAttribute="centerX" secondItem="launch-view" secondAttribute="centerX" id="mark-center-x"/>
+                            <constraint firstItem="mark" firstAttribute="centerY" secondItem="launch-view" secondAttribute="centerY" constant="-48" id="mark-center-y"/>
+                            <constraint firstItem="wordmark" firstAttribute="top" secondItem="mark" secondAttribute="bottom" constant="16" id="wordmark-top"/>
+                            <constraint firstItem="wordmark" firstAttribute="centerX" secondItem="launch-view" secondAttribute="centerX" id="wordmark-center-x"/>
                         </constraints>
-                        <color key="backgroundColor" name="SplashScreenBackground"/>
                     </view>
                 </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="CIVIC-PLACEHOLDER-1" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="launch-responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="0.0" y="0.0"/>
         </scene>
     </scenes>
-    <resources>
-        <image name="SplashScreenLegacy" width="414" height="736"/>
-        <systemColor name="systemBackgroundColor">
-            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-        </systemColor>
-        <namedColor name="SplashScreenBackground">
-            <color alpha="1.000" blue="0.933333333333333" green="0.956862745098039" red="0.968627450980392" customColorSpace="sRGB" colorSpace="custom"/>
-        </namedColor>
-    </resources>
 </document>

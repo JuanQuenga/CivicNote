@@ -10,20 +10,34 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as UpdatesRouteImport } from './routes/updates'
+import { Route as SupportRouteImport } from './routes/support'
 import { Route as SourcesRouteImport } from './routes/sources'
+import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as MethodologyRouteImport } from './routes/methodology'
 import { Route as ActionsRouteImport } from './routes/actions'
+import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as TopicsSlugRouteImport } from './routes/topics.$slug'
+import { Route as AlertsIdRouteImport } from './routes/alerts.$id'
 
 const UpdatesRoute = UpdatesRouteImport.update({
   id: '/updates',
   path: '/updates',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SupportRoute = SupportRouteImport.update({
+  id: '/support',
+  path: '/support',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SourcesRoute = SourcesRouteImport.update({
   id: '/sources',
   path: '/sources',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacyRoute = PrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MethodologyRoute = MethodologyRouteImport.update({
@@ -36,6 +50,11 @@ const ActionsRoute = ActionsRouteImport.update({
   path: '/actions',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AboutRoute = AboutRouteImport.update({
+  id: '/about',
+  path: '/about',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -46,65 +65,98 @@ const TopicsSlugRoute = TopicsSlugRouteImport.update({
   path: '/topics/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AlertsIdRoute = AlertsIdRouteImport.update({
+  id: '/alerts/$id',
+  path: '/alerts/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
   '/actions': typeof ActionsRoute
   '/methodology': typeof MethodologyRoute
+  '/privacy': typeof PrivacyRoute
   '/sources': typeof SourcesRoute
+  '/support': typeof SupportRoute
   '/updates': typeof UpdatesRoute
+  '/alerts/$id': typeof AlertsIdRoute
   '/topics/$slug': typeof TopicsSlugRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
   '/actions': typeof ActionsRoute
   '/methodology': typeof MethodologyRoute
+  '/privacy': typeof PrivacyRoute
   '/sources': typeof SourcesRoute
+  '/support': typeof SupportRoute
   '/updates': typeof UpdatesRoute
+  '/alerts/$id': typeof AlertsIdRoute
   '/topics/$slug': typeof TopicsSlugRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
   '/actions': typeof ActionsRoute
   '/methodology': typeof MethodologyRoute
+  '/privacy': typeof PrivacyRoute
   '/sources': typeof SourcesRoute
+  '/support': typeof SupportRoute
   '/updates': typeof UpdatesRoute
+  '/alerts/$id': typeof AlertsIdRoute
   '/topics/$slug': typeof TopicsSlugRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/about'
     | '/actions'
     | '/methodology'
+    | '/privacy'
     | '/sources'
+    | '/support'
     | '/updates'
+    | '/alerts/$id'
     | '/topics/$slug'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/about'
     | '/actions'
     | '/methodology'
+    | '/privacy'
     | '/sources'
+    | '/support'
     | '/updates'
+    | '/alerts/$id'
     | '/topics/$slug'
   id:
     | '__root__'
     | '/'
+    | '/about'
     | '/actions'
     | '/methodology'
+    | '/privacy'
     | '/sources'
+    | '/support'
     | '/updates'
+    | '/alerts/$id'
     | '/topics/$slug'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AboutRoute: typeof AboutRoute
   ActionsRoute: typeof ActionsRoute
   MethodologyRoute: typeof MethodologyRoute
+  PrivacyRoute: typeof PrivacyRoute
   SourcesRoute: typeof SourcesRoute
+  SupportRoute: typeof SupportRoute
   UpdatesRoute: typeof UpdatesRoute
+  AlertsIdRoute: typeof AlertsIdRoute
   TopicsSlugRoute: typeof TopicsSlugRoute
 }
 
@@ -117,11 +169,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof UpdatesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/support': {
+      id: '/support'
+      path: '/support'
+      fullPath: '/support'
+      preLoaderRoute: typeof SupportRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/sources': {
       id: '/sources'
       path: '/sources'
       fullPath: '/sources'
       preLoaderRoute: typeof SourcesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/methodology': {
@@ -138,6 +204,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ActionsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/about': {
+      id: '/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof AboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -152,15 +225,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TopicsSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/alerts/$id': {
+      id: '/alerts/$id'
+      path: '/alerts/$id'
+      fullPath: '/alerts/$id'
+      preLoaderRoute: typeof AlertsIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AboutRoute: AboutRoute,
   ActionsRoute: ActionsRoute,
   MethodologyRoute: MethodologyRoute,
+  PrivacyRoute: PrivacyRoute,
   SourcesRoute: SourcesRoute,
+  SupportRoute: SupportRoute,
   UpdatesRoute: UpdatesRoute,
+  AlertsIdRoute: AlertsIdRoute,
   TopicsSlugRoute: TopicsSlugRoute,
 }
 export const routeTree = rootRouteImport

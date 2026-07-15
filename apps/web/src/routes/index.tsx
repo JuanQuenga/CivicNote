@@ -3,6 +3,7 @@ import { Link, createFileRoute } from "@tanstack/react-router"
 
 import { AlertPreferences } from "@/components/AlertPreferences"
 import { CivicAlertCard } from "@/components/CivicAlertCard"
+import { CivicFeedStatus } from "@/components/CivicFeedStatus"
 import { SiteHeader } from "@/components/SiteHeader"
 import { getServiceActions } from "@/lib/service"
 import { topics } from "@/lib/topics"
@@ -31,7 +32,7 @@ const civicActions = getServiceActions().slice(0, 3)
 function Home() {
   const { savedSlugs, isSaved, toggleSaved } = useSavedTopics()
   const { preferences } = useCivicPreferences()
-  const { alerts, isLive } = useLiveCivicAlerts(preferences.state)
+  const { alerts, fetchedAt, status } = useLiveCivicAlerts(preferences.state)
   const [query, setQuery] = useState("")
   const deferredQuery = useDeferredValue(query.trim().toLowerCase())
   const actions = civicActions
@@ -68,15 +69,7 @@ function Home() {
         <section className="overflow-hidden border-b border-zinc-200 bg-[#f8f5ef]">
           <div className="mx-auto grid max-w-7xl gap-10 px-4 py-12 sm:px-6 sm:py-16 lg:grid-cols-[1.2fr_0.8fr] lg:px-8 lg:py-20">
             <div className="relative">
-              <div className="flex flex-wrap items-center gap-2">
-                <span className="inline-flex items-center gap-2 rounded-full border border-zinc-200 bg-white px-3 py-1.5 text-[11px] font-black text-zinc-700 shadow-sm">
-                  <span className="size-1.5 rounded-full bg-emerald-600" />
-                  Civic monitor active
-                </span>
-                <span className="rounded-full border border-zinc-200 px-3 py-1.5 text-[11px] font-bold text-zinc-500">
-                  {isLive ? "Live data connected" : "Verified library mode"}
-                </span>
-              </div>
+              <CivicFeedStatus status={status} fetchedAt={fetchedAt} />
               <h1 className="mt-7 max-w-4xl text-5xl leading-[0.92] font-black tracking-[-0.055em] text-zinc-950 sm:text-7xl lg:text-[5.4rem]">
                 Know before
                 <br />
@@ -406,9 +399,18 @@ function Home() {
             <strong className="text-zinc-950">CivicNote</strong> · Evidence
             before outrage. Action before the deadline.
           </p>
-          <div className="flex gap-5 font-bold">
+          <div className="flex flex-wrap gap-5 font-bold">
+            <Link to="/about" className="hover:text-zinc-950">
+              About
+            </Link>
             <Link to="/methodology" className="hover:text-zinc-950">
               Methodology
+            </Link>
+            <Link to="/privacy" className="hover:text-zinc-950">
+              Privacy
+            </Link>
+            <Link to="/support" className="hover:text-zinc-950">
+              Support
             </Link>
             <Link to="/sources" className="hover:text-zinc-950">
               Sources

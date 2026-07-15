@@ -1,0 +1,17 @@
+# Deterministic screenshot capture. Devices cover the current required
+# App Store sizes for iPhone and iPad (the target ships both families).
+devices([
+  "iPhone 16 Pro Max",
+  "iPhone 16 Pro",
+  "iPhone SE (3rd generation)",
+  "iPad Pro 13-inch (M4)"
+])
+
+languages(["en-US"])
+
+scheme("CivicNote")
+output_directory("./fastlane/screenshots")
+clear_previous_screenshots(true)
+override_status_bar(true)
+launch_arguments(["-screenshotFixtures YES"])
+stop_after_first_error(true)

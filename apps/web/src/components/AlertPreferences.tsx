@@ -1,7 +1,14 @@
-import { useId, useState } from "react"
+import { useEffect, useId, useState } from "react"
 
 import type { AlertCadence, CivicPosition } from "@/lib/useCivicPreferences"
 import { useCivicPreferences } from "@/lib/useCivicPreferences"
+import {
+  getWebPushSubscription,
+  isWebPushConfigured,
+  isWebPushSupported,
+  subscribeToWebPush,
+  unsubscribeFromWebPush,
+} from "@/lib/webPush"
 
 const stateOptions = [
   "Alabama",
@@ -81,8 +88,20 @@ export function AlertPreferences({
 }: AlertPreferencesProps) {
   const { preferences, updatePreferences } = useCivicPreferences()
   const [permissionMessage, setPermissionMessage] = useState("")
+  const [webPushAvailable, setWebPushAvailable] = useState(false)
+  const [webPushEnabled, setWebPushEnabled] = useState(false)
+  const [webPushMessage, setWebPushMessage] = useState("")
   const cityId = useId()
   const stateId = useId()
+
+  useEffect(() => {
+    const available = isWebPushConfigured() && isWebPushSupported()
+    setWebPushAvailable(available)
+    if (!available) return
+    void getWebPushSubscription()
+      .then((subscription) => setWebPushEnabled(Boolean(subscription)))
+      .catch(() => setWebPushAvailable(false))
+  }, [])
 
   const requestNotifications = async () => {
     if (preferences.notificationsEnabled) {
@@ -101,9 +120,32 @@ export function AlertPreferences({
     updatePreferences({ notificationsEnabled: enabled })
     setPermissionMessage(
       enabled
-        ? "Browser previews are allowed. Remote alerts arrive through the CivicNote mobile app."
+        ? "Browser previews are allowed on this device."
         : "Browser previews remain off. You can change this in browser settings."
     )
+  }
+
+  const toggleWebPush = async () => {
+    setWebPushMessage("")
+    try {
+      if (webPushEnabled) {
+        await unsubscribeFromWebPush()
+        setWebPushEnabled(false)
+        setWebPushMessage("Web push is paused on this browser.")
+      } else {
+        await subscribeToWebPush()
+        setWebPushEnabled(true)
+        setWebPushMessage(
+          "This browser is subscribed. Delivery starts when CivicNote enables its web push service."
+        )
+      }
+    } catch (error) {
+      setWebPushMessage(
+        error instanceof Error
+          ? error.message
+          : "Web push could not be changed."
+      )
+    }
   }
 
   return (
@@ -210,7 +252,7 @@ export function AlertPreferences({
           <div>
             <p className="text-sm font-black">Browser alert previews</p>
             <p className="mt-1 text-xs leading-5 text-zinc-500">
-              Preview time-sensitive alerts here. Mobile handles remote push.
+              Allow on-device notification previews in this browser.
             </p>
           </div>
           <button
@@ -236,6 +278,40 @@ export function AlertPreferences({
           </p>
         ) : null}
       </div>
+
+      {webPushAvailable ? (
+        <div className="rounded-2xl border border-zinc-200 bg-white p-4">
+          <div className="flex items-center justify-between gap-4">
+            <div>
+              <p className="text-sm font-black">Web push alerts</p>
+              <p className="mt-1 text-xs leading-5 text-zinc-500">
+                Subscribe this browser after an explicit permission request.
+              </p>
+            </div>
+            <button
+              type="button"
+              role="switch"
+              aria-checked={webPushEnabled}
+              aria-label="Enable web push alerts"
+              onClick={() => void toggleWebPush()}
+              className={`relative h-7 w-12 shrink-0 rounded-full transition ${
+                webPushEnabled ? "bg-red-700" : "bg-zinc-300"
+              }`}
+            >
+              <span
+                className={`absolute top-1 size-5 rounded-full bg-white shadow-sm transition ${
+                  webPushEnabled ? "left-6" : "left-1"
+                }`}
+              />
+            </button>
+          </div>
+          {webPushMessage ? (
+            <p aria-live="polite" className="mt-3 text-xs text-zinc-600">
+              {webPushMessage}
+            </p>
+          ) : null}
+        </div>
+      ) : null}
 
       <div className="flex items-center justify-between gap-4 rounded-2xl border border-zinc-200 bg-white p-4">
         <div>

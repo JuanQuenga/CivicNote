@@ -7,6 +7,9 @@ import {
 import appCss from "@workspace/ui/globals.css?url"
 import type { QueryClient } from "@tanstack/react-query"
 
+import { MobileBottomNav } from "@/components/MobileBottomNav"
+import { PwaExperience } from "@/components/PwaExperience"
+
 export const Route = createRootRouteWithContext<{
   queryClient: QueryClient
   convexEnabled: boolean
@@ -32,11 +35,47 @@ export const Route = createRootRouteWithContext<{
         name: "theme-color",
         content: "#f8f5ef",
       },
+      {
+        name: "mobile-web-app-capable",
+        content: "yes",
+      },
+      {
+        name: "apple-mobile-web-app-capable",
+        content: "yes",
+      },
+      {
+        name: "apple-mobile-web-app-status-bar-style",
+        content: "default",
+      },
+      {
+        name: "apple-mobile-web-app-title",
+        content: "CivicNote",
+      },
     ],
     links: [
       {
         rel: "stylesheet",
         href: appCss,
+      },
+      {
+        rel: "manifest",
+        href: "/manifest.json",
+      },
+      {
+        rel: "icon",
+        href: "/favicon.svg",
+        type: "image/svg+xml",
+      },
+      {
+        rel: "apple-touch-icon",
+        href: "/apple-touch-icon.png",
+        sizes: "180x180",
+      },
+    ],
+    scripts: [
+      {
+        src: "/registerSW.js",
+        defer: true,
       },
     ],
   }),
@@ -55,8 +94,10 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       <head>
         <HeadContent />
       </head>
-      <body>
+      <body className="pb-[calc(4rem+env(safe-area-inset-bottom))] md:pb-0">
         {children}
+        <MobileBottomNav />
+        <PwaExperience />
         <Scripts />
       </body>
     </html>

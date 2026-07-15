@@ -1,0 +1,5 @@
+CivicNote is an independent civic information app. It is not affiliated with any government agency or political campaign, and it does not require an account.
+
+The app lets users follow public-interest topics (for example, local data-center proposals or surveillance-camera contracts) and receive push alerts before public hearings, votes, and comment deadlines. Every alert links to primary sources (official agendas, filings, government pages).
+
+No login is needed to review the app. Notifications are optional and requested only after an explicit user action during onboarding or in Settings.

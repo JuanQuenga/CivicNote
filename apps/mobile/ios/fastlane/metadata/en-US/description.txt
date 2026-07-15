@@ -1,0 +1,25 @@
+CivicNote is your personal civic radar. Follow the issues you care about and get timely, evidence-backed alerts before hearings, votes, and public-comment deadlines — while there is still time to act.
+
+WHAT YOU GET
+
+• A daily brief of verified civic decisions that affect you, most actionable first
+• Alerts timed to decision points: hearings, votes, filings, and deadlines
+• Every alert links to primary sources, so you can check the evidence yourself
+• Clear "why it matters" context and documented local impacts
+• Ready-to-adapt scripts for public comment, calls, and emails
+• A Near You view of local meetings and decisions
+• Your choice of instant alerts or a daily or weekly brief
+
+BUILT ON EVIDENCE, NOT OUTRAGE
+
+CivicNote separates documented facts from general risks and advocacy positions. Each update shows its sources, when it was last checked, and who actually makes the decision — so you can show up informed.
+
+YOU CHOOSE WHAT TO FOLLOW
+
+CivicNote does not infer your politics. Pick topics, set your home area, and choose how often you want to hear from us. Change everything anytime, and pause alerts whenever you want.
+
+PRIVATE BY DESIGN
+
+No account required. CivicNote stores only what alerts need: an anonymous installation ID, your followed topics, your coarse home area, and a push token. No tracking, no ads, no selling data.
+
+CivicNote is an independent civic information tool. It is not affiliated with any government agency or political campaign.

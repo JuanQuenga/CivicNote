@@ -1,10 +1,6 @@
 import SwiftUI
 import UIKit
 
-/// A compact, adaptive tab container inspired by Piggies' UnionTabView.
-///
-/// iOS 26 uses the system Liquid Glass material. iOS 17–25 keeps the same
-/// floating layout with an interactive material capsule and native buttons.
 struct UnionTabView<Tab: Hashable, Content: View, Item: View>: View {
     @Binding private var selection: Tab
     private let tabs: [Tab]
@@ -27,36 +23,29 @@ struct UnionTabView<Tab: Hashable, Content: View, Item: View>: View {
     }
 
     var body: some View {
-        TabView(selection: $selection) {
-            content
-        }
-        .safeAreaInset(edge: .bottom, spacing: 0) {
-            if !isTabBarHidden {
-                tabBar
-                    .padding(.horizontal, 18)
-                    .padding(.top, 8)
-                    .padding(.bottom, 8)
-                    .background(alignment: .bottom) {
-                        bottomScrim
-                    }
+        TabView(selection: $selection) { content }
+            .safeAreaInset(edge: .bottom, spacing: 0) {
+                if !isTabBarHidden {
+                    tabBar
+                        .frame(maxWidth: 500)
+                        .padding(.horizontal, 18)
+                        .padding(.top, 8)
+                        .padding(.bottom, 8)
+                        .frame(maxWidth: .infinity)
+                        .background(alignment: .bottom) { bottomScrim }
+                }
             }
-        }
     }
 
     @ViewBuilder
     private var tabBar: some View {
         if #available(iOS 26, *) {
-            tabItems
-                .padding(4)
-                .glassEffect(.regular.interactive(), in: .capsule)
+            tabItems.padding(4).glassEffect(.regular.interactive(), in: .capsule)
         } else {
             tabItems
                 .padding(4)
                 .background(.ultraThinMaterial, in: Capsule())
-                .overlay {
-                    Capsule()
-                        .stroke(Color.primary.opacity(0.10), lineWidth: 0.5)
-                }
+                .overlay { Capsule().stroke(Color.primary.opacity(0.10), lineWidth: 0.5) }
                 .shadow(color: Color.black.opacity(0.12), radius: 20, y: 9)
         }
     }
@@ -65,14 +54,13 @@ struct UnionTabView<Tab: Hashable, Content: View, Item: View>: View {
         HStack(spacing: 2) {
             ForEach(tabs, id: \.self) { tab in
                 let isSelected = selection == tab
-
                 Button {
                     guard !isSelected else { return }
                     selection = tab
                     UISelectionFeedbackGenerator().selectionChanged()
                 } label: {
                     item(tab, isSelected)
-                        .frame(maxWidth: .infinity)
+                        .frame(maxWidth: .infinity, minHeight: 44)
                         .frame(height: 52)
                         .contentShape(Rectangle())
                 }
@@ -101,20 +89,19 @@ struct UnionTabView<Tab: Hashable, Content: View, Item: View>: View {
 }
 
 private struct UnionTabButtonStyle: ButtonStyle {
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
-            .scaleEffect(configuration.isPressed ? 0.92 : 1)
+            .scaleEffect(reduceMotion ? 1 : (configuration.isPressed ? 0.92 : 1))
             .opacity(configuration.isPressed ? 0.72 : 1)
-            .animation(.snappy(duration: 0.2), value: configuration.isPressed)
+            .animation(reduceMotion ? nil : .snappy(duration: 0.2), value: configuration.isPressed)
     }
 }
 
 extension View {
-    /// Tags tab content and hides the system tab bar while the custom bar is visible.
     @ViewBuilder
     func unionTab<Tab: Hashable>(_ tab: Tab) -> some View {
-        self
-            .tag(tab)
-            .toolbar(.hidden, for: .tabBar)
+        tag(tab).toolbar(.hidden, for: .tabBar)
     }
 }

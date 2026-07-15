@@ -1,94 +1,139 @@
 // !$*UTF8*$!
 {
 	archiveVersion = 1;
-	classes = {
-	};
-	objectVersion = 54;
+	classes = {};
+	objectVersion = 56;
 	objects = {
 
 /* Begin PBXBuildFile section */
-		10013FB7F5683340DE9A9B9D /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 6669EAE5FEF02C1AC104A4C9 /* PrivacyInfo.xcprivacy */; };
-		C10000000000000000000001 /* CivicModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = D10000000000000000000001 /* CivicModels.swift */; };
-		C10000000000000000000002 /* CivicStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = D10000000000000000000002 /* CivicStore.swift */; };
-		C10000000000000000000003 /* UnionTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D10000000000000000000003 /* UnionTabView.swift */; };
-		C10000000000000000000004 /* CivicNoteAppView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D10000000000000000000004 /* CivicNoteAppView.swift */; };
-		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
-		3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */; };
-		F11748422D0307B40044C1D9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F11748412D0307B40044C1D9 /* AppDelegate.swift */; };
+		C10000000000000000000001 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D10000000000000000000001 /* AppDelegate.swift */; };
+		C10000000000000000000002 /* CivicModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = D10000000000000000000002 /* CivicModels.swift */; };
+		C10000000000000000000003 /* CivicTransport.swift in Sources */ = {isa = PBXBuildFile; fileRef = D10000000000000000000003 /* CivicTransport.swift */; };
+		C10000000000000000000004 /* PreferencesStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = D10000000000000000000004 /* PreferencesStore.swift */; };
+		C10000000000000000000005 /* CivicRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = D10000000000000000000005 /* CivicRepository.swift */; };
+		C10000000000000000000006 /* DeepLinkRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = D10000000000000000000006 /* DeepLinkRouter.swift */; };
+		C10000000000000000000007 /* AppCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = D10000000000000000000007 /* AppCoordinator.swift */; };
+		C10000000000000000000008 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = D10000000000000000000008 /* NotificationService.swift */; };
+		C10000000000000000000009 /* CivicNoteAppView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D10000000000000000000009 /* CivicNoteAppView.swift */; };
+		C1000000000000000000000A /* SharedComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1000000000000000000000A /* SharedComponents.swift */; };
+		C1000000000000000000000B /* TodayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1000000000000000000000B /* TodayView.swift */; };
+		C1000000000000000000000C /* TopicsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1000000000000000000000C /* TopicsView.swift */; };
+		C1000000000000000000000D /* ActView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1000000000000000000000D /* ActView.swift */; };
+		C1000000000000000000000E /* NearYouView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1000000000000000000000E /* NearYouView.swift */; };
+		C1000000000000000000000F /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1000000000000000000000F /* SettingsView.swift */; };
+		C10000000000000000000010 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D10000000000000000000010 /* OnboardingView.swift */; };
+		C10000000000000000000011 /* EventDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D10000000000000000000011 /* EventDetailView.swift */; };
+		C10000000000000000000012 /* UnionTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D10000000000000000000012 /* UnionTabView.swift */; };
+		C10000000000000000000013 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D10000000000000000000013 /* Images.xcassets */; };
+		C10000000000000000000014 /* SplashScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D10000000000000000000014 /* SplashScreen.storyboard */; };
+		C10000000000000000000015 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = D10000000000000000000015 /* PrivacyInfo.xcprivacy */; };
+		C10000000000000000000016 /* CivicNoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1000000000000000000001A /* CivicNoteTests.swift */; };
+		C10000000000000000000017 /* CivicNoteUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1000000000000000000001B /* CivicNoteUITests.swift */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		A20000000000000000000001 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 83CBB9F71A601CBA00E9B192 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 13B07F861A680F5B00A75B9A;
+			remoteInfo = CivicNote;
+		};
+		A20000000000000000000002 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 83CBB9F71A601CBA00E9B192 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 13B07F861A680F5B00A75B9A;
+			remoteInfo = CivicNote;
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		13B07F961A680F5B00A75B9A /* CivicNote.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CivicNote.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = CivicNote/Images.xcassets; sourceTree = "<group>"; };
-		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = CivicNote/Info.plist; sourceTree = "<group>"; };
-		6669EAE5FEF02C1AC104A4C9 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; name = PrivacyInfo.xcprivacy; path = CivicNote/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
-		AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = SplashScreen.storyboard; path = CivicNote/SplashScreen.storyboard; sourceTree = "<group>"; };
-		D10000000000000000000001 /* CivicModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CivicModels.swift; path = CivicNote/CivicModels.swift; sourceTree = "<group>"; };
-		D10000000000000000000002 /* CivicStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CivicStore.swift; path = CivicNote/CivicStore.swift; sourceTree = "<group>"; };
-		D10000000000000000000003 /* UnionTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = UnionTabView.swift; path = CivicNote/UnionTabView.swift; sourceTree = "<group>"; };
-		D10000000000000000000004 /* CivicNoteAppView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CivicNoteAppView.swift; path = CivicNote/CivicNoteAppView.swift; sourceTree = "<group>"; };
-		F11748412D0307B40044C1D9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = CivicNote/AppDelegate.swift; sourceTree = "<group>"; };
+		A30000000000000000000001 /* CivicNoteTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CivicNoteTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		A30000000000000000000002 /* CivicNoteUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CivicNoteUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		D10000000000000000000001 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		D10000000000000000000002 /* CivicModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CivicModels.swift; sourceTree = "<group>"; };
+		D10000000000000000000003 /* CivicTransport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CivicTransport.swift; sourceTree = "<group>"; };
+		D10000000000000000000004 /* PreferencesStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesStore.swift; sourceTree = "<group>"; };
+		D10000000000000000000005 /* CivicRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CivicRepository.swift; sourceTree = "<group>"; };
+		D10000000000000000000006 /* DeepLinkRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepLinkRouter.swift; sourceTree = "<group>"; };
+		D10000000000000000000007 /* AppCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppCoordinator.swift; sourceTree = "<group>"; };
+		D10000000000000000000008 /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
+		D10000000000000000000009 /* CivicNoteAppView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CivicNoteAppView.swift; sourceTree = "<group>"; };
+		D1000000000000000000000A /* SharedComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedComponents.swift; sourceTree = "<group>"; };
+		D1000000000000000000000B /* TodayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayView.swift; sourceTree = "<group>"; };
+		D1000000000000000000000C /* TopicsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopicsView.swift; sourceTree = "<group>"; };
+		D1000000000000000000000D /* ActView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActView.swift; sourceTree = "<group>"; };
+		D1000000000000000000000E /* NearYouView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NearYouView.swift; sourceTree = "<group>"; };
+		D1000000000000000000000F /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		D10000000000000000000010 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
+		D10000000000000000000011 /* EventDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventDetailView.swift; sourceTree = "<group>"; };
+		D10000000000000000000012 /* UnionTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnionTabView.swift; sourceTree = "<group>"; };
+		D10000000000000000000013 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		D10000000000000000000014 /* SplashScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = SplashScreen.storyboard; sourceTree = "<group>"; };
+		D10000000000000000000015 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		D10000000000000000000016 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		D10000000000000000000017 /* Shared.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Shared.xcconfig; sourceTree = "<group>"; };
+		D10000000000000000000018 /* Debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Debug.xcconfig; sourceTree = "<group>"; };
+		D10000000000000000000019 /* Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Release.xcconfig; sourceTree = "<group>"; };
+		D1000000000000000000001A /* CivicNoteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CivicNoteTests.swift; sourceTree = "<group>"; };
+		D1000000000000000000001B /* CivicNoteUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CivicNoteUITests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		13B07F8C1A680F5B00A75B9A /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
+		13B07F8C1A680F5B00A75B9A /* Frameworks */ = {isa = PBXFrameworksBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
+		A40000000000000000000001 /* Frameworks */ = {isa = PBXFrameworksBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
+		A40000000000000000000002 /* Frameworks */ = {isa = PBXFrameworksBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		13B07FAE1A68108700A75B9A /* CivicNote */ = {
-			isa = PBXGroup;
-			children = (
-				F11748412D0307B40044C1D9 /* AppDelegate.swift */,
-				D10000000000000000000001 /* CivicModels.swift */,
-				D10000000000000000000002 /* CivicStore.swift */,
-				D10000000000000000000003 /* UnionTabView.swift */,
-				D10000000000000000000004 /* CivicNoteAppView.swift */,
-				13B07FB51A68108700A75B9A /* Images.xcassets */,
-				13B07FB61A68108700A75B9A /* Info.plist */,
-				AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */,
-				6669EAE5FEF02C1AC104A4C9 /* PrivacyInfo.xcprivacy */,
-			);
-			name = CivicNote;
-			sourceTree = "<group>";
-		};
-		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = Libraries;
-			sourceTree = "<group>";
-		};
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
 				13B07FAE1A68108700A75B9A /* CivicNote */,
-				832341AE1AAA6A7D00B99B32 /* Libraries */,
+				A50000000000000000000001 /* CivicNoteTests */,
+				A50000000000000000000002 /* CivicNoteUITests */,
+				A50000000000000000000003 /* Config */,
 				83CBBA001A601CBA00E9B192 /* Products */,
-				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 			);
-			indentWidth = 2;
 			sourceTree = "<group>";
-			tabWidth = 2;
-			usesTabs = 0;
 		};
-		83CBBA001A601CBA00E9B192 /* Products */ = {
+		13B07FAE1A68108700A75B9A /* CivicNote */ = {
 			isa = PBXGroup;
 			children = (
-				13B07F961A680F5B00A75B9A /* CivicNote.app */,
+				D10000000000000000000001 /* AppDelegate.swift */,
+				D10000000000000000000007 /* AppCoordinator.swift */,
+				D10000000000000000000008 /* NotificationService.swift */,
+				D10000000000000000000006 /* DeepLinkRouter.swift */,
+				D10000000000000000000004 /* PreferencesStore.swift */,
+				D10000000000000000000005 /* CivicRepository.swift */,
+				D10000000000000000000003 /* CivicTransport.swift */,
+				D10000000000000000000002 /* CivicModels.swift */,
+				D10000000000000000000009 /* CivicNoteAppView.swift */,
+				D1000000000000000000000B /* TodayView.swift */,
+				D1000000000000000000000C /* TopicsView.swift */,
+				D1000000000000000000000D /* ActView.swift */,
+				D1000000000000000000000E /* NearYouView.swift */,
+				D1000000000000000000000F /* SettingsView.swift */,
+				D10000000000000000000010 /* OnboardingView.swift */,
+				D10000000000000000000011 /* EventDetailView.swift */,
+				D1000000000000000000000A /* SharedComponents.swift */,
+				D10000000000000000000012 /* UnionTabView.swift */,
+				D10000000000000000000013 /* Images.xcassets */,
+				D10000000000000000000014 /* SplashScreen.storyboard */,
+				D10000000000000000000015 /* PrivacyInfo.xcprivacy */,
+				D10000000000000000000016 /* Info.plist */,
 			);
+			path = CivicNote;
+			sourceTree = "<group>";
+		};
+		A50000000000000000000001 /* CivicNoteTests */ = {isa = PBXGroup; children = (D1000000000000000000001A /* CivicNoteTests.swift */,); path = CivicNoteTests; sourceTree = "<group>"; };
+		A50000000000000000000002 /* CivicNoteUITests */ = {isa = PBXGroup; children = (D1000000000000000000001B /* CivicNoteUITests.swift */,); path = CivicNoteUITests; sourceTree = "<group>"; };
+		A50000000000000000000003 /* Config */ = {isa = PBXGroup; children = (D10000000000000000000017 /* Shared.xcconfig */, D10000000000000000000018 /* Debug.xcconfig */, D10000000000000000000019 /* Release.xcconfig */,); path = Config; sourceTree = "<group>"; };
+		83CBBA001A601CBA00E9B192 /* Products */ = {
+			isa = PBXGroup;
+			children = (13B07F961A680F5B00A75B9A /* CivicNote.app */, A30000000000000000000001 /* CivicNoteTests.xctest */, A30000000000000000000002 /* CivicNoteUITests.xctest */,);
 			name = Products;
 			sourceTree = "<group>";
 		};
@@ -98,19 +143,35 @@
 		13B07F861A680F5B00A75B9A /* CivicNote */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "CivicNote" */;
-			buildPhases = (
-				13B07F871A680F5B00A75B9A /* Sources */,
-				13B07F8C1A680F5B00A75B9A /* Frameworks */,
-				13B07F8E1A680F5B00A75B9A /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
+			buildPhases = (13B07F871A680F5B00A75B9A /* Sources */, 13B07F8C1A680F5B00A75B9A /* Frameworks */, 13B07F8E1A680F5B00A75B9A /* Resources */,);
+			buildRules = ();
+			dependencies = ();
 			name = CivicNote;
 			productName = CivicNote;
 			productReference = 13B07F961A680F5B00A75B9A /* CivicNote.app */;
 			productType = "com.apple.product-type.application";
+		};
+		A10000000000000000000001 /* CivicNoteTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A80000000000000000000001 /* Build configuration list for PBXNativeTarget "CivicNoteTests" */;
+			buildPhases = (A60000000000000000000001 /* Sources */, A40000000000000000000001 /* Frameworks */, A70000000000000000000001 /* Resources */,);
+			buildRules = ();
+			dependencies = (A90000000000000000000001 /* PBXTargetDependency */,);
+			name = CivicNoteTests;
+			productName = CivicNoteTests;
+			productReference = A30000000000000000000001 /* CivicNoteTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		A10000000000000000000002 /* CivicNoteUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A80000000000000000000002 /* Build configuration list for PBXNativeTarget "CivicNoteUITests" */;
+			buildPhases = (A60000000000000000000002 /* Sources */, A40000000000000000000002 /* Frameworks */, A70000000000000000000002 /* Resources */,);
+			buildRules = ();
+			dependencies = (A90000000000000000000002 /* PBXTargetDependency */,);
+			name = CivicNoteUITests;
+			productName = CivicNoteUITests;
+			productReference = A30000000000000000000002 /* CivicNoteUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 /* End PBXNativeTarget section */
 
@@ -118,245 +179,66 @@
 		83CBB9F71A601CBA00E9B192 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 1130;
+				BuildIndependentTargetsInParallel = YES;
+				LastSwiftUpdateCheck = 1600;
+				LastUpgradeCheck = 1600;
 				TargetAttributes = {
-					13B07F861A680F5B00A75B9A = {
-						LastSwiftMigration = 1250;
-					};
+					13B07F861A680F5B00A75B9A = {CreatedOnToolsVersion = 16.0; };
+					A10000000000000000000001 = {CreatedOnToolsVersion = 16.0; TestTargetID = 13B07F861A680F5B00A75B9A; };
+					A10000000000000000000002 = {CreatedOnToolsVersion = 16.0; TestTargetID = 13B07F861A680F5B00A75B9A; };
 				};
 			};
 			buildConfigurationList = 83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "CivicNote" */;
-			compatibilityVersion = "Xcode 3.2";
+			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
-			knownRegions = (
-				en,
-				Base,
-			);
+			knownRegions = (en, Base,);
 			mainGroup = 83CBB9F61A601CBA00E9B192;
 			productRefGroup = 83CBBA001A601CBA00E9B192 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
-			targets = (
-				13B07F861A680F5B00A75B9A /* CivicNote */,
-			);
+			targets = (13B07F861A680F5B00A75B9A /* CivicNote */, A10000000000000000000001 /* CivicNoteTests */, A10000000000000000000002 /* CivicNoteUITests */,);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		13B07F8E1A680F5B00A75B9A /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
-				3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */,
-				10013FB7F5683340DE9A9B9D /* PrivacyInfo.xcprivacy in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
+		13B07F8E1A680F5B00A75B9A /* Resources */ = {isa = PBXResourcesBuildPhase; buildActionMask = 2147483647; files = (C10000000000000000000013 /* Images.xcassets in Resources */, C10000000000000000000014 /* SplashScreen.storyboard in Resources */, C10000000000000000000015 /* PrivacyInfo.xcprivacy in Resources */,); runOnlyForDeploymentPostprocessing = 0; };
+		A70000000000000000000001 /* Resources */ = {isa = PBXResourcesBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
+		A70000000000000000000002 /* Resources */ = {isa = PBXResourcesBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		13B07F871A680F5B00A75B9A /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
-			files = (
-				F11748422D0307B40044C1D9 /* AppDelegate.swift in Sources */,
-				C10000000000000000000001 /* CivicModels.swift in Sources */,
-				C10000000000000000000002 /* CivicStore.swift in Sources */,
-				C10000000000000000000003 /* UnionTabView.swift in Sources */,
-				C10000000000000000000004 /* CivicNoteAppView.swift in Sources */,
-			);
+			files = (C10000000000000000000001, C10000000000000000000002, C10000000000000000000003, C10000000000000000000004, C10000000000000000000005, C10000000000000000000006, C10000000000000000000007, C10000000000000000000008, C10000000000000000000009, C1000000000000000000000A, C1000000000000000000000B, C1000000000000000000000C, C1000000000000000000000D, C1000000000000000000000E, C1000000000000000000000F, C10000000000000000000010, C10000000000000000000011, C10000000000000000000012,);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		A60000000000000000000001 /* Sources */ = {isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (C10000000000000000000016 /* CivicNoteTests.swift in Sources */,); runOnlyForDeploymentPostprocessing = 0; };
+		A60000000000000000000002 /* Sources */ = {isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (C10000000000000000000017 /* CivicNoteUITests.swift in Sources */,); runOnlyForDeploymentPostprocessing = 0; };
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		A90000000000000000000001 /* PBXTargetDependency */ = {isa = PBXTargetDependency; target = 13B07F861A680F5B00A75B9A /* CivicNote */; targetProxy = A20000000000000000000001 /* PBXContainerItemProxy */; };
+		A90000000000000000000002 /* PBXTargetDependency */ = {isa = PBXTargetDependency; target = 13B07F861A680F5B00A75B9A /* CivicNote */; targetProxy = A20000000000000000000002 /* PBXContainerItemProxy */; };
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
-		13B07F941A680F5B00A75B9A /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_ENTITLEMENTS = CivicNote/CivicNote.entitlements;
-				CURRENT_PROJECT_VERSION = 1;
-				ENABLE_BITCODE = NO;
-				INFOPLIST_FILE = CivicNote/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-				);
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = org.civicnote.mobile;
-				PRODUCT_NAME = CivicNote;
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				VERSIONING_SYSTEM = "apple-generic";
-			};
-			name = Debug;
-		};
-		13B07F951A680F5B00A75B9A /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_ENTITLEMENTS = CivicNote/CivicNote.entitlements;
-				CURRENT_PROJECT_VERSION = 1;
-				INFOPLIST_FILE = CivicNote/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-				);
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = org.civicnote.mobile;
-				PRODUCT_NAME = CivicNote;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				VERSIONING_SYSTEM = "apple-generic";
-			};
-			name = Release;
-		};
-		83CBBA201A601CBA00E9B192 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
-				CLANG_CXX_LANGUAGE_STANDARD = "c++20";
-				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_COMMA = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INFINITE_RECURSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
-				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
-				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
-				CLANG_WARN_STRICT_PROTOTYPES = YES;
-				CLANG_WARN_SUSPICIOUS_MOVE = YES;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				COPY_PHASE_STRIP = NO;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				ENABLE_TESTABILITY = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					/usr/lib/swift,
-					"$(inherited)",
-				);
-				LIBRARY_SEARCH_PATHS = "$(SDKROOT)/usr/lib/swift\"$(inherited)\"";
-				MTL_ENABLE_DEBUG_INFO = YES;
-				ONLY_ACTIVE_ARCH = YES;
-				REACT_NATIVE_PATH = "${PODS_ROOT}/../../../../node_modules/.pnpm/react-native@0.81.5_@babel+core@7.29.0_@types+react@19.1.17_react@19.1.0/node_modules/react-native";
-				SDKROOT = iphoneos;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) DEBUG";
-				SWIFT_ENABLE_EXPLICIT_MODULES = NO;
-				USE_HERMES = true;
-			};
-			name = Debug;
-		};
-		83CBBA211A601CBA00E9B192 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
-				CLANG_CXX_LANGUAGE_STANDARD = "c++20";
-				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_COMMA = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INFINITE_RECURSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
-				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
-				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
-				CLANG_WARN_STRICT_PROTOTYPES = YES;
-				CLANG_WARN_SUSPICIOUS_MOVE = YES;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				COPY_PHASE_STRIP = YES;
-				ENABLE_NS_ASSERTIONS = NO;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					/usr/lib/swift,
-					"$(inherited)",
-				);
-				LIBRARY_SEARCH_PATHS = "$(SDKROOT)/usr/lib/swift\"$(inherited)\"";
-				MTL_ENABLE_DEBUG_INFO = NO;
-				REACT_NATIVE_PATH = "${PODS_ROOT}/../../../../node_modules/.pnpm/react-native@0.81.5_@babel+core@7.29.0_@types+react@19.1.17_react@19.1.0/node_modules/react-native";
-				SDKROOT = iphoneos;
-				SWIFT_ENABLE_EXPLICIT_MODULES = NO;
-				USE_HERMES = true;
-				VALIDATE_PRODUCT = YES;
-			};
-			name = Release;
-		};
+		13B07F941A680F5B00A75B9A /* Debug */ = {isa = XCBuildConfiguration; baseConfigurationReference = D10000000000000000000018 /* Debug.xcconfig */; buildSettings = {ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon; CLANG_ENABLE_MODULES = YES; INFOPLIST_FILE = CivicNote/Info.plist; LD_RUNPATH_SEARCH_PATHS = ("$(inherited)", "@executable_path/Frameworks",); PRODUCT_NAME = CivicNote; VERSIONING_SYSTEM = "apple-generic"; }; name = Debug; };
+		13B07F951A680F5B00A75B9A /* Release */ = {isa = XCBuildConfiguration; baseConfigurationReference = D10000000000000000000019 /* Release.xcconfig */; buildSettings = {ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon; CLANG_ENABLE_MODULES = YES; INFOPLIST_FILE = CivicNote/Info.plist; LD_RUNPATH_SEARCH_PATHS = ("$(inherited)", "@executable_path/Frameworks",); PRODUCT_NAME = CivicNote; VERSIONING_SYSTEM = "apple-generic"; }; name = Release; };
+		83CBBA201A601CBA00E9B192 /* Debug */ = {isa = XCBuildConfiguration; baseConfigurationReference = D10000000000000000000018 /* Debug.xcconfig */; buildSettings = {ALWAYS_SEARCH_USER_PATHS = NO; CLANG_ENABLE_MODULES = YES; CLANG_ENABLE_OBJC_ARC = YES; COPY_PHASE_STRIP = NO; GCC_C_LANGUAGE_STANDARD = gnu17; GCC_NO_COMMON_BLOCKS = YES; ONLY_ACTIVE_ARCH = YES; SDKROOT = iphoneos; }; name = Debug; };
+		83CBBA211A601CBA00E9B192 /* Release */ = {isa = XCBuildConfiguration; baseConfigurationReference = D10000000000000000000019 /* Release.xcconfig */; buildSettings = {ALWAYS_SEARCH_USER_PATHS = NO; CLANG_ENABLE_MODULES = YES; CLANG_ENABLE_OBJC_ARC = YES; COPY_PHASE_STRIP = YES; GCC_C_LANGUAGE_STANDARD = gnu17; GCC_NO_COMMON_BLOCKS = YES; SDKROOT = iphoneos; }; name = Release; };
+		AA0000000000000000000001 /* Debug */ = {isa = XCBuildConfiguration; baseConfigurationReference = D10000000000000000000018 /* Debug.xcconfig */; buildSettings = {BUNDLE_LOADER = "$(TEST_HOST)"; GENERATE_INFOPLIST_FILE = YES; PRODUCT_BUNDLE_IDENTIFIER = org.civicnote.mobile.tests; PRODUCT_NAME = "$(TARGET_NAME)"; TEST_HOST = "$(BUILT_PRODUCTS_DIR)/CivicNote.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/CivicNote"; }; name = Debug; };
+		AA0000000000000000000002 /* Release */ = {isa = XCBuildConfiguration; baseConfigurationReference = D10000000000000000000019 /* Release.xcconfig */; buildSettings = {BUNDLE_LOADER = "$(TEST_HOST)"; GENERATE_INFOPLIST_FILE = YES; PRODUCT_BUNDLE_IDENTIFIER = org.civicnote.mobile.tests; PRODUCT_NAME = "$(TARGET_NAME)"; TEST_HOST = "$(BUILT_PRODUCTS_DIR)/CivicNote.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/CivicNote"; }; name = Release; };
+		AA0000000000000000000003 /* Debug */ = {isa = XCBuildConfiguration; baseConfigurationReference = D10000000000000000000018 /* Debug.xcconfig */; buildSettings = {GENERATE_INFOPLIST_FILE = YES; PRODUCT_BUNDLE_IDENTIFIER = org.civicnote.mobile.uitests; PRODUCT_NAME = "$(TARGET_NAME)"; TEST_TARGET_NAME = CivicNote; }; name = Debug; };
+		AA0000000000000000000004 /* Release */ = {isa = XCBuildConfiguration; baseConfigurationReference = D10000000000000000000019 /* Release.xcconfig */; buildSettings = {GENERATE_INFOPLIST_FILE = YES; PRODUCT_BUNDLE_IDENTIFIER = org.civicnote.mobile.uitests; PRODUCT_NAME = "$(TARGET_NAME)"; TEST_TARGET_NAME = CivicNote; }; name = Release; };
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "CivicNote" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				13B07F941A680F5B00A75B9A /* Debug */,
-				13B07F951A680F5B00A75B9A /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "CivicNote" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				83CBBA201A601CBA00E9B192 /* Debug */,
-				83CBBA211A601CBA00E9B192 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
+		13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "CivicNote" */ = {isa = XCConfigurationList; buildConfigurations = (13B07F941A680F5B00A75B9A /* Debug */, 13B07F951A680F5B00A75B9A /* Release */,); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
+		83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "CivicNote" */ = {isa = XCConfigurationList; buildConfigurations = (83CBBA201A601CBA00E9B192 /* Debug */, 83CBBA211A601CBA00E9B192 /* Release */,); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
+		A80000000000000000000001 /* Build configuration list for PBXNativeTarget "CivicNoteTests" */ = {isa = XCConfigurationList; buildConfigurations = (AA0000000000000000000001 /* Debug */, AA0000000000000000000002 /* Release */,); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
+		A80000000000000000000002 /* Build configuration list for PBXNativeTarget "CivicNoteUITests" */ = {isa = XCConfigurationList; buildConfigurations = (AA0000000000000000000003 /* Debug */, AA0000000000000000000004 /* Release */,); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
 /* End XCConfigurationList section */
 	};
 	rootObject = 83CBB9F71A601CBA00E9B192 /* Project object */;
