@@ -248,7 +248,7 @@ struct PushTargetPayload: Encodable {
 struct ReconcileResponseDTO: Decodable {
     let ok: Bool
     let profileId: String
-    let subscriptions: [String]
+    let subscriptions: Int
     let jurisdictionKeys: [String]
 }
 
@@ -267,7 +267,8 @@ enum CivicJSON {
             let container = try decoder.singleValueContainer()
             let value = try container.decode(String.self)
             if let date = ISO8601DateFormatter.civicFractional.date(from: value)
-                ?? ISO8601DateFormatter.civic.date(from: value) {
+                ?? ISO8601DateFormatter.civic.date(from: value)
+                ?? DateFormatter.civicDateOnly.date(from: value) {
                 return date
             }
             throw DecodingError.dataCorruptedError(in: container, debugDescription: "Invalid ISO 8601 date: \(value)")
@@ -281,6 +282,17 @@ enum CivicJSON {
         encoder.outputFormatting = [.sortedKeys]
         return encoder
     }
+}
+
+private extension DateFormatter {
+    // Seeded topics carry date-only "updatedAt" values like "2026-05-12".
+    static let civicDateOnly: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.timeZone = TimeZone(identifier: "UTC")
+        formatter.dateFormat = "yyyy-MM-dd"
+        return formatter
+    }()
 }
 
 private extension ISO8601DateFormatter {
