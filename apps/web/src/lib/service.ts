@@ -1,5 +1,44 @@
 import { topics } from "@/lib/topics"
 
+export type CivicAlert = {
+  id: string
+  slug: string
+  topic: string
+  title: string
+  summary: string
+  publishedAt: string
+  urgency: "low" | "medium" | "high"
+  scope: "Local" | "State" | "National"
+  region: string
+  nextDecisionPoint: string
+  sourceCount: number
+  sourceUrl: string
+}
+
+export function getCivicAlerts(): Array<CivicAlert> {
+  return topics
+    .flatMap((topic) =>
+      topic.updates.map((update) => ({
+        id: `${topic.slug}:${update.url}`,
+        slug: topic.slug,
+        topic: topic.shortTitle,
+        title: update.title,
+        summary: update.summary,
+        publishedAt: update.publishedAt,
+        urgency: topic.statusBrief.urgency,
+        scope:
+          topic.region === "United States"
+            ? ("National" as const)
+            : ("State" as const),
+        region: topic.region,
+        nextDecisionPoint: topic.statusBrief.nextDecisionPoint,
+        sourceCount: topic.sources.length,
+        sourceUrl: update.url,
+      }))
+    )
+    .sort((a, b) => b.publishedAt.localeCompare(a.publishedAt))
+}
+
 export const methodologyPrinciples = [
   {
     title: "Source-first claims",
@@ -28,7 +67,7 @@ export function getServiceUpdates() {
         slug: topic.slug,
         urgency: topic.statusBrief.urgency,
         region: topic.region,
-      })),
+      }))
     )
     .sort((a, b) => b.publishedAt.localeCompare(a.publishedAt))
 }
@@ -44,7 +83,7 @@ export function getServiceActions() {
         slug: topic.slug,
         region: topic.region,
         nextDecisionPoint: topic.statusBrief.nextDecisionPoint,
-      })),
+      }))
     )
     .sort((a, b) => urgencyRank[a.urgency] - urgencyRank[b.urgency])
 }
@@ -58,7 +97,7 @@ export function getServiceSources() {
       sourceNumber: index + 1,
       urgency: topic.statusBrief.urgency,
       region: topic.region,
-    })),
+    }))
   )
 }
 
@@ -141,6 +180,6 @@ export function searchService(query: string): Array<SearchResult> {
     [result.title, result.body, result.topic, result.meta]
       .join(" ")
       .toLowerCase()
-      .includes(normalizedQuery),
+      .includes(normalizedQuery)
   )
 }

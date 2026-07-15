@@ -1,7 +1,8 @@
-import { mutation } from "./_generated/server"
+import { internalMutation } from "./_generated/server"
+import { seedCivicFoundation } from "./seedCivic"
 import { seedTopics } from "./seedTopics"
 
-export const defaultTopics = mutation({
+export const defaultTopics = internalMutation({
   args: {},
   handler: async (ctx) => {
     for (const topic of seedTopics) {
@@ -17,6 +18,8 @@ export const defaultTopics = mutation({
       }
     }
 
-    return { upserted: seedTopics.length }
+    const civic = await seedCivicFoundation(ctx)
+
+    return { upserted: seedTopics.length, civic }
   },
 })

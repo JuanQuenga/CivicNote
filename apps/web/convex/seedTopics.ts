@@ -452,7 +452,8 @@ export const seedTopics: Array<ResearchTopic> = [
     stats: [
       {
         value: "125+",
-        label: "Michigan cities and counties reported using ALPR cameras, with similar deployments tracked nationwide",
+        label:
+          "Michigan cities and counties reported using ALPR cameras, with similar deployments tracked nationwide",
         sourceIndexes: [0],
       },
       {
@@ -2422,6 +2423,456 @@ export const seedTopics: Array<ResearchTopic> = [
         year: 2026,
         url: "https://apnews.com/article/8f78773f583e4404136707c62acc648a",
         note: "May 2026 reporting on federal voter-roll scanning.",
+      },
+    ],
+  },
+  {
+    slug: "bundibugyo-ebola-outbreak",
+    topicNumber: "07",
+    title: "Bundibugyo Ebola Outbreak",
+    shortTitle: "Ebola Outbreak",
+    tagline:
+      "A rare Ebola species has crossed from eastern DRC into Uganda without a licensed vaccine.",
+    summary:
+      "This topic tracks the May 2026 Bundibugyo virus disease outbreak in Ituri Province, Democratic Republic of the Congo, and imported cases in Kampala, Uganda, including confirmed and suspected case geography, mortality, response gaps, travel guidance, and what is still unknown.",
+    region: "DRC and Uganda",
+    status: "WHO PHEIC declared May 17, 2026",
+    theme: "future",
+    updatedAt: "2026-05-21",
+    stats: [
+      {
+        value: "246",
+        label:
+          "suspected cases reported in Ituri Province as of WHO's May 16 notice",
+        sourceIndexes: [0, 1],
+      },
+      {
+        value: "80",
+        label:
+          "suspected deaths reported in DRC, including deaths among health workers",
+        sourceIndexes: [0, 1],
+      },
+      {
+        value: "8",
+        label:
+          "laboratory-confirmed Bundibugyo-positive samples from initial INRB testing",
+        sourceIndexes: [0, 1],
+      },
+      {
+        value: "2",
+        label:
+          "laboratory-confirmed imported cases reported in Kampala, Uganda",
+        sourceIndexes: [0, 1],
+      },
+    ],
+    arguments: [
+      {
+        title: "This is not the common vaccine-covered Ebola scenario",
+        claim:
+          "Bundibugyo virus disease is an Ebola disease, but there is no licensed Bundibugyo-specific vaccine or therapeutic; response depends on fast detection, isolation, supportive care, IPC, contact tracing, and safe burials.",
+        counterpoint:
+          "Early optimized supportive care can still save lives, and WHO has activated research and development coordination for candidate countermeasures.",
+        sourceIndexes: [0, 1, 2],
+      },
+      {
+        title: "The headline count may be an undercount",
+        claim:
+          "WHO flagged uncertainty around the true number of infected people and geographic spread because of delayed detection, clusters of community deaths, insecurity, and weak contact follow-up.",
+        counterpoint:
+          "The event has named health zones, confirmed laboratory results, and active surveillance, so the immediate task is rapid narrowing of the unknowns rather than speculation.",
+        sourceIndexes: [0, 1],
+      },
+    ],
+    findings: [
+      {
+        title: "The mapped outbreak center is Ituri",
+        body: "WHO reported suspected cases across Rwampara, Mongbwalu, and Bunia health zones in Ituri Province, with unusual compatible death clusters under investigation in other health zones in Ituri and North Kivu.",
+        sourceIndexes: [0, 1],
+      },
+      {
+        title:
+          "Uganda has imported cases, not documented local transmission in the notice",
+        body: "WHO reported two confirmed Kampala cases in people returning from DRC and stated that no local transmission had been identified in Uganda at the time of reporting.",
+        sourceIndexes: [0, 1],
+      },
+      {
+        title: "Mortality context is severe but strain-specific",
+        body: "WHO says past Bundibugyo virus disease outbreaks had case fatality rates around 30% to 50%, lower than some Zaire Ebola outbreaks but still high enough to require emergency control measures.",
+        sourceIndexes: [0, 2],
+      },
+    ],
+    statusBrief: {
+      headline: "A rare Ebola species is now a cross-border emergency",
+      summary:
+        "The decisive questions are whether surveillance can find hidden transmission quickly, whether health facilities can stop amplification, and whether cross-border screening can prevent further exportation.",
+      latestDevelopment:
+        "WHO determined on May 17, 2026 that Ebola disease caused by Bundibugyo virus in DRC and Uganda is a public health emergency of international concern, but not a pandemic emergency.",
+      nextDecisionPoint:
+        "Emergency committee recommendations, updated case counts, contact tracing quality, and whether any Uganda-linked local transmission appears.",
+      whoCanAct:
+        "DRC and Uganda health ministries, WHO, Africa CDC, neighboring states, health facilities, border teams, local leaders, and humanitarian responders.",
+      urgency: "high",
+      lastChecked: "2026-05-21",
+    },
+    actions: [
+      {
+        title: "Follow the official outbreak notice, not social posts",
+        description:
+          "Use WHO Disease Outbreak News and health ministry updates for case definitions, affected zones, and travel guidance.",
+        audience: "public",
+        difficulty: "easy",
+        urgency: "high",
+        ctaLabel: "Open WHO Notice",
+        ctaUrl:
+          "https://www.who.int/emergencies/disease-outbreak-news/item/2026-DON602",
+        script:
+          "Before sharing a claim, ask: does it distinguish suspected, probable, confirmed, and ruled-out cases? If not, do not amplify it.",
+      },
+      {
+        title: "Do not support blanket border closures",
+        description:
+          "WHO advises against travel and trade restrictions; targeted screening and monitored contact movement are the recommended controls.",
+        audience: "policymakers",
+        difficulty: "medium",
+        urgency: "medium",
+        ctaLabel: "Read WHO Advice",
+        ctaUrl:
+          "https://www.who.int/news/item/17-05-2026-epidemic-of-ebola-disease-in-the-democratic-republic-of-the-congo-and-uganda-determined-a-public-health-emergency-of-international-concern",
+        script:
+          "Ask officials to fund surveillance, labs, PPE, isolation, and contact tracing instead of symbolic travel bans that push movement into informal crossings.",
+      },
+    ],
+    timeline: [
+      {
+        date: "2026-04-24",
+        title: "Known suspected case develops symptoms",
+        description:
+          "WHO describes a health worker with fever, hemorrhaging, vomiting, and intense malaise who later died at a medical center in Bunia.",
+        sourceIndexes: [0],
+      },
+      {
+        date: "2026-05-05",
+        title: "WHO alerted to high-mortality illness",
+        description:
+          "The alert involved Mongbwalu Health Zone in Ituri Province, including deaths among health workers.",
+        sourceIndexes: [0],
+      },
+      {
+        date: "2026-05-14",
+        title: "Samples analyzed by INRB Kinshasa",
+        description:
+          "Thirteen blood samples from Rwampara Health Zone were analyzed after earlier standard Ebola Xpert testing in Bunia was negative.",
+        sourceIndexes: [0],
+      },
+      {
+        date: "2026-05-15",
+        title: "Bundibugyo virus confirmed and DRC declares outbreak",
+        description:
+          "Eight samples were confirmed as Bundibugyo virus disease; DRC declared its 17th Ebola disease outbreak.",
+        sourceIndexes: [0],
+      },
+      {
+        date: "2026-05-15 to 2026-05-16",
+        title: "Uganda confirms imported Kampala cases",
+        description:
+          "Uganda confirmed one imported fatal case and then a second imported case in Kampala, both linked to travel from DRC.",
+        sourceIndexes: [0, 1],
+      },
+      {
+        date: "2026-05-17",
+        title: "WHO declares PHEIC",
+        description:
+          "WHO determined the event is a public health emergency of international concern, while saying it does not meet pandemic-emergency criteria.",
+        sourceIndexes: [1],
+      },
+    ],
+    updates: [
+      {
+        title: "WHO declares Bundibugyo Ebola event a PHEIC",
+        publisher: "World Health Organization",
+        publishedAt: "2026-05-17",
+        url: "https://www.who.int/news/item/17-05-2026-epidemic-of-ebola-disease-in-the-democratic-republic-of-the-congo-and-uganda-determined-a-public-health-emergency-of-international-concern",
+        summary:
+          "WHO cited confirmed cases in DRC and Uganda, suspected deaths, geographic uncertainty, health-care worker deaths, and lack of approved Bundibugyo-specific countermeasures.",
+        tag: "Emergency",
+      },
+      {
+        title:
+          "Disease Outbreak News details affected zones and response measures",
+        publisher: "World Health Organization",
+        publishedAt: "2026-05-16",
+        url: "https://www.who.int/emergencies/disease-outbreak-news/item/2026-DON602",
+        summary:
+          "WHO named Rwampara, Mongbwalu, and Bunia health zones, reported 246 suspected cases and 80 suspected deaths, and described Uganda's imported cases.",
+        tag: "Situation",
+      },
+    ],
+    modules: [
+      {
+        type: "briefing",
+        title: "What You Need To Know",
+        eyebrow: "Briefing",
+        body: [
+          "Bundibugyo virus disease is a severe Ebola disease caused by Bundibugyo virus. WHO says infection spreads through close contact with infected bodily fluids, contaminated surfaces, unsafe burials, and health-care exposure when infection prevention and control fails.",
+          "The current outbreak was confirmed in Ituri Province, DRC, with imported cases in Kampala, Uganda. The map marks reported case areas and a ruled-out Kinshasa alert so users can separate confirmed outbreak geography from discarded signals.",
+          "There is no licensed vaccine or specific therapeutic for Bundibugyo virus disease. The practical response is early isolation, optimized supportive care, laboratory testing, PPE, contact tracing, safe burials, community trust, and cross-border screening.",
+        ],
+        bullets: [
+          "Incubation period: 2 to 21 days; people are usually not infectious until symptoms begin.",
+          "Past Bundibugyo outbreaks: approximately 30% to 50% case fatality according to WHO.",
+          "WHO advice: no blanket travel or trade restrictions; use targeted screening and movement limits for cases and contacts.",
+        ],
+        sourceIndexes: [0, 1, 2],
+      },
+      {
+        type: "statGrid",
+        title: "Current Numbers",
+        eyebrow: "Cases",
+        stats: [
+          {
+            value: "246",
+            label:
+              "suspected DRC cases in Rwampara, Mongbwalu, and Bunia health zones",
+            sourceIndexes: [0, 1],
+          },
+          {
+            value: "80",
+            label: "suspected DRC deaths as of the WHO notice",
+            sourceIndexes: [0, 1],
+          },
+          {
+            value: "2",
+            label: "confirmed imported cases in Kampala, Uganda",
+            sourceIndexes: [0, 1],
+          },
+          {
+            value: "65",
+            label: "listed contacts in the early report, 15 high-risk",
+            sourceIndexes: [0],
+          },
+        ],
+      },
+      {
+        type: "tracker",
+        title: "Reported Case Map Ledger",
+        eyebrow: "Map",
+        columns: ["Location", "Status", "Why It Matters"],
+        rows: [
+          {
+            cells: [
+              "Mongbwalu Health Zone, Ituri",
+              "Suspected outbreak origin and health-worker deaths",
+              "Mining-area mobility and health-facility amplification increase spread risk.",
+            ],
+            sourceIndexes: [0, 1],
+          },
+          {
+            cells: [
+              "Rwampara Health Zone, Ituri",
+              "Initial lab-confirmed positive samples",
+              "Eight of the tested samples confirmed Bundibugyo virus disease after reference testing.",
+            ],
+            sourceIndexes: [0],
+          },
+          {
+            cells: [
+              "Bunia Health Zone, Ituri",
+              "Known suspected case died after late-April symptoms",
+              "Bunia is a care-seeking and transport hub less than 500 km from Uganda.",
+            ],
+            sourceIndexes: [0],
+          },
+          {
+            cells: [
+              "Kampala, Uganda",
+              "Two imported confirmed cases",
+              "WHO reported no local transmission identified in Uganda at the time of reporting.",
+            ],
+            sourceIndexes: [0, 1],
+          },
+          {
+            cells: [
+              "Kinshasa, DRC",
+              "Ruled out",
+              "A traveler from Ituri tested negative on confirmatory INRB testing and is not counted as confirmed.",
+            ],
+            sourceIndexes: [1],
+          },
+        ],
+      },
+      {
+        type: "claimLedger",
+        title: "Claims To Watch",
+        eyebrow: "Signal",
+        rows: [
+          {
+            claim: "This is a pandemic",
+            status: "unsupported",
+            finding:
+              "WHO declared a PHEIC but explicitly said the event does not meet pandemic-emergency criteria.",
+            sourceIndexes: [1],
+          },
+          {
+            claim: "A vaccine is ready for this strain",
+            status: "unsupported",
+            finding:
+              "WHO says there is no licensed vaccine or specific therapeutic against Bundibugyo virus disease.",
+            sourceIndexes: [0, 1],
+          },
+          {
+            claim: "Uganda has local spread",
+            status: "watch",
+            finding:
+              "WHO reported imported cases in Kampala and no local transmission identified at the time of the notice; this must be checked against future updates.",
+            sourceIndexes: [0],
+          },
+          {
+            claim: "The official count is complete",
+            status: "contested",
+            finding:
+              "WHO cites significant uncertainty, weak follow-up, community deaths, insecurity, and possible wider spread.",
+            sourceIndexes: [0, 1],
+          },
+        ],
+      },
+      {
+        type: "policyLevers",
+        title: "Response Priorities",
+        eyebrow: "Control",
+        levers: [
+          {
+            actor: "Health ministries",
+            lever:
+              "Emergency operations, case isolation, laboratory confirmation, contact tracing, and safe referral pathways.",
+            pressurePoint:
+              "Publish daily confirmed, probable, suspected, death, contact, and ruled-out figures separately.",
+            sourceIndexes: [0, 1],
+          },
+          {
+            actor: "Hospitals and clinics",
+            lever:
+              "Triage, PPE, staff training, IPC audits, and protected care pathways.",
+            pressurePoint:
+              "Four health-worker deaths show the cost of weak infection prevention and control.",
+            sourceIndexes: [0, 1],
+          },
+          {
+            actor: "Border and transport teams",
+            lever:
+              "Exit screening, movement limits for cases and contacts, and cross-border information sharing.",
+            pressurePoint:
+              "WHO advises against broad travel bans while supporting targeted screening and contact movement restrictions.",
+            sourceIndexes: [1],
+          },
+          {
+            actor: "Community leaders",
+            lever:
+              "Trusted risk communication, early care-seeking, contact participation, and safe burials.",
+            pressurePoint:
+              "Unsafe burial practices and delayed isolation can accelerate transmission.",
+            sourceIndexes: [0, 1],
+          },
+        ],
+      },
+      {
+        type: "timeline",
+        title: "Timeline",
+        eyebrow: "Dates",
+        items: [
+          {
+            date: "Apr. 24",
+            title: "Symptoms in known suspected case",
+            description:
+              "Health-worker case later died in Bunia after symptoms compatible with viral hemorrhagic fever.",
+            sourceIndexes: [0],
+          },
+          {
+            date: "May 5",
+            title: "WHO alerted",
+            description:
+              "High-mortality unknown illness reported in Mongbwalu Health Zone.",
+            sourceIndexes: [0],
+          },
+          {
+            date: "May 15",
+            title: "Bundibugyo confirmed",
+            description:
+              "INRB testing confirmed Bundibugyo virus disease and DRC declared an Ebola outbreak.",
+            sourceIndexes: [0],
+          },
+          {
+            date: "May 16",
+            title: "Uganda second imported case",
+            description:
+              "WHO reported a second Kampala case in a traveler from DRC, with no apparent link to the first.",
+            sourceIndexes: [0],
+          },
+          {
+            date: "May 17",
+            title: "PHEIC determination",
+            description:
+              "WHO declared a public health emergency of international concern but not a pandemic emergency.",
+            sourceIndexes: [1],
+          },
+        ],
+      },
+      {
+        type: "actionList",
+        title: "What To Do With This Information",
+        eyebrow: "Action",
+        actions: [
+          {
+            title: "Track confirmed vs suspected separately",
+            description:
+              "Do not merge suspected deaths, suspected cases, and lab-confirmed cases into one headline number.",
+            audience: "readers",
+            difficulty: "easy",
+            urgency: "high",
+            ctaLabel: "Open WHO Notice",
+            ctaUrl:
+              "https://www.who.int/emergencies/disease-outbreak-news/item/2026-DON602",
+            script:
+              "When you see a number, ask what category it belongs to and what date it was reported.",
+          },
+          {
+            title: "Watch the Uganda signal",
+            description:
+              "Imported cases are already documented; local transmission would materially change the risk picture.",
+            audience: "editors",
+            difficulty: "medium",
+            urgency: "high",
+            ctaLabel: "Open PHEIC Statement",
+            ctaUrl:
+              "https://www.who.int/news/item/17-05-2026-epidemic-of-ebola-disease-in-the-democratic-republic-of-the-congo-and-uganda-determined-a-public-health-emergency-of-international-concern",
+            script:
+              "Update the map only when an official source identifies confirmed, suspected, probable, or ruled-out geography.",
+          },
+        ],
+      },
+    ],
+    sources: [
+      {
+        title:
+          "Ebola disease caused by Bundibugyo virus, Democratic Republic of the Congo & Uganda",
+        publisher: "World Health Organization",
+        year: 2026,
+        url: "https://www.who.int/emergencies/disease-outbreak-news/item/2026-DON602",
+        note: "WHO Disease Outbreak News with case counts, affected health zones, Uganda imported cases, response measures, and risk assessment.",
+      },
+      {
+        title:
+          "Epidemic of Ebola Disease caused by Bundibugyo virus in DRC and Uganda determined a PHEIC",
+        publisher: "World Health Organization",
+        year: 2026,
+        url: "https://www.who.int/news/item/17-05-2026-epidemic-of-ebola-disease-in-the-democratic-republic-of-the-congo-and-uganda-determined-a-public-health-emergency-of-international-concern",
+        note: "WHO PHEIC statement, including emergency rationale and recommendations.",
+      },
+      {
+        title: "Ebola disease fact sheet",
+        publisher: "World Health Organization",
+        year: 2025,
+        url: "https://www.who.int/news-room/fact-sheets/detail/ebola-virus-disease",
+        note: "General Ebola disease transmission, symptoms, treatment, and prevention background.",
       },
     ],
   },

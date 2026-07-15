@@ -10,8 +10,9 @@ From repo root:
 pnpm dev:mobile
 ```
 
-This app reads the same seeded civic research topics used by the web app and
-does not require a backend or authentication provider for local browsing.
+The app keeps a sourced local fallback so topic briefs remain usable without a
+network connection. Live civic events and remote push delivery require the
+configured CivicNote backend.
 
 If you need a native development build, run:
 
@@ -73,6 +74,35 @@ prefixed with `EXPO_PUBLIC_` to app code.
 - iOS native builds require CocoaPods 1.15.2 or newer.
 - `pnpm --dir apps/mobile exec expo install --check` should report aligned Expo SDK package versions before native builds.
 
+## Push notifications
+
+Set `EXPO_PUBLIC_PUSH_REGISTRATION_URL` to the HTTPS endpoint that registers an
+Expo push token. The app sends a stable installation ID, platform, followed
+topic slugs, cadence, and coarse area label. If the variable is missing, the UI
+truthfully reports that device permission is on but server registration is not
+configured.
+
+Remote notifications require a development or release build on a physical
+device; Android remote push is not available in Expo Go. Before release:
+
+- apply the `expo-notifications` config plugin to committed native projects
+  with `expo prebuild` or equivalent native changes;
+- install iOS pods after syncing native modules;
+- configure APNs credentials and the iOS push entitlement through EAS;
+- configure FCM V1 credentials for Android;
+- verify a notification containing `data.path` or `data.eventKey` opens the
+  corresponding `/alerts/[id]` screen from foreground, background, and a cold
+  start.
+
+## Adaptive tab bar
+
+The floating five-tab capsule mirrors Piggies' `union-tab-view` interaction and
+spacing. That package is SwiftUI and cannot directly host Expo Router's React
+Native screen tree, so CivicNote implements the compatible pattern in React
+Native: native interactive Liquid Glass on iOS 26+, a polished opaque capsule
+on iOS 18–25 and other platforms, haptics, safe-area spacing, and accessible tab
+semantics.
+
 ## TestFlight
 
 The app is configured for EAS iOS TestFlight builds in `eas.json`. The
@@ -107,7 +137,11 @@ iPhone.
 
 ## Core Screens
 
-- `Home`: research hub overview, signal stats, and active topic cards
+- `Today`: personalized civic alerts and sourced action briefs
+- `Topics`: followed-issue discovery and research
+- `Act`: scripts and next actions connected to decision-makers
+- `Map`: place-first civic developments
+- `Settings`: topics, coarse location, cadence, and push permission
 - `Topic`: status brief, evidence stats, source links, findings, and public actions
 
 ## Dependency decisions

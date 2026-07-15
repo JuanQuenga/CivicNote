@@ -1,7 +1,7 @@
 import { v } from "convex/values"
 
 import { internal } from "./_generated/api"
-import { action, internalMutation, query } from "./_generated/server"
+import { internalAction, internalMutation, query } from "./_generated/server"
 
 const topicFeeds = [
   {
@@ -64,7 +64,7 @@ export const latestByTopic = query({
   },
 })
 
-export const refreshAllTopicNews = action({
+export const refreshAllTopicNews = internalAction({
   args: {},
   handler: async (ctx) => {
     const fetchedAt = new Date().toISOString()
@@ -129,9 +129,92 @@ export const upsertTopicNewsItems = internalMutation({
           fetchedAt: args.fetchedAt,
         })
       }
+
+      const source = await ctx.db
+        .query("sourceDocuments")
+        .withIndex("by_url", (q) => q.eq("url", item.url))
+        .unique()
+      const sourceId =
+        source?._id ??
+        (await ctx.db.insert("sourceDocuments", {
+          key: `rss:${stableHash(item.url)}`,
+          title: item.title,
+          publisher: item.publisher,
+          url: item.url,
+          documentType: "reporting",
+          publishedAt: item.publishedAt,
+          retrievedAt: args.fetchedAt,
+          jurisdictionKeys: getGeography(item.topicSlug).jurisdictionKeys,
+          provenanceNote:
+            "Discovered through Google News RSS; requires editorial verification before publication.",
+          reliability: "reported",
+        }))
+      if (source) {
+        await ctx.db.patch(source._id, {
+          title: item.title,
+          publisher: item.publisher,
+          publishedAt: item.publishedAt,
+          retrievedAt: args.fetchedAt,
+        })
+      }
+
+      const eventKey = `${item.topicSlug}-news-${stableHash(item.url)}`
+      const event = await ctx.db
+        .query("civicEvents")
+        .withIndex("by_key", (q) => q.eq("key", eventKey))
+        .unique()
+      const geography = getGeography(item.topicSlug)
+      const draft = {
+        topicSlugs: [item.topicSlug],
+        headline: item.title,
+        summary: item.summary,
+        whyItMatters:
+          "This report may represent a civic development. Verify the underlying record, affected jurisdiction, and decision point before alerting subscribers.",
+        eventKind: "breaking_news" as const,
+        geographicScope: geography.scope,
+        jurisdictionKeys: geography.jurisdictionKeys,
+        urgency: "medium" as const,
+        confidence: "developing" as const,
+        lifecycleStatus: "open" as const,
+        publicationStatus: "draft" as const,
+        notificationStatus: "suppressed" as const,
+        notificationMode: "none" as const,
+        happenedAt: item.publishedAt,
+        publishedAt: item.publishedAt,
+        updatedAt: args.fetchedAt,
+        sourceDocumentIds: [sourceId],
+        deepLinkPath: `/alerts/${eventKey}`,
+      }
+      if (!event) {
+        await ctx.db.insert("civicEvents", { key: eventKey, ...draft })
+      } else if (event.publicationStatus === "draft") {
+        await ctx.db.patch(event._id, draft)
+      }
     }
   },
 })
+
+function getGeography(topicSlug: string): {
+  scope: "state" | "national" | "international"
+  jurisdictionKeys: Array<string>
+} {
+  if (topicSlug.startsWith("michigan-")) {
+    return { scope: "state", jurisdictionKeys: ["us-mi"] }
+  }
+  if (topicSlug === "israel-gaza-us-influence") {
+    return { scope: "international", jurisdictionKeys: [] }
+  }
+  return { scope: "national", jurisdictionKeys: ["us"] }
+}
+
+function stableHash(value: string) {
+  let hash = 2166136261
+  for (let index = 0; index < value.length; index += 1) {
+    hash ^= value.charCodeAt(index)
+    hash = Math.imul(hash, 16777619)
+  }
+  return (hash >>> 0).toString(36)
+}
 
 function parseRssItems(
   xml: string,

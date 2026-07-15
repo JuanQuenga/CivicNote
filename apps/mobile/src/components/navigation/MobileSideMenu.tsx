@@ -21,6 +21,8 @@ import {
   FileText,
   Home,
   Radio,
+  Map,
+  Settings,
   ShieldCheck,
 } from "lucide-react-native"
 import { topics } from "@/src/lib/topics"
@@ -90,7 +92,7 @@ function SideMenuContent({
 
   return (
     <View
-      className="absolute bottom-0 left-0 top-0 bg-zinc-950"
+      className="absolute top-0 bottom-0 left-0 bg-zinc-950"
       style={{
         width: drawerWidth,
         paddingTop: insets.top + 18,
@@ -117,6 +119,12 @@ function SideMenuContent({
           icon={ClipboardCheck}
           label="Take Action"
           meta="Useful next steps"
+          onPress={() => navigate("/act")}
+        />
+        <MenuItem
+          icon={Map}
+          label="Civic Map"
+          meta="Follow decisions by place"
           onPress={() => navigate("/map")}
         />
         <MenuItem
@@ -136,6 +144,12 @@ function SideMenuContent({
           label="Methodology"
           meta="Claim rules and corrections"
           onPress={() => navigate("/methodology")}
+        />
+        <MenuItem
+          icon={Settings}
+          label="Alert Settings"
+          meta="Topics, area, and cadence"
+          onPress={() => navigate("/settings")}
         />
 
         <Text className="mt-7 text-xs font-bold tracking-[2px] text-zinc-500 uppercase">
@@ -179,8 +193,9 @@ export function MobileSideMenuShell({
 }) {
   const { width } = useWindowDimensions()
   const drawerWidth = Math.min(width * 0.76, 300)
-  const drawerOffset = useRef(new Animated.Value(expanded ? drawerWidth : 0))
-    .current
+  const drawerOffset = useRef(
+    new Animated.Value(expanded ? drawerWidth : 0)
+  ).current
   const [isDrawerOffsetVisible, setIsDrawerOffsetVisible] = useState(expanded)
   const menuGestureActiveRef = useRef(false)
   const menuSnapHapticSideRef = useRef<"before" | "after" | null>(null)

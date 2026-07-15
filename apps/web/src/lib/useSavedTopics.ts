@@ -15,28 +15,31 @@ function readSavedTopics() {
 
 export function useSavedTopics() {
   const [savedSlugs, setSavedSlugs] = useState<Array<string>>([])
+  const [isLoaded, setIsLoaded] = useState(false)
 
   useEffect(() => {
     setSavedSlugs(readSavedTopics())
+    setIsLoaded(true)
   }, [])
 
   useEffect(() => {
-    if (typeof window === "undefined") return
+    if (typeof window === "undefined" || !isLoaded) return
     window.localStorage.setItem(STORAGE_KEY, JSON.stringify(savedSlugs))
-  }, [savedSlugs])
+  }, [isLoaded, savedSlugs])
 
   return useMemo(
     () => ({
       savedSlugs,
+      isLoaded,
       isSaved: (slug: string) => savedSlugs.includes(slug),
       toggleSaved: (slug: string) => {
         setSavedSlugs((current) =>
           current.includes(slug)
             ? current.filter((item) => item !== slug)
-            : [...current, slug],
+            : [...current, slug]
         )
       },
     }),
-    [savedSlugs],
+    [isLoaded, savedSlugs]
   )
 }

@@ -1,7 +1,13 @@
 import { useEffect, useMemo, useRef, useState } from "react"
 import type { ReactNode } from "react"
 import * as Location from "expo-location"
-import { ExternalLink, Flame, LocateFixed, MapPinned, X } from "lucide-react-native"
+import {
+  ExternalLink,
+  Flame,
+  LocateFixed,
+  MapPinned,
+  X,
+} from "lucide-react-native"
 import {
   Animated,
   Linking,
@@ -22,15 +28,33 @@ import MapView, {
 } from "react-native-maps"
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
 
-type CameraCluster = {
+type TopicMapPoint = {
   id: string
-  state: string
+  regionCode?: string
   place: string
-  operator: string
+  detail: string
   latitude: number
   longitude: number
-  cameraCount: number
+  weight: number
   source: string
+}
+
+type TopicMapConfig = {
+  topicSlug: string
+  topicLabel: string
+  launchLabel: string
+  title: string
+  filteredTitle?: (regionCode: string) => string
+  liveMapUrl?: string
+  liveMapLabel: string
+  emptyNearbyText: string
+  nearbyText: (count: number) => string
+  totalLabel: (count: number) => string
+  individualLabel: string
+  individualMeta: string
+  initialRegion: StateRegion
+  regions: Array<StateRegion>
+  points: Array<TopicMapPoint>
 }
 
 type StateRegion = {
@@ -48,10 +72,11 @@ type PanelItem = {
   subtitle: string
 }
 
-const LIVE_ALPR_MAP_URL = "https://deflock.me/map"
 const MAP_PANEL_EDGE_GAP = 14
 
-const NATIONAL_REGION = {
+const NATIONAL_REGION: StateRegion = {
+  code: "US",
+  name: "United States",
   latitude: 39.5,
   longitude: -98.35,
   latitudeDelta: 42,
@@ -59,301 +84,790 @@ const NATIONAL_REGION = {
 }
 
 const stateRegions: Array<StateRegion> = [
-  { code: "AL", name: "Alabama", latitude: 32.8067, longitude: -86.7911, latitudeDelta: 5.5, longitudeDelta: 5.5 },
-  { code: "AK", name: "Alaska", latitude: 61.3707, longitude: -152.4044, latitudeDelta: 22, longitudeDelta: 30 },
-  { code: "AZ", name: "Arizona", latitude: 33.7298, longitude: -111.4312, latitudeDelta: 6.5, longitudeDelta: 6.5 },
-  { code: "AR", name: "Arkansas", latitude: 34.9697, longitude: -92.3731, latitudeDelta: 5.5, longitudeDelta: 5.5 },
-  { code: "CA", name: "California", latitude: 36.1162, longitude: -119.6816, latitudeDelta: 10, longitudeDelta: 10 },
-  { code: "CO", name: "Colorado", latitude: 39.0598, longitude: -105.3111, latitudeDelta: 6.5, longitudeDelta: 6.5 },
-  { code: "CT", name: "Connecticut", latitude: 41.5978, longitude: -72.7554, latitudeDelta: 2.6, longitudeDelta: 2.6 },
-  { code: "DE", name: "Delaware", latitude: 39.3185, longitude: -75.5071, latitudeDelta: 2.4, longitudeDelta: 2.4 },
-  { code: "FL", name: "Florida", latitude: 27.7663, longitude: -81.6868, latitudeDelta: 8, longitudeDelta: 8 },
-  { code: "GA", name: "Georgia", latitude: 33.0406, longitude: -83.6431, latitudeDelta: 6, longitudeDelta: 6 },
-  { code: "HI", name: "Hawaii", latitude: 21.0943, longitude: -157.4983, latitudeDelta: 5, longitudeDelta: 5 },
-  { code: "ID", name: "Idaho", latitude: 44.2405, longitude: -114.4788, latitudeDelta: 7, longitudeDelta: 7 },
-  { code: "IL", name: "Illinois", latitude: 40.3495, longitude: -88.9861, latitudeDelta: 6, longitudeDelta: 6 },
-  { code: "IN", name: "Indiana", latitude: 39.8494, longitude: -86.2583, latitudeDelta: 5, longitudeDelta: 5 },
-  { code: "IA", name: "Iowa", latitude: 42.0115, longitude: -93.2105, latitudeDelta: 5, longitudeDelta: 5 },
-  { code: "KS", name: "Kansas", latitude: 38.5266, longitude: -96.7265, latitudeDelta: 5.8, longitudeDelta: 5.8 },
-  { code: "KY", name: "Kentucky", latitude: 37.6681, longitude: -84.6701, latitudeDelta: 5.5, longitudeDelta: 5.5 },
-  { code: "LA", name: "Louisiana", latitude: 31.1695, longitude: -91.8678, latitudeDelta: 5.5, longitudeDelta: 5.5 },
-  { code: "ME", name: "Maine", latitude: 44.6939, longitude: -69.3819, latitudeDelta: 5.5, longitudeDelta: 5.5 },
-  { code: "MD", name: "Maryland", latitude: 39.0639, longitude: -76.8021, latitudeDelta: 3.2, longitudeDelta: 3.2 },
-  { code: "MA", name: "Massachusetts", latitude: 42.2302, longitude: -71.5301, latitudeDelta: 3.5, longitudeDelta: 3.5 },
-  { code: "MI", name: "Michigan", latitude: 44.3148, longitude: -85.6024, latitudeDelta: 6.8, longitudeDelta: 6.8 },
-  { code: "MN", name: "Minnesota", latitude: 45.6945, longitude: -93.9002, latitudeDelta: 6.5, longitudeDelta: 6.5 },
-  { code: "MS", name: "Mississippi", latitude: 32.7416, longitude: -89.6787, latitudeDelta: 5.5, longitudeDelta: 5.5 },
-  { code: "MO", name: "Missouri", latitude: 38.4561, longitude: -92.2884, latitudeDelta: 5.8, longitudeDelta: 5.8 },
-  { code: "MT", name: "Montana", latitude: 46.9219, longitude: -110.4544, latitudeDelta: 7, longitudeDelta: 7 },
-  { code: "NE", name: "Nebraska", latitude: 41.1254, longitude: -98.2681, latitudeDelta: 5.8, longitudeDelta: 5.8 },
-  { code: "NV", name: "Nevada", latitude: 38.3135, longitude: -117.0554, latitudeDelta: 7, longitudeDelta: 7 },
-  { code: "NH", name: "New Hampshire", latitude: 43.4525, longitude: -71.5639, latitudeDelta: 3.5, longitudeDelta: 3.5 },
-  { code: "NJ", name: "New Jersey", latitude: 40.2989, longitude: -74.521, latitudeDelta: 3.5, longitudeDelta: 3.5 },
-  { code: "NM", name: "New Mexico", latitude: 34.8405, longitude: -106.2485, latitudeDelta: 6.5, longitudeDelta: 6.5 },
-  { code: "NY", name: "New York", latitude: 42.1657, longitude: -74.9481, latitudeDelta: 6, longitudeDelta: 6 },
-  { code: "NC", name: "North Carolina", latitude: 35.6301, longitude: -79.8064, latitudeDelta: 5.5, longitudeDelta: 5.5 },
-  { code: "ND", name: "North Dakota", latitude: 47.5289, longitude: -99.784, latitudeDelta: 5.8, longitudeDelta: 5.8 },
-  { code: "OH", name: "Ohio", latitude: 40.3888, longitude: -82.7649, latitudeDelta: 5, longitudeDelta: 5 },
-  { code: "OK", name: "Oklahoma", latitude: 35.5653, longitude: -96.9289, latitudeDelta: 5.8, longitudeDelta: 5.8 },
-  { code: "OR", name: "Oregon", latitude: 44.572, longitude: -122.0709, latitudeDelta: 6.5, longitudeDelta: 6.5 },
-  { code: "PA", name: "Pennsylvania", latitude: 40.5908, longitude: -77.2098, latitudeDelta: 5.5, longitudeDelta: 5.5 },
-  { code: "RI", name: "Rhode Island", latitude: 41.6809, longitude: -71.5118, latitudeDelta: 1.8, longitudeDelta: 1.8 },
-  { code: "SC", name: "South Carolina", latitude: 33.8569, longitude: -80.945, latitudeDelta: 5, longitudeDelta: 5 },
-  { code: "SD", name: "South Dakota", latitude: 44.2998, longitude: -99.4388, latitudeDelta: 5.8, longitudeDelta: 5.8 },
-  { code: "TN", name: "Tennessee", latitude: 35.7478, longitude: -86.6923, latitudeDelta: 5.5, longitudeDelta: 5.5 },
-  { code: "TX", name: "Texas", latitude: 31.0545, longitude: -97.5635, latitudeDelta: 11, longitudeDelta: 11 },
-  { code: "UT", name: "Utah", latitude: 40.15, longitude: -111.8624, latitudeDelta: 6, longitudeDelta: 6 },
-  { code: "VT", name: "Vermont", latitude: 44.0459, longitude: -72.7107, latitudeDelta: 3.5, longitudeDelta: 3.5 },
-  { code: "VA", name: "Virginia", latitude: 37.7693, longitude: -78.17, latitudeDelta: 5.5, longitudeDelta: 5.5 },
-  { code: "WA", name: "Washington", latitude: 47.4009, longitude: -121.4905, latitudeDelta: 6, longitudeDelta: 6 },
-  { code: "WV", name: "West Virginia", latitude: 38.4912, longitude: -80.9545, latitudeDelta: 5, longitudeDelta: 5 },
-  { code: "WI", name: "Wisconsin", latitude: 44.2685, longitude: -89.6165, latitudeDelta: 6, longitudeDelta: 6 },
-  { code: "WY", name: "Wyoming", latitude: 42.756, longitude: -107.3025, latitudeDelta: 6, longitudeDelta: 6 },
+  {
+    code: "AL",
+    name: "Alabama",
+    latitude: 32.8067,
+    longitude: -86.7911,
+    latitudeDelta: 5.5,
+    longitudeDelta: 5.5,
+  },
+  {
+    code: "AK",
+    name: "Alaska",
+    latitude: 61.3707,
+    longitude: -152.4044,
+    latitudeDelta: 22,
+    longitudeDelta: 30,
+  },
+  {
+    code: "AZ",
+    name: "Arizona",
+    latitude: 33.7298,
+    longitude: -111.4312,
+    latitudeDelta: 6.5,
+    longitudeDelta: 6.5,
+  },
+  {
+    code: "AR",
+    name: "Arkansas",
+    latitude: 34.9697,
+    longitude: -92.3731,
+    latitudeDelta: 5.5,
+    longitudeDelta: 5.5,
+  },
+  {
+    code: "CA",
+    name: "California",
+    latitude: 36.1162,
+    longitude: -119.6816,
+    latitudeDelta: 10,
+    longitudeDelta: 10,
+  },
+  {
+    code: "CO",
+    name: "Colorado",
+    latitude: 39.0598,
+    longitude: -105.3111,
+    latitudeDelta: 6.5,
+    longitudeDelta: 6.5,
+  },
+  {
+    code: "CT",
+    name: "Connecticut",
+    latitude: 41.5978,
+    longitude: -72.7554,
+    latitudeDelta: 2.6,
+    longitudeDelta: 2.6,
+  },
+  {
+    code: "DE",
+    name: "Delaware",
+    latitude: 39.3185,
+    longitude: -75.5071,
+    latitudeDelta: 2.4,
+    longitudeDelta: 2.4,
+  },
+  {
+    code: "FL",
+    name: "Florida",
+    latitude: 27.7663,
+    longitude: -81.6868,
+    latitudeDelta: 8,
+    longitudeDelta: 8,
+  },
+  {
+    code: "GA",
+    name: "Georgia",
+    latitude: 33.0406,
+    longitude: -83.6431,
+    latitudeDelta: 6,
+    longitudeDelta: 6,
+  },
+  {
+    code: "HI",
+    name: "Hawaii",
+    latitude: 21.0943,
+    longitude: -157.4983,
+    latitudeDelta: 5,
+    longitudeDelta: 5,
+  },
+  {
+    code: "ID",
+    name: "Idaho",
+    latitude: 44.2405,
+    longitude: -114.4788,
+    latitudeDelta: 7,
+    longitudeDelta: 7,
+  },
+  {
+    code: "IL",
+    name: "Illinois",
+    latitude: 40.3495,
+    longitude: -88.9861,
+    latitudeDelta: 6,
+    longitudeDelta: 6,
+  },
+  {
+    code: "IN",
+    name: "Indiana",
+    latitude: 39.8494,
+    longitude: -86.2583,
+    latitudeDelta: 5,
+    longitudeDelta: 5,
+  },
+  {
+    code: "IA",
+    name: "Iowa",
+    latitude: 42.0115,
+    longitude: -93.2105,
+    latitudeDelta: 5,
+    longitudeDelta: 5,
+  },
+  {
+    code: "KS",
+    name: "Kansas",
+    latitude: 38.5266,
+    longitude: -96.7265,
+    latitudeDelta: 5.8,
+    longitudeDelta: 5.8,
+  },
+  {
+    code: "KY",
+    name: "Kentucky",
+    latitude: 37.6681,
+    longitude: -84.6701,
+    latitudeDelta: 5.5,
+    longitudeDelta: 5.5,
+  },
+  {
+    code: "LA",
+    name: "Louisiana",
+    latitude: 31.1695,
+    longitude: -91.8678,
+    latitudeDelta: 5.5,
+    longitudeDelta: 5.5,
+  },
+  {
+    code: "ME",
+    name: "Maine",
+    latitude: 44.6939,
+    longitude: -69.3819,
+    latitudeDelta: 5.5,
+    longitudeDelta: 5.5,
+  },
+  {
+    code: "MD",
+    name: "Maryland",
+    latitude: 39.0639,
+    longitude: -76.8021,
+    latitudeDelta: 3.2,
+    longitudeDelta: 3.2,
+  },
+  {
+    code: "MA",
+    name: "Massachusetts",
+    latitude: 42.2302,
+    longitude: -71.5301,
+    latitudeDelta: 3.5,
+    longitudeDelta: 3.5,
+  },
+  {
+    code: "MI",
+    name: "Michigan",
+    latitude: 44.3148,
+    longitude: -85.6024,
+    latitudeDelta: 6.8,
+    longitudeDelta: 6.8,
+  },
+  {
+    code: "MN",
+    name: "Minnesota",
+    latitude: 45.6945,
+    longitude: -93.9002,
+    latitudeDelta: 6.5,
+    longitudeDelta: 6.5,
+  },
+  {
+    code: "MS",
+    name: "Mississippi",
+    latitude: 32.7416,
+    longitude: -89.6787,
+    latitudeDelta: 5.5,
+    longitudeDelta: 5.5,
+  },
+  {
+    code: "MO",
+    name: "Missouri",
+    latitude: 38.4561,
+    longitude: -92.2884,
+    latitudeDelta: 5.8,
+    longitudeDelta: 5.8,
+  },
+  {
+    code: "MT",
+    name: "Montana",
+    latitude: 46.9219,
+    longitude: -110.4544,
+    latitudeDelta: 7,
+    longitudeDelta: 7,
+  },
+  {
+    code: "NE",
+    name: "Nebraska",
+    latitude: 41.1254,
+    longitude: -98.2681,
+    latitudeDelta: 5.8,
+    longitudeDelta: 5.8,
+  },
+  {
+    code: "NV",
+    name: "Nevada",
+    latitude: 38.3135,
+    longitude: -117.0554,
+    latitudeDelta: 7,
+    longitudeDelta: 7,
+  },
+  {
+    code: "NH",
+    name: "New Hampshire",
+    latitude: 43.4525,
+    longitude: -71.5639,
+    latitudeDelta: 3.5,
+    longitudeDelta: 3.5,
+  },
+  {
+    code: "NJ",
+    name: "New Jersey",
+    latitude: 40.2989,
+    longitude: -74.521,
+    latitudeDelta: 3.5,
+    longitudeDelta: 3.5,
+  },
+  {
+    code: "NM",
+    name: "New Mexico",
+    latitude: 34.8405,
+    longitude: -106.2485,
+    latitudeDelta: 6.5,
+    longitudeDelta: 6.5,
+  },
+  {
+    code: "NY",
+    name: "New York",
+    latitude: 42.1657,
+    longitude: -74.9481,
+    latitudeDelta: 6,
+    longitudeDelta: 6,
+  },
+  {
+    code: "NC",
+    name: "North Carolina",
+    latitude: 35.6301,
+    longitude: -79.8064,
+    latitudeDelta: 5.5,
+    longitudeDelta: 5.5,
+  },
+  {
+    code: "ND",
+    name: "North Dakota",
+    latitude: 47.5289,
+    longitude: -99.784,
+    latitudeDelta: 5.8,
+    longitudeDelta: 5.8,
+  },
+  {
+    code: "OH",
+    name: "Ohio",
+    latitude: 40.3888,
+    longitude: -82.7649,
+    latitudeDelta: 5,
+    longitudeDelta: 5,
+  },
+  {
+    code: "OK",
+    name: "Oklahoma",
+    latitude: 35.5653,
+    longitude: -96.9289,
+    latitudeDelta: 5.8,
+    longitudeDelta: 5.8,
+  },
+  {
+    code: "OR",
+    name: "Oregon",
+    latitude: 44.572,
+    longitude: -122.0709,
+    latitudeDelta: 6.5,
+    longitudeDelta: 6.5,
+  },
+  {
+    code: "PA",
+    name: "Pennsylvania",
+    latitude: 40.5908,
+    longitude: -77.2098,
+    latitudeDelta: 5.5,
+    longitudeDelta: 5.5,
+  },
+  {
+    code: "RI",
+    name: "Rhode Island",
+    latitude: 41.6809,
+    longitude: -71.5118,
+    latitudeDelta: 1.8,
+    longitudeDelta: 1.8,
+  },
+  {
+    code: "SC",
+    name: "South Carolina",
+    latitude: 33.8569,
+    longitude: -80.945,
+    latitudeDelta: 5,
+    longitudeDelta: 5,
+  },
+  {
+    code: "SD",
+    name: "South Dakota",
+    latitude: 44.2998,
+    longitude: -99.4388,
+    latitudeDelta: 5.8,
+    longitudeDelta: 5.8,
+  },
+  {
+    code: "TN",
+    name: "Tennessee",
+    latitude: 35.7478,
+    longitude: -86.6923,
+    latitudeDelta: 5.5,
+    longitudeDelta: 5.5,
+  },
+  {
+    code: "TX",
+    name: "Texas",
+    latitude: 31.0545,
+    longitude: -97.5635,
+    latitudeDelta: 11,
+    longitudeDelta: 11,
+  },
+  {
+    code: "UT",
+    name: "Utah",
+    latitude: 40.15,
+    longitude: -111.8624,
+    latitudeDelta: 6,
+    longitudeDelta: 6,
+  },
+  {
+    code: "VT",
+    name: "Vermont",
+    latitude: 44.0459,
+    longitude: -72.7107,
+    latitudeDelta: 3.5,
+    longitudeDelta: 3.5,
+  },
+  {
+    code: "VA",
+    name: "Virginia",
+    latitude: 37.7693,
+    longitude: -78.17,
+    latitudeDelta: 5.5,
+    longitudeDelta: 5.5,
+  },
+  {
+    code: "WA",
+    name: "Washington",
+    latitude: 47.4009,
+    longitude: -121.4905,
+    latitudeDelta: 6,
+    longitudeDelta: 6,
+  },
+  {
+    code: "WV",
+    name: "West Virginia",
+    latitude: 38.4912,
+    longitude: -80.9545,
+    latitudeDelta: 5,
+    longitudeDelta: 5,
+  },
+  {
+    code: "WI",
+    name: "Wisconsin",
+    latitude: 44.2685,
+    longitude: -89.6165,
+    latitudeDelta: 6,
+    longitudeDelta: 6,
+  },
+  {
+    code: "WY",
+    name: "Wyoming",
+    latitude: 42.756,
+    longitude: -107.3025,
+    latitudeDelta: 6,
+    longitudeDelta: 6,
+  },
 ]
 
-const cameraClusters: Array<CameraCluster> = [
+const cameraClusters: Array<TopicMapPoint> = [
   {
     id: "detroit",
-    state: "MI",
+    regionCode: "MI",
     place: "Detroit",
-    operator: "Police and regional ALPR network",
+    detail: "Police and regional ALPR network",
     latitude: 42.3314,
     longitude: -83.0458,
-    cameraCount: 46,
+    weight: 46,
     source: "Crowdsourced ALPR maps and local reporting",
   },
   {
     id: "grand-rapids",
-    state: "MI",
+    regionCode: "MI",
     place: "Grand Rapids",
-    operator: "Flock / ALPR deployments",
+    detail: "Flock / ALPR deployments",
     latitude: 42.9634,
     longitude: -85.6681,
-    cameraCount: 32,
+    weight: 32,
     source: "Crowdsourced ALPR maps and local reporting",
   },
   {
     id: "flint",
-    state: "MI",
+    regionCode: "MI",
     place: "Flint",
-    operator: "Flock / ALPR deployments",
+    detail: "Flock / ALPR deployments",
     latitude: 43.0125,
     longitude: -83.6875,
-    cameraCount: 26,
+    weight: 26,
     source: "Crowdsourced ALPR maps and local reporting",
   },
   {
     id: "lansing",
-    state: "MI",
+    regionCode: "MI",
     place: "Lansing",
-    operator: "Flock / ALPR deployments",
+    detail: "Flock / ALPR deployments",
     latitude: 42.7325,
     longitude: -84.5555,
-    cameraCount: 21,
+    weight: 21,
     source: "Crowdsourced ALPR maps and local reporting",
   },
   {
     id: "ann-arbor",
-    state: "MI",
+    regionCode: "MI",
     place: "Ann Arbor",
-    operator: "ALPR and connected camera systems",
+    detail: "ALPR and connected camera systems",
     latitude: 42.2808,
     longitude: -83.743,
-    cameraCount: 18,
+    weight: 18,
     source: "Crowdsourced ALPR maps and local reporting",
   },
   {
     id: "kalamazoo",
-    state: "MI",
+    regionCode: "MI",
     place: "Kalamazoo",
-    operator: "Flock / ALPR deployments",
+    detail: "Flock / ALPR deployments",
     latitude: 42.2917,
     longitude: -85.5872,
-    cameraCount: 15,
+    weight: 15,
     source: "Crowdsourced ALPR maps and local reporting",
   },
   {
     id: "portage",
-    state: "MI",
+    regionCode: "MI",
     place: "Portage",
-    operator: "Flock transparency portal",
+    detail: "Flock transparency portal",
     latitude: 42.2012,
     longitude: -85.58,
-    cameraCount: 12,
+    weight: 12,
     source: "City transparency materials",
   },
   {
     id: "holland",
-    state: "MI",
+    regionCode: "MI",
     place: "Holland",
-    operator: "Flock / ALPR deployments",
+    detail: "Flock / ALPR deployments",
     latitude: 42.7875,
     longitude: -86.1089,
-    cameraCount: 11,
+    weight: 11,
     source: "Crowdsourced ALPR maps and local reporting",
   },
   {
     id: "royal-oak",
-    state: "MI",
+    regionCode: "MI",
     place: "Royal Oak",
-    operator: "Flock / ALPR deployments",
+    detail: "Flock / ALPR deployments",
     latitude: 42.4895,
     longitude: -83.1446,
-    cameraCount: 10,
+    weight: 10,
     source: "Public procurement records",
   },
   {
     id: "saginaw",
-    state: "MI",
+    regionCode: "MI",
     place: "Saginaw",
-    operator: "ALPR deployments",
+    detail: "ALPR deployments",
     latitude: 43.4195,
     longitude: -83.9508,
-    cameraCount: 8,
+    weight: 8,
     source: "Crowdsourced ALPR maps and local reporting",
   },
   {
     id: "los-angeles",
-    state: "CA",
+    regionCode: "CA",
     place: "Los Angeles",
-    operator: "ALPR and connected camera systems",
+    detail: "ALPR and connected camera systems",
     latitude: 34.0522,
     longitude: -118.2437,
-    cameraCount: 54,
+    weight: 54,
     source: "Crowdsourced ALPR maps and public reporting",
   },
   {
     id: "bay-area",
-    state: "CA",
+    regionCode: "CA",
     place: "San Francisco Bay Area",
-    operator: "ALPR and camera-sharing networks",
+    detail: "ALPR and camera-sharing networks",
     latitude: 37.7749,
     longitude: -122.4194,
-    cameraCount: 41,
+    weight: 41,
     source: "Crowdsourced ALPR maps and public reporting",
   },
   {
     id: "phoenix",
-    state: "AZ",
+    regionCode: "AZ",
     place: "Phoenix",
-    operator: "Flock / ALPR deployments",
+    detail: "Flock / ALPR deployments",
     latitude: 33.4484,
     longitude: -112.074,
-    cameraCount: 28,
+    weight: 28,
     source: "Crowdsourced ALPR maps and public reporting",
   },
   {
     id: "dallas",
-    state: "TX",
+    regionCode: "TX",
     place: "Dallas-Fort Worth",
-    operator: "Flock / ALPR deployments",
+    detail: "Flock / ALPR deployments",
     latitude: 32.7767,
     longitude: -96.797,
-    cameraCount: 36,
+    weight: 36,
     source: "Crowdsourced ALPR maps and public reporting",
   },
   {
     id: "houston",
-    state: "TX",
+    regionCode: "TX",
     place: "Houston",
-    operator: "ALPR and regional camera systems",
+    detail: "ALPR and regional camera systems",
     latitude: 29.7604,
     longitude: -95.3698,
-    cameraCount: 24,
+    weight: 24,
     source: "Crowdsourced ALPR maps and public reporting",
   },
   {
     id: "chicago",
-    state: "IL",
+    regionCode: "IL",
     place: "Chicago",
-    operator: "ALPR and connected camera systems",
+    detail: "ALPR and connected camera systems",
     latitude: 41.8781,
     longitude: -87.6298,
-    cameraCount: 38,
+    weight: 38,
     source: "Crowdsourced ALPR maps and public reporting",
   },
   {
     id: "atlanta",
-    state: "GA",
+    regionCode: "GA",
     place: "Atlanta",
-    operator: "Flock / ALPR deployments",
+    detail: "Flock / ALPR deployments",
     latitude: 33.749,
     longitude: -84.388,
-    cameraCount: 31,
+    weight: 31,
     source: "Crowdsourced ALPR maps and public reporting",
   },
   {
     id: "miami",
-    state: "FL",
+    regionCode: "FL",
     place: "Miami",
-    operator: "ALPR and connected camera systems",
+    detail: "ALPR and connected camera systems",
     latitude: 25.7617,
     longitude: -80.1918,
-    cameraCount: 27,
+    weight: 27,
     source: "Crowdsourced ALPR maps and public reporting",
   },
   {
     id: "orlando",
-    state: "FL",
+    regionCode: "FL",
     place: "Orlando",
-    operator: "Flock / ALPR deployments",
+    detail: "Flock / ALPR deployments",
     latitude: 28.5383,
     longitude: -81.3792,
-    cameraCount: 23,
+    weight: 23,
     source: "Crowdsourced ALPR maps and public reporting",
   },
   {
     id: "denver",
-    state: "CO",
+    regionCode: "CO",
     place: "Denver",
-    operator: "ALPR and connected camera systems",
+    detail: "ALPR and connected camera systems",
     latitude: 39.7392,
     longitude: -104.9903,
-    cameraCount: 22,
+    weight: 22,
     source: "Crowdsourced ALPR maps and public reporting",
   },
   {
     id: "seattle",
-    state: "WA",
+    regionCode: "WA",
     place: "Seattle",
-    operator: "ALPR and connected camera systems",
+    detail: "ALPR and connected camera systems",
     latitude: 47.6062,
     longitude: -122.3321,
-    cameraCount: 20,
+    weight: 20,
     source: "Crowdsourced ALPR maps and public reporting",
   },
   {
     id: "new-york",
-    state: "NY",
+    regionCode: "NY",
     place: "New York City",
-    operator: "ALPR and connected camera systems",
+    detail: "ALPR and connected camera systems",
     latitude: 40.7128,
     longitude: -74.006,
-    cameraCount: 44,
+    weight: 44,
     source: "Crowdsourced ALPR maps and public reporting",
   },
   {
     id: "philadelphia",
-    state: "PA",
+    regionCode: "PA",
     place: "Philadelphia",
-    operator: "Flock / ALPR deployments",
+    detail: "Flock / ALPR deployments",
     latitude: 39.9526,
     longitude: -75.1652,
-    cameraCount: 21,
+    weight: 21,
     source: "Crowdsourced ALPR maps and public reporting",
   },
   {
     id: "raleigh",
-    state: "NC",
+    regionCode: "NC",
     place: "Raleigh",
-    operator: "Flock / ALPR deployments",
+    detail: "Flock / ALPR deployments",
     latitude: 35.7796,
     longitude: -78.6382,
-    cameraCount: 19,
+    weight: 19,
     source: "Crowdsourced ALPR maps and public reporting",
   },
 ]
 
+const ebolaRegions: Array<StateRegion> = [
+  {
+    code: "ITURI",
+    name: "Ituri, DRC",
+    latitude: 1.95,
+    longitude: 30.28,
+    latitudeDelta: 3.2,
+    longitudeDelta: 3.2,
+  },
+  {
+    code: "KAMPALA",
+    name: "Kampala, Uganda",
+    latitude: 0.3476,
+    longitude: 32.5825,
+    latitudeDelta: 1.8,
+    longitudeDelta: 1.8,
+  },
+  {
+    code: "KINSHASA",
+    name: "Kinshasa, DRC",
+    latitude: -4.4419,
+    longitude: 15.2663,
+    latitudeDelta: 2.5,
+    longitudeDelta: 2.5,
+  },
+]
+
+const ebolaCaseLocations: Array<TopicMapPoint> = [
+  {
+    id: "mongbwalu",
+    regionCode: "ITURI",
+    place: "Mongbwalu Health Zone",
+    detail: "Suspected outbreak origin; health-worker deaths reported",
+    latitude: 1.9558,
+    longitude: 30.033,
+    weight: 90,
+    source: "WHO Disease Outbreak News, 16 May 2026",
+  },
+  {
+    id: "rwampara",
+    regionCode: "ITURI",
+    place: "Rwampara Health Zone",
+    detail:
+      "Eight lab-confirmed Bundibugyo-positive samples from initial testing",
+    latitude: 1.827,
+    longitude: 30.2106,
+    weight: 80,
+    source: "WHO Disease Outbreak News, 16 May 2026",
+  },
+  {
+    id: "bunia",
+    regionCode: "ITURI",
+    place: "Bunia Health Zone",
+    detail: "Known suspected case died after symptom onset in late April",
+    latitude: 1.5602,
+    longitude: 30.24,
+    weight: 76,
+    source: "WHO Disease Outbreak News, 16 May 2026",
+  },
+  {
+    id: "kampala-imported-1",
+    regionCode: "KAMPALA",
+    place: "Kampala imported case",
+    detail: "Imported DRC-linked confirmed case; patient died 14 May",
+    latitude: 0.3476,
+    longitude: 32.5825,
+    weight: 1,
+    source: "Uganda Ministry of Health / WHO, 15 May 2026",
+  },
+  {
+    id: "kampala-imported-2",
+    regionCode: "KAMPALA",
+    place: "Kampala second imported case",
+    detail:
+      "Second DRC-linked confirmed case; no local transmission identified at reporting",
+    latitude: 0.3736,
+    longitude: 32.609,
+    weight: 1,
+    source: "WHO Disease Outbreak News, 16 May 2026",
+  },
+  {
+    id: "kinshasa-negative",
+    regionCode: "KINSHASA",
+    place: "Kinshasa ruled-out alert",
+    detail: "Ituri traveler tested negative on confirmatory INRB testing",
+    latitude: -4.4419,
+    longitude: 15.2663,
+    weight: 1,
+    source: "WHO PHEIC statement update, 17 May 2026",
+  },
+]
+
+const topicMapConfigs: Record<string, TopicMapConfig> = {
+  "michigan-surveillance-stack": {
+    topicSlug: "michigan-surveillance-stack",
+    topicLabel: "Topic 02",
+    launchLabel: "Open ALPR Camera Map",
+    title: "ALPR Density",
+    filteredTitle: (regionCode) => `${regionCode} ALPR Pins`,
+    liveMapUrl: "https://deflock.me/map",
+    liveMapLabel: "Live map",
+    emptyNearbyText: "Tap locate to estimate cameras near you.",
+    nearbyText: (count) => `${count} mapped cameras within 25 miles.`,
+    totalLabel: (count) => `${count} mapped`,
+    individualLabel: "Individual cameras",
+    individualMeta: "Open the live DeFlock map",
+    initialRegion: NATIONAL_REGION,
+    regions: stateRegions,
+    points: cameraClusters,
+  },
+  "bundibugyo-ebola-outbreak": {
+    topicSlug: "bundibugyo-ebola-outbreak",
+    topicLabel: "Topic 07",
+    launchLabel: "Open Ebola Outbreak Map",
+    title: "Reported BVD Cases",
+    filteredTitle: (regionCode) =>
+      ebolaRegions.find((region) => region.code === regionCode)?.name ??
+      regionCode,
+    liveMapUrl:
+      "https://www.who.int/emergencies/disease-outbreak-news/item/2026-DON602",
+    liveMapLabel: "WHO notice",
+    emptyNearbyText:
+      "Tap locate to estimate distance to mapped outbreak points.",
+    nearbyText: (count) => `${count} mapped outbreak points within 25 miles.`,
+    totalLabel: (count) => `${count} case-area pins`,
+    individualLabel: "WHO case map",
+    individualMeta: "Open the latest outbreak notice",
+    initialRegion: {
+      code: "BVD",
+      name: "DRC and Uganda",
+      latitude: 0.55,
+      longitude: 28.1,
+      latitudeDelta: 9,
+      longitudeDelta: 18,
+    },
+    regions: ebolaRegions,
+    points: ebolaCaseLocations,
+  },
+}
 const CIVIC_MAP_STYLE = [
   { elementType: "geometry", stylers: [{ color: "#f7f4ee" }] },
   { elementType: "labels.text.fill", stylers: [{ color: "#52525b" }] },
@@ -411,14 +925,12 @@ function distanceInMiles(
   return earthRadiusMiles * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
 }
 
-export function SurveillanceMapLauncher({
-  topicSlug,
-}: {
-  topicSlug: string
-}) {
+export function SurveillanceMapLauncher({ topicSlug }: { topicSlug: string }) {
   const [isOpen, setIsOpen] = useState(false)
 
-  if (topicSlug !== "michigan-surveillance-stack") return null
+  const config = topicMapConfigs[topicSlug]
+
+  if (!config) return null
 
   return (
     <>
@@ -429,13 +941,13 @@ export function SurveillanceMapLauncher({
         >
           <MapPinned color="#18181b" size={18} strokeWidth={2.2} />
           <Text className="text-xs font-bold tracking-[1.5px] text-zinc-950 uppercase">
-            Open ALPR Camera Map
+            {config.launchLabel}
           </Text>
         </Pressable>
       </View>
       <Modal animationType="none" transparent visible={isOpen}>
         <MobileMapOverlay isOpen={isOpen}>
-          <SurveillanceMap onClose={() => setIsOpen(false)} />
+          <SurveillanceMap config={config} onClose={() => setIsOpen(false)} />
         </MobileMapOverlay>
       </Modal>
     </>
@@ -484,65 +996,73 @@ function MobileMapOverlay({
   )
 }
 
-function SurveillanceMap({ onClose }: { onClose: () => void }) {
+function SurveillanceMap({
+  config,
+  onClose,
+}: {
+  config: TopicMapConfig
+  onClose: () => void
+}) {
   const insets = useSafeAreaInsets()
   const mapRef = useRef<MapView>(null)
-  const [selectedStateCode, setSelectedStateCode] = useState<string | null>(null)
-  const [selectedClusterId, setSelectedClusterId] = useState<string | null>(null)
+  const [selectedRegionCode, setSelectedRegionCode] = useState<string | null>(
+    null
+  )
+  const [selectedPointId, setSelectedPointId] = useState<string | null>(null)
   const [userLocation, setUserLocation] = useState<{
     latitude: number
     longitude: number
   } | null>(null)
-  const [locationStatus, setLocationStatus] = useState<"idle" | "loading" | "denied">(
-    "idle"
-  )
+  const [locationStatus, setLocationStatus] = useState<
+    "idle" | "loading" | "denied"
+  >("idle")
 
-  const selectedCluster =
-    cameraClusters.find((cluster) => cluster.id === selectedClusterId) ?? null
-  const visibleClusters = selectedStateCode
-    ? cameraClusters.filter((cluster) => cluster.state === selectedStateCode)
-    : cameraClusters
-  const totalMapped = cameraClusters.reduce(
-    (sum, cluster) => sum + cluster.cameraCount,
+  const selectedPoint =
+    config.points.find((point) => point.id === selectedPointId) ?? null
+  const visiblePoints = selectedRegionCode
+    ? config.points.filter((point) => point.regionCode === selectedRegionCode)
+    : config.points
+  const totalMapped = config.points.reduce(
+    (sum, point) => sum + point.weight,
     0
   )
   const nearby = useMemo(() => {
     if (!userLocation) return []
 
-    return visibleClusters
-      .map((cluster) => ({
-        ...cluster,
-        distance: distanceInMiles(userLocation, cluster),
+    return visiblePoints
+      .map((point) => ({
+        ...point,
+        distance: distanceInMiles(userLocation, point),
       }))
-      .filter((cluster) => cluster.distance <= 25)
+      .filter((point) => point.distance <= 25)
       .sort((a, b) => a.distance - b.distance)
-  }, [userLocation, visibleClusters])
-  const statePanelItems = useMemo<Array<PanelItem>>(
+  }, [userLocation, visiblePoints])
+  const regionPanelItems = useMemo<Array<PanelItem>>(
     () =>
-      stateRegions.map((state) => {
-        const count = cameraClusters
-          .filter((cluster) => cluster.state === state.code)
-          .reduce((sum, cluster) => sum + cluster.cameraCount, 0)
+      config.regions.map((region) => {
+        const count = config.points
+          .filter((point) => point.regionCode === region.code)
+          .reduce((sum, point) => sum + point.weight, 0)
 
         return {
-          id: state.code,
-          title: state.name,
-          subtitle: count ? `${count} bundled pins` : "Open live map",
+          id: region.code,
+          title: region.name,
+          subtitle: count ? config.totalLabel(count) : config.liveMapLabel,
         }
       }),
-    []
+    [config]
   )
   const panelItems = useMemo<Array<PanelItem>>(
     () =>
-      visibleClusters
+      visiblePoints
         .slice()
-        .sort((a, b) => b.cameraCount - a.cameraCount)
-        .map((cluster) => ({
-          id: cluster.id,
-          title: cluster.place,
-          subtitle: `${cluster.cameraCount} mapped cameras`,
+        .sort((a, b) => b.weight - a.weight)
+        .map((point) => ({
+          id: point.id,
+          title: point.place,
+          subtitle: config.totalLabel(point.weight),
         })),
-    [visibleClusters]
+    [config, visiblePoints]
   )
 
   async function refreshLocation() {
@@ -573,13 +1093,13 @@ function SurveillanceMap({ onClose }: { onClose: () => void }) {
     )
   }
 
-  function selectCluster(cluster: CameraCluster) {
-    setSelectedStateCode(cluster.state)
-    setSelectedClusterId(cluster.id)
+  function selectPoint(point: TopicMapPoint) {
+    setSelectedRegionCode(point.regionCode ?? null)
+    setSelectedPointId(point.id)
     mapRef.current?.animateToRegion(
       {
-        latitude: cluster.latitude,
-        longitude: cluster.longitude,
+        latitude: point.latitude,
+        longitude: point.longitude,
         latitudeDelta: 0.95,
         longitudeDelta: 0.95,
       },
@@ -587,18 +1107,20 @@ function SurveillanceMap({ onClose }: { onClose: () => void }) {
     )
   }
 
-  function selectState(stateCode: string) {
-    const state = stateRegions.find((candidate) => candidate.code === stateCode)
-    if (!state) return
+  function selectRegion(regionCode: string) {
+    const region = config.regions.find(
+      (candidate) => candidate.code === regionCode
+    )
+    if (!region) return
 
-    setSelectedStateCode(state.code)
-    setSelectedClusterId(null)
+    setSelectedRegionCode(region.code)
+    setSelectedPointId(null)
     mapRef.current?.animateToRegion(
       {
-        latitude: state.latitude,
-        longitude: state.longitude,
-        latitudeDelta: state.latitudeDelta,
-        longitudeDelta: state.longitudeDelta,
+        latitude: region.latitude,
+        longitude: region.longitude,
+        latitudeDelta: region.latitudeDelta,
+        longitudeDelta: region.longitudeDelta,
       },
       650
     )
@@ -608,7 +1130,7 @@ function SurveillanceMap({ onClose }: { onClose: () => void }) {
     <View style={styles.container}>
       <MapView
         customMapStyle={CIVIC_MAP_STYLE}
-        initialRegion={NATIONAL_REGION}
+        initialRegion={config.initialRegion}
         mapType="standard"
         provider={Platform.OS === "android" ? PROVIDER_GOOGLE : undefined}
         ref={mapRef}
@@ -618,9 +1140,9 @@ function SurveillanceMap({ onClose }: { onClose: () => void }) {
         showsUserLocation={Boolean(userLocation)}
         style={StyleSheet.absoluteFillObject}
         userInterfaceStyle="light"
-        onPress={() => setSelectedClusterId(null)}
+        onPress={() => setSelectedPointId(null)}
       >
-        {Platform.OS === "android" && visibleClusters.length ? (
+        {Platform.OS === "android" && visiblePoints.length ? (
           <Heatmap
             gradient={{
               colorMapSize: 256,
@@ -628,48 +1150,48 @@ function SurveillanceMap({ onClose }: { onClose: () => void }) {
               startPoints: [0.1, 0.35, 0.65, 1],
             }}
             opacity={0.55}
-            points={visibleClusters.map((cluster) => ({
-              latitude: cluster.latitude,
-              longitude: cluster.longitude,
-              weight: cluster.cameraCount,
+            points={visiblePoints.map((point) => ({
+              latitude: point.latitude,
+              longitude: point.longitude,
+              weight: point.weight,
             }))}
             radius={42}
           />
         ) : (
-          visibleClusters.map((cluster) => (
+          visiblePoints.map((point) => (
             <Circle
               center={{
-                latitude: cluster.latitude,
-                longitude: cluster.longitude,
+                latitude: point.latitude,
+                longitude: point.longitude,
               }}
               fillColor="rgba(220, 38, 38, 0.22)"
-              key={`${cluster.id}-density`}
-              radius={Math.max(9000, cluster.cameraCount * 650)}
+              key={`${point.id}-density`}
+              radius={Math.max(9000, point.weight * 650)}
               strokeColor="rgba(127, 29, 29, 0.34)"
               strokeWidth={1}
             />
           ))
         )}
-        {visibleClusters.map((cluster) => (
+        {visiblePoints.map((point) => (
           <Marker
             coordinate={{
-              latitude: cluster.latitude,
-              longitude: cluster.longitude,
+              latitude: point.latitude,
+              longitude: point.longitude,
             }}
-            key={cluster.id}
+            key={point.id}
             onPress={(event) => {
               event.stopPropagation()
-              selectCluster(cluster)
+              selectPoint(point)
             }}
           >
             <View style={styles.markerShell}>
               <View
                 style={[
                   styles.cameraMarker,
-                  selectedClusterId === cluster.id && styles.selectedMarker,
+                  selectedPointId === point.id && styles.selectedMarker,
                 ]}
               >
-                <Text style={styles.markerCount}>{cluster.cameraCount}</Text>
+                <Text style={styles.markerCount}>{point.weight}</Text>
               </View>
               <View style={styles.markerPointer} />
             </View>
@@ -681,18 +1203,20 @@ function SurveillanceMap({ onClose }: { onClose: () => void }) {
         <View style={[styles.topHeader, { top: insets.top + 4 }]}>
           <View style={styles.headerBadge}>
             <MapPinned color="#F11A23" size={18} />
-            <Text style={styles.headerBadgeText}>Topic 02</Text>
+            <Text style={styles.headerBadgeText}>{config.topicLabel}</Text>
           </View>
           <View style={styles.headerActions}>
-            <Pressable
-              accessibilityLabel="Open live ALPR map"
-              style={styles.headerButton}
-              onPress={() => {
-                void Linking.openURL(LIVE_ALPR_MAP_URL)
-              }}
-            >
-              <ExternalLink color="#18181b" size={20} />
-            </Pressable>
+            {config.liveMapUrl ? (
+              <Pressable
+                accessibilityLabel="Open source map"
+                style={styles.headerButton}
+                onPress={() => {
+                  void Linking.openURL(config.liveMapUrl!)
+                }}
+              >
+                <ExternalLink color="#18181b" size={20} />
+              </Pressable>
+            ) : null}
             <Pressable
               accessibilityLabel="Close map"
               style={styles.headerButton}
@@ -706,37 +1230,48 @@ function SurveillanceMap({ onClose }: { onClose: () => void }) {
         <MobileMapBottomPanel
           actions={
             <View style={styles.statPill}>
-              <Text style={styles.statPillText}>{totalMapped} mapped</Text>
+              <Text style={styles.statPillText}>
+                {config.totalLabel(totalMapped)}
+              </Text>
             </View>
           }
           bottomOffset={MAP_PANEL_EDGE_GAP + insets.bottom}
+          emptyNearbyText={config.emptyNearbyText}
           icon={<Flame color="#F11A23" size={17} />}
+          individualLabel={config.individualLabel}
+          individualMeta={config.individualMeta}
           items={panelItems}
+          liveMapLabel={config.liveMapLabel}
           locationStatus={locationStatus}
           nearbyCount={
             nearby.length
-              ? nearby.reduce((sum, cluster) => sum + cluster.cameraCount, 0)
+              ? nearby.reduce((sum, point) => sum + point.weight, 0)
               : null
           }
+          nearbyText={config.nearbyText}
           onClose={onClose}
           onOpenLiveMap={() => {
-            void Linking.openURL(LIVE_ALPR_MAP_URL)
+            if (config.liveMapUrl) void Linking.openURL(config.liveMapUrl)
           }}
           onRefreshLocation={() => void refreshLocation()}
           onSelectItem={(item) => {
-            const cluster = cameraClusters.find((candidate) => candidate.id === item.id)
-            if (cluster) selectCluster(cluster)
+            const point = config.points.find(
+              (candidate) => candidate.id === item.id
+            )
+            if (point) selectPoint(point)
           }}
-          onSelectState={selectState}
+          onSelectState={selectRegion}
           renderSelectedItem={
-            selectedCluster ? (
-              <SelectedCameraCluster cluster={selectedCluster} />
-            ) : null
+            selectedPoint ? <SelectedMapPoint point={selectedPoint} /> : null
           }
-          selectedItem={selectedCluster}
-          selectedStateCode={selectedStateCode}
-          stateItems={statePanelItems}
-          title={selectedStateCode ? `${selectedStateCode} ALPR Pins` : "ALPR Density"}
+          selectedItem={selectedPoint}
+          selectedStateCode={selectedRegionCode}
+          stateItems={regionPanelItems}
+          title={
+            selectedRegionCode && config.filteredTitle
+              ? config.filteredTitle(selectedRegionCode)
+              : config.title
+          }
         />
       </SafeAreaView>
     </View>
@@ -759,20 +1294,30 @@ function MobileMapBottomPanel({
   selectedStateCode,
   stateItems,
   title,
+  emptyNearbyText,
+  individualLabel,
+  individualMeta,
+  liveMapLabel,
+  nearbyText,
 }: {
   actions?: ReactNode
   bottomOffset: number
+  emptyNearbyText: string
   icon: ReactNode
+  individualLabel: string
+  individualMeta: string
   items: Array<PanelItem>
+  liveMapLabel: string
   locationStatus: "idle" | "loading" | "denied"
   nearbyCount: number | null
+  nearbyText: (count: number) => string
   onClose: () => void
   onOpenLiveMap: () => void
   onRefreshLocation: () => void
   onSelectItem: (item: PanelItem) => void
   onSelectState: (stateCode: string) => void
   renderSelectedItem?: ReactNode
-  selectedItem?: CameraCluster | null
+  selectedItem?: TopicMapPoint | null
   selectedStateCode: string | null
   stateItems: Array<PanelItem>
   title: string
@@ -846,15 +1391,12 @@ function MobileMapBottomPanel({
                   </Text>
                 </Pressable>
               ))}
-              <Pressable
-                style={styles.itemChip}
-                onPress={onOpenLiveMap}
-              >
+              <Pressable style={styles.itemChip} onPress={onOpenLiveMap}>
                 <Text numberOfLines={1} style={styles.itemTitle}>
-                  Individual cameras
+                  {individualLabel}
                 </Text>
                 <Text numberOfLines={1} style={styles.itemMeta}>
-                  Open the live DeFlock map
+                  {individualMeta}
                 </Text>
               </Pressable>
             </ScrollView>
@@ -866,11 +1408,11 @@ function MobileMapBottomPanel({
             {locationStatus === "denied"
               ? "Location permission is off."
               : nearbyCount === null
-                ? "Tap locate to estimate cameras near you."
-                : `${nearbyCount} mapped cameras within 25 miles.`}
+                ? emptyNearbyText
+                : nearbyText(nearbyCount)}
           </Text>
           <Pressable style={styles.liveMapButton} onPress={onOpenLiveMap}>
-            <Text style={styles.liveMapButtonText}>Live map</Text>
+            <Text style={styles.liveMapButtonText}>{liveMapLabel}</Text>
           </Pressable>
         </View>
       </View>
@@ -878,21 +1420,21 @@ function MobileMapBottomPanel({
   )
 }
 
-function SelectedCameraCluster({ cluster }: { cluster: CameraCluster }) {
+function SelectedMapPoint({ point }: { point: TopicMapPoint }) {
   return (
     <View style={styles.detailCard}>
       <View style={styles.cardIcon}>
-        <Text style={styles.cardIconText}>{cluster.cameraCount}</Text>
+        <Text style={styles.cardIconText}>{point.weight}</Text>
       </View>
       <View style={styles.cardBody}>
         <Text numberOfLines={1} style={styles.cardTitle}>
-          {cluster.place}
+          {point.place}
         </Text>
         <Text numberOfLines={1} style={styles.cardSubtitle}>
-          {cluster.operator}
+          {point.detail}
         </Text>
         <Text numberOfLines={1} style={styles.cardMeta}>
-          {cluster.source}
+          {point.source}
         </Text>
       </View>
     </View>

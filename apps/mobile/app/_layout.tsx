@@ -15,6 +15,8 @@ import { GestureHandlerRootView } from "react-native-gesture-handler"
 import { SafeAreaProvider } from "react-native-safe-area-context"
 import { MobileBottomTabBar } from "../src/components/navigation/MobileBottomTabBar"
 import { MobileSideMenuShell } from "../src/components/navigation/MobileSideMenu"
+import { CivicPreferencesProvider } from "../src/lib/CivicPreferencesContext"
+import { NotificationProvider } from "../src/lib/NotificationContext"
 
 export default function RootLayout() {
   const [fontsLoaded, fontError] = useFonts({
@@ -35,8 +37,12 @@ export default function RootLayout() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaProvider>
-        <StatusBar style="dark" />
-        <RootNavigation />
+        <CivicPreferencesProvider>
+          <NotificationProvider>
+            <StatusBar style="dark" />
+            <RootNavigation />
+          </NotificationProvider>
+        </CivicPreferencesProvider>
       </SafeAreaProvider>
     </GestureHandlerRootView>
   )
@@ -70,7 +76,23 @@ function RootNavigation() {
           />
           <Stack.Screen
             name="map"
+            options={{ title: "Civic Map", headerShown: false }}
+          />
+          <Stack.Screen
+            name="act"
             options={{ title: "Take Action", headerShown: false }}
+          />
+          <Stack.Screen
+            name="settings"
+            options={{ title: "Alert Settings", headerShown: false }}
+          />
+          <Stack.Screen
+            name="onboarding"
+            options={{ title: "Set up alerts", headerShown: false }}
+          />
+          <Stack.Screen
+            name="alerts/[id]"
+            options={{ title: "Civic alert", headerBackTitle: "Today" }}
           />
           <Stack.Screen
             name="briefs"

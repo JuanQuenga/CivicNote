@@ -1,114 +1,74 @@
 import { Link } from "expo-router"
+import { ArrowRight, LocateFixed, MapPin } from "lucide-react-native"
 import { Pressable, ScrollView, Text, View } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
-import { topics } from "@/src/lib/topics"
-import { urgencyClasses } from "@/src/components/topics/MobileTopicComponents"
+import { useCivicEventFeed } from "@/src/lib/liveCivicEvents"
+import { useCivicPreferences } from "@/src/lib/CivicPreferencesContext"
 
-const urgencyRank = { high: 0, medium: 1, low: 2 } as const
-
-export default function ActionScreen() {
-  const actions = topics
-    .flatMap((topic) =>
-      topic.actions.map((action) => ({
-        ...action,
-        region: topic.region,
-        slug: topic.slug,
-        topic: topic.shortTitle,
-      }))
-    )
-    .sort((a, b) => urgencyRank[a.urgency] - urgencyRank[b.urgency])
-
+export default function CivicMapScreen() {
+  const { events: civicEvents } = useCivicEventFeed()
+  const { preferences } = useCivicPreferences()
   return (
     <SafeAreaView className="flex-1 bg-[#f7f4ee]" edges={["top"]}>
-      <ScrollView>
-        <View className="border-b border-zinc-200 bg-white px-5 pt-6 pb-8">
-          <Text className="text-xs font-bold tracking-[2px] text-red-700 uppercase">
-            Take Action
-          </Text>
-          <Text className="mt-4 text-5xl leading-[52px] font-bold text-zinc-950">
-            Small steps that actually help.
-          </Text>
-          <Text className="mt-4 text-base leading-7 text-zinc-700">
-            Pick an issue, see the next useful move, and use plain language you
-            can send or say today.
-          </Text>
-        </View>
-
-        <View className="gap-4 px-5 py-6">
-          <View>
-            <Text className="text-xs font-bold tracking-[2px] text-zinc-500 uppercase">
-              Start Here
-            </Text>
-            <Text className="mt-1 text-2xl font-bold text-zinc-950">
-              Best next moves
+      <ScrollView contentContainerClassName="pb-8">
+        <View className="bg-slate-950 px-5 pt-6 pb-8">
+          <View className="flex-row items-center gap-2">
+            <LocateFixed color="#FCA5A5" size={17} />
+            <Text className="text-xs font-bold tracking-[2px] text-red-300 uppercase">
+              {preferences.locationLabel === "Not set"
+                ? "Civic map"
+                : preferences.locationLabel}
             </Text>
           </View>
-
-          {actions.slice(0, 8).map((action, index) => (
-            <Link
-              href={`/topics/${action.slug}`}
-              key={`${action.slug}-${action.title}`}
-              asChild
-            >
-              <Pressable className="border border-zinc-200 bg-white p-5">
-                <View className="flex-row flex-wrap items-center gap-3">
-                  <Text className="text-sm font-bold text-red-700">
-                    {(index + 1).toString().padStart(2, "0")}
-                  </Text>
-                  <Text
-                    className={`border px-3 py-1 text-[10px] font-bold tracking-[1.4px] uppercase ${
-                      urgencyClasses[action.urgency]
-                    }`}
-                  >
-                    {action.urgency}
-                  </Text>
-                  <Text className="text-[10px] font-bold tracking-[1.4px] text-zinc-500 uppercase">
-                    {action.topic} / {action.difficulty}
-                  </Text>
+          <Text className="mt-3 text-4xl leading-[43px] font-bold text-white">
+            Follow where public power is moving.
+          </Text>
+          <Text className="mt-3 text-base leading-7 text-slate-300">
+            A place-first view of documented developments. Always verify a
+            meeting against the official agenda before you travel.
+          </Text>
+        </View>
+        <View className="gap-3 px-5 py-6">
+          {civicEvents.map((event) => (
+            <Link asChild href={`/alerts/${event.id}` as never} key={event.id}>
+              <Pressable className="rounded-[26px] border border-slate-200 bg-white p-5">
+                <View className="flex-row items-start gap-3">
+                  <View className="mt-0.5 h-10 w-10 items-center justify-center rounded-full bg-red-50">
+                    <MapPin color="#D9151E" size={19} />
+                  </View>
+                  <View className="flex-1">
+                    <Text className="text-xs font-bold tracking-[1px] text-red-700 uppercase">
+                      {event.location}
+                    </Text>
+                    <Text className="mt-2 text-xl leading-7 font-bold text-slate-950">
+                      {event.title}
+                    </Text>
+                    <Text className="mt-2 text-sm leading-6 text-slate-600">
+                      {event.summary}
+                    </Text>
+                    <View className="mt-4 flex-row items-center gap-2">
+                      <Text className="font-bold text-red-700">View brief</Text>
+                      <ArrowRight color="#B91C1C" size={16} />
+                    </View>
+                  </View>
                 </View>
-                <Text className="mt-4 text-2xl font-bold text-zinc-950">
-                  {action.title}
-                </Text>
-                <Text className="mt-2 text-sm leading-6 text-zinc-700">
-                  {action.description}
-                </Text>
-                <Text className="mt-4 border-l-2 border-zinc-950 bg-[#f7f4ee] px-4 py-3 text-sm leading-6 text-zinc-700">
-                  {action.script}
-                </Text>
               </Pressable>
             </Link>
           ))}
-        </View>
-
-        <View className="border-t border-zinc-200 bg-white px-5 py-6">
-          <Text className="text-xs font-bold tracking-[2px] text-zinc-500 uppercase">
-            By Issue
-          </Text>
-          <View className="mt-3 gap-3">
-            {topics.map((topic) => (
-              <Link href={`/topics/${topic.slug}`} key={topic.slug} asChild>
-                <Pressable className="border border-zinc-200 bg-[#f7f4ee] p-4">
-                  <View className="flex-row items-start justify-between gap-3">
-                    <View className="flex-1">
-                      <Text className="text-sm font-bold text-zinc-950">
-                        {topic.shortTitle}
-                      </Text>
-                      <Text className="mt-2 text-sm leading-6 text-zinc-700">
-                        {topic.actions[0]?.title ?? "Open the issue brief"}
-                      </Text>
-                    </View>
-                    <Text
-                      className={`border px-2 py-1 text-[10px] font-bold tracking-[1px] uppercase ${
-                        urgencyClasses[topic.statusBrief.urgency]
-                      }`}
-                    >
-                      {topic.statusBrief.urgency}
-                    </Text>
-                  </View>
-                </Pressable>
-              </Link>
-            ))}
-          </View>
+          <Link asChild href="/topics/michigan-surveillance-stack">
+            <Pressable className="rounded-[26px] bg-red-700 p-5">
+              <Text className="text-xs font-bold tracking-[1.5px] text-red-100 uppercase">
+                Interactive map
+              </Text>
+              <Text className="mt-2 text-2xl font-bold text-white">
+                Explore the surveillance stack
+              </Text>
+              <Text className="mt-2 text-sm leading-6 text-red-50">
+                Open reported ALPR and Flock locations from the sourced topic
+                brief.
+              </Text>
+            </Pressable>
+          </Link>
         </View>
       </ScrollView>
     </SafeAreaView>

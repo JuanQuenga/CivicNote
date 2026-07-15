@@ -21,12 +21,16 @@ export const Route = createRootRouteWithContext<{
         content: "width=device-width, initial-scale=1",
       },
       {
-        title: "CivicNote",
+        title: "CivicNote — Know before they vote",
       },
       {
         name: "description",
         content:
-          "A combined civic research site for congressional ethics, surveillance oversight, infrastructure accountability, public-health exposure, human-rights law, and election integrity.",
+          "Personal civic alerts for the issues and places you care about, backed by evidence and timed for action before hearings, votes, and deadlines.",
+      },
+      {
+        name: "theme-color",
+        content: "#f8f5ef",
       },
     ],
     links: [
