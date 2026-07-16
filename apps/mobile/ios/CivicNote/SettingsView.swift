@@ -15,7 +15,7 @@ struct SettingsView: View {
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 16) {
+            VStack(alignment: .leading, spacing: 20) {
                 CivicMasthead(eyebrow: "YOUR CIVIC RADAR", title: "Alerts without the noise", subtitle: "Control what reaches you. CivicNote keeps every preference visible.")
                 NotificationStatusCard(service: notifications, preferences: preferences)
 
@@ -75,11 +75,12 @@ struct SettingsView: View {
                     .padding(.horizontal, 4)
             }
             .padding(18)
-            .padding(.bottom, 28)
+            .padding(.bottom, 34)
         }
         .background(CivicStyle.paper.ignoresSafeArea())
         .navigationTitle("Settings")
         .navigationBarTitleDisplayMode(.inline)
+        .civicNavigationChrome()
     }
 
     private var versionLabel: String {
@@ -106,10 +107,12 @@ struct NotificationSettingsView: View {
                 }
             }
             .padding(18)
+            .padding(.bottom, 28)
         }
         .background(CivicStyle.paper.ignoresSafeArea())
         .navigationTitle("Civic alerts")
         .navigationBarTitleDisplayMode(.inline)
+        .civicNavigationChrome()
     }
 }
 
@@ -120,24 +123,61 @@ struct NotificationStatusCard: View {
     @State private var isWorking = false
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 14) {
-            Label(statusTitle, systemImage: statusSymbol)
-                .font(.headline)
-                .foregroundStyle(statusTint)
-            Text(statusDetail).font(.subheadline).foregroundStyle(.secondary)
-            Text(service.syncMessage).font(.caption.weight(.semibold)).foregroundStyle(.secondary)
-            if let error = service.errorMessage { Text(error).font(.caption).foregroundStyle(CivicStyle.red) }
-            Button(buttonTitle) { performAction() }
-                .font(.body.bold())
-                .frame(maxWidth: .infinity)
-                .padding(.vertical, 13)
-                .foregroundStyle(.white)
-                .background(CivicStyle.red.gradient, in: RoundedRectangle(cornerRadius: 15))
-                .disabled(isWorking)
-                .accessibilityIdentifier("notification-action")
+        VStack(alignment: .leading, spacing: 15) {
+            HStack(spacing: 12) {
+                Image(systemName: statusSymbol)
+                    .font(.title3.weight(.semibold))
+                    .symbolRenderingMode(.hierarchical)
+                    .foregroundStyle(statusTint)
+                    .frame(width: 46, height: 46)
+                    .background(statusTint.opacity(0.11), in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+                VStack(alignment: .leading, spacing: 3) {
+                    Text(statusTitle)
+                        .font(.headline)
+                        .foregroundStyle(CivicStyle.ink)
+                    Text(service.syncMessage)
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(statusTint)
+                }
+            }
+            Text(statusDetail)
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+                .lineSpacing(2)
+            if let error = service.errorMessage {
+                Label(error, systemImage: "exclamationmark.triangle.fill")
+                    .font(.caption)
+                    .foregroundStyle(CivicStyle.red)
+            }
+            Button {
+                performAction()
+            } label: {
+                Label(buttonTitle, systemImage: preferences.notificationsEnabled ? "pause.fill" : "bell.badge.fill")
+                    .font(.body.weight(.semibold))
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 13)
+            }
+            .buttonStyle(.plain)
+            .foregroundStyle(.white)
+            .background(CivicStyle.red.gradient, in: RoundedRectangle(cornerRadius: 15, style: .continuous))
+            .shadow(color: CivicStyle.red.opacity(0.18), radius: 10, y: 4)
+            .disabled(isWorking)
+            .accessibilityIdentifier("notification-action")
         }
         .padding(18)
-        .background(CivicStyle.card, in: RoundedRectangle(cornerRadius: 26))
+        .background(
+            LinearGradient(
+                colors: [statusTint.opacity(0.07), CivicStyle.card],
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            ),
+            in: RoundedRectangle(cornerRadius: 26, style: .continuous)
+        )
+        .overlay {
+            RoundedRectangle(cornerRadius: 26, style: .continuous)
+                .stroke(statusTint.opacity(0.12), lineWidth: 1)
+        }
+        .shadow(color: CivicStyle.shadow, radius: 14, y: 6)
     }
 
     private var statusTitle: String {
@@ -223,8 +263,11 @@ struct RegionEditorView: View {
                     .foregroundStyle(.secondary)
             }
         }
+        .scrollContentBackground(.hidden)
+        .background(CivicStyle.paper.ignoresSafeArea())
         .navigationTitle("Home area")
         .navigationBarTitleDisplayMode(.inline)
+        .civicNavigationChrome()
         .onAppear { customArea = preferences.areaLabel }
         .accessibilityIdentifier("region-editor")
     }
@@ -238,8 +281,11 @@ struct TrustView: View {
             trustRow("text.badge.checkmark", "Separate fact from analysis", "Reported facts, uncertainty, and CivicNote interpretation remain distinct.")
             trustRow("arrow.triangle.2.circlepath", "Correct transparently", "Material corrections are visible rather than silently overwritten.")
         }
+        .scrollContentBackground(.hidden)
+        .background(CivicStyle.paper.ignoresSafeArea())
         .navigationTitle("How verification works")
         .navigationBarTitleDisplayMode(.inline)
+        .civicNavigationChrome()
     }
 
     private func trustRow(_ symbol: String, _ title: String, _ detail: String) -> some View {

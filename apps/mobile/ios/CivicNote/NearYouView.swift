@@ -16,7 +16,7 @@ struct NearYouView: View {
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 16) {
+            VStack(alignment: .leading, spacing: 20) {
                 CivicMasthead(
                     eyebrow: "NEAR YOU",
                     title: "Local decisions are where leverage starts",
@@ -24,59 +24,79 @@ struct NearYouView: View {
                 )
 
                 if localEvents.isEmpty {
-                    ContentUnavailableView("No local items yet", systemImage: "mappin.slash", description: Text("Update your home area in Settings or follow more topics."))
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 28)
-                        .background(CivicStyle.card, in: RoundedRectangle(cornerRadius: 24))
+                    CivicEmptyState(
+                        title: "No local items yet",
+                        message: "Update your home area in Settings or follow more topics.",
+                        symbol: "mappin.slash.fill",
+                        tint: CivicStyle.blue
+                    )
                 } else {
                     SectionLabel(title: "Local watch", detail: "\(localEvents.count) active")
                     ForEach(localEvents) { event in
                         NavigationLink(value: CivicRoute.event(event.key)) {
                             HStack(spacing: 14) {
-                                Image(systemName: "building.columns.fill")
-                                    .font(.title3)
+                                Image(systemName: event.urgency == .urgent ? "building.columns.fill" : "doc.text.fill")
+                                    .font(.title3.weight(.semibold))
+                                    .symbolRenderingMode(.hierarchical)
                                     .foregroundStyle(event.urgency.color)
-                                    .frame(width: 54, height: 58)
-                                    .background(event.urgency.color.opacity(0.10), in: RoundedRectangle(cornerRadius: 16))
+                                    .frame(width: 50, height: 54)
+                                    .background(event.urgency.color.opacity(0.10), in: RoundedRectangle(cornerRadius: 15, style: .continuous))
                                 VStack(alignment: .leading, spacing: 5) {
-                                    Text(event.headline).font(.headline).foregroundStyle(CivicStyle.ink)
-                                    Text(event.locationLabel).font(.caption).foregroundStyle(.secondary)
+                                    Text(event.headline)
+                                        .font(.headline)
+                                        .foregroundStyle(CivicStyle.ink)
+                                        .fixedSize(horizontal: false, vertical: true)
+                                    Label(event.locationLabel, systemImage: "mappin")
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                        .lineLimit(1)
                                 }
-                                Spacer()
-                                Image(systemName: "chevron.right").font(.caption.bold()).foregroundStyle(.tertiary)
+                                Spacer(minLength: 4)
+                                Image(systemName: "chevron.right")
+                                    .font(.caption.weight(.bold))
+                                    .foregroundStyle(.tertiary)
                             }
                             .padding(14)
-                            .background(CivicStyle.card, in: RoundedRectangle(cornerRadius: 21))
+                            .civicCard(radius: 21)
                         }
-                        .buttonStyle(.plain)
+                        .buttonStyle(CivicPressStyle())
                     }
                 }
 
                 if !pins.isEmpty {
-                    SectionLabel(title: "Meeting map", detail: "Only confirmed coordinates")
+                    SectionLabel(title: "Meeting map", detail: "Confirmed coordinates")
                     Map(position: $position) {
                         ForEach(pins) { pin in
                             Annotation(pin.event.headline, coordinate: pin.coordinate) {
                                 Image(systemName: "building.columns.fill")
-                                    .font(.caption.bold())
+                                    .font(.caption.weight(.bold))
+                                    .symbolRenderingMode(.hierarchical)
                                     .foregroundStyle(.white)
-                                    .frame(width: 34, height: 34)
-                                    .background(CivicStyle.red, in: Circle())
+                                    .frame(width: 38, height: 38)
+                                    .background(CivicStyle.red.gradient, in: Circle())
+                                    .overlay { Circle().stroke(.white.opacity(0.85), lineWidth: 2) }
+                                    .shadow(color: Color.black.opacity(0.22), radius: 6, y: 3)
                             }
                         }
                     }
                     .mapStyle(.standard(elevation: .realistic, emphasis: .muted))
                     .frame(height: 280)
-                    .clipShape(RoundedRectangle(cornerRadius: 28))
+                    .clipShape(RoundedRectangle(cornerRadius: 26, style: .continuous))
+                    .overlay {
+                        RoundedRectangle(cornerRadius: 26, style: .continuous)
+                            .stroke(CivicStyle.hairline, lineWidth: 1)
+                    }
+                    .shadow(color: CivicStyle.shadow, radius: 14, y: 6)
                     .accessibilityIdentifier("near-you-map")
                 }
             }
             .padding(18)
-            .padding(.bottom, 28)
+            .padding(.bottom, 34)
         }
         .background(CivicStyle.paper.ignoresSafeArea())
         .navigationTitle("Near You")
         .navigationBarTitleDisplayMode(.inline)
+        .civicNavigationChrome()
     }
 }
 

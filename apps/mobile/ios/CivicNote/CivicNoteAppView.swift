@@ -18,9 +18,7 @@ struct CivicNoteAppView: View {
     var body: some View {
         Group {
             if !coordinator.isHydrated {
-                ProgressView("Preparing your civic brief")
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .background(CivicStyle.paper.ignoresSafeArea())
+                LaunchLoadingView()
             } else if coordinator.shouldShowOnboarding {
                 OnboardingView(
                     preferences: preferences,
@@ -77,6 +75,34 @@ struct CivicNoteAppView: View {
     }
 }
 
+private struct LaunchLoadingView: View {
+    var body: some View {
+        VStack(spacing: 18) {
+            ZStack {
+                Circle()
+                    .fill(CivicStyle.red.opacity(0.09))
+                    .frame(width: 104, height: 104)
+                Image(systemName: "checkmark.seal.fill")
+                    .font(.system(size: 46, weight: .semibold))
+                    .symbolRenderingMode(.hierarchical)
+                    .foregroundStyle(CivicStyle.red)
+            }
+            VStack(spacing: 6) {
+                Text("CivicNote")
+                    .font(.system(.title, design: .rounded, weight: .bold))
+                    .foregroundStyle(CivicStyle.ink)
+                Text("Preparing your civic brief")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+            }
+            ProgressView()
+                .tint(CivicStyle.red)
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(CivicStyle.paper.ignoresSafeArea())
+    }
+}
+
 private struct CivicTabItem: View {
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     let tab: CivicTab
@@ -95,10 +121,16 @@ private struct CivicTabItem: View {
             }
         }
         .foregroundStyle(isSelected ? CivicStyle.red : Color.secondary)
-        .padding(.horizontal, 2)
+        .padding(.horizontal, 4)
+        .padding(.vertical, 3)
         .background {
-            if isSelected { Capsule().fill(CivicStyle.red.opacity(0.10)) }
+            if isSelected {
+                Capsule()
+                    .fill(CivicStyle.red.opacity(0.10))
+                    .overlay { Capsule().stroke(CivicStyle.red.opacity(0.08), lineWidth: 1) }
+            }
         }
+        .animation(.snappy(duration: 0.22), value: isSelected)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(tab.title)
         .accessibilityIdentifier("tab-\(tab.rawValue)")

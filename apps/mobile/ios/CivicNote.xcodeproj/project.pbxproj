@@ -29,6 +29,7 @@
 		C10000000000000000000015 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = D10000000000000000000015 /* PrivacyInfo.xcprivacy */; };
 		C10000000000000000000016 /* CivicNoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1000000000000000000001A /* CivicNoteTests.swift */; };
 		C10000000000000000000017 /* CivicNoteUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1000000000000000000001B /* CivicNoteUITests.swift */; };
+		C10000000000000000000018 /* SnapshotHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1000000000000000000001C /* SnapshotHelper.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -79,6 +80,7 @@
 		D10000000000000000000019 /* Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Release.xcconfig; sourceTree = "<group>"; };
 		D1000000000000000000001A /* CivicNoteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CivicNoteTests.swift; sourceTree = "<group>"; };
 		D1000000000000000000001B /* CivicNoteUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CivicNoteUITests.swift; sourceTree = "<group>"; };
+		D1000000000000000000001C /* SnapshotHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapshotHelper.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -129,7 +131,7 @@
 			sourceTree = "<group>";
 		};
 		A50000000000000000000001 /* CivicNoteTests */ = {isa = PBXGroup; children = (D1000000000000000000001A /* CivicNoteTests.swift */,); path = CivicNoteTests; sourceTree = "<group>"; };
-		A50000000000000000000002 /* CivicNoteUITests */ = {isa = PBXGroup; children = (D1000000000000000000001B /* CivicNoteUITests.swift */,); path = CivicNoteUITests; sourceTree = "<group>"; };
+		A50000000000000000000002 /* CivicNoteUITests */ = {isa = PBXGroup; children = (D1000000000000000000001B /* CivicNoteUITests.swift */, D1000000000000000000001C /* SnapshotHelper.swift */,); path = CivicNoteUITests; sourceTree = "<group>"; };
 		A50000000000000000000003 /* Config */ = {isa = PBXGroup; children = (D10000000000000000000017 /* Shared.xcconfig */, D10000000000000000000018 /* Debug.xcconfig */, D10000000000000000000019 /* Release.xcconfig */,); path = Config; sourceTree = "<group>"; };
 		83CBBA001A601CBA00E9B192 /* Products */ = {
 			isa = PBXGroup;
@@ -215,7 +217,7 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		A60000000000000000000001 /* Sources */ = {isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (C10000000000000000000016 /* CivicNoteTests.swift in Sources */,); runOnlyForDeploymentPostprocessing = 0; };
-		A60000000000000000000002 /* Sources */ = {isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (C10000000000000000000017 /* CivicNoteUITests.swift in Sources */,); runOnlyForDeploymentPostprocessing = 0; };
+		A60000000000000000000002 /* Sources */ = {isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (C10000000000000000000017 /* CivicNoteUITests.swift in Sources */, C10000000000000000000018 /* SnapshotHelper.swift in Sources */,); runOnlyForDeploymentPostprocessing = 0; };
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */

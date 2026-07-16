@@ -36,27 +36,32 @@ final class CivicNoteUITests: XCTestCase {
         XCTAssertTrue(app.scrollViews["event-detail"].waitForExistence(timeout: 5))
     }
 
+    @MainActor
     func testScreenshotScenarios() {
         capture(tab: "today", name: "Today")
         capture(tab: "topics", name: "Topics")
         capture(tab: "nearby", name: "NearYou")
+        capture(tab: "act", name: "Act")
         capture(tab: "settings", name: "Settings")
 
         let app = fixtureApp()
+        setupSnapshot(app)
         app.launch()
         let event = app.buttons["event-ypsilanti-data-center-session"]
         XCTAssertTrue(event.waitForExistence(timeout: 5))
         event.tap()
         XCTAssertTrue(app.scrollViews["event-detail"].waitForExistence(timeout: 5))
-        attachScreenshot(name: "Detail")
+        snapshot("Detail")
     }
 
+    @MainActor
     private func capture(tab: String, name: String) {
         let app = XCUIApplication()
         app.launchArguments = ["-uiTestMode", "-screenshotFixtures", "-selectTab", tab]
+        setupSnapshot(app)
         app.launch()
         XCTAssertTrue(app.buttons["tab-today"].waitForExistence(timeout: 5))
-        attachScreenshot(name: name)
+        snapshot(name)
         app.terminate()
     }
 
@@ -64,12 +69,5 @@ final class CivicNoteUITests: XCTestCase {
         let app = XCUIApplication()
         app.launchArguments = ["-uiTestMode", "-screenshotFixtures"]
         return app
-    }
-
-    private func attachScreenshot(name: String) {
-        let attachment = XCTAttachment(screenshot: XCUIScreen.main.screenshot())
-        attachment.name = name
-        attachment.lifetime = .keepAlways
-        add(attachment)
     }
 }

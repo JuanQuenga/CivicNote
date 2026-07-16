@@ -19,6 +19,13 @@ coverage
 # Vercel
 .vercel
 
+# iOS release outputs
+apps/mobile/ios/fastlane/screenshots/
+apps/mobile/ios/*.ipa
+apps/mobile/ios/*.dSYM.zip
+apps/mobile/ios/fastlane/report.xml
+apps/mobile/ios/fastlane/Preview.html
+
 # Build Outputs
 dist
 .output

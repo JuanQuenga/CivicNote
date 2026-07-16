@@ -1,1 +1,1 @@
-https://civicnote.org/support
+https://civic-research-hub.vercel.app/support

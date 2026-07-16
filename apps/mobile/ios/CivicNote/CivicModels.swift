@@ -18,7 +18,7 @@ enum CivicUrgency: String, Codable, CaseIterable, Sendable {
     var color: Color {
         switch self {
         case .urgent: CivicStyle.red
-        case .important: Color(red: 0.82, green: 0.48, blue: 0.08)
+        case .important: CivicStyle.amber
         case .watch: CivicStyle.green
         }
     }
@@ -46,12 +46,12 @@ struct CivicTopic: Identifiable, Hashable, Codable, Sendable {
 
     var tint: Color {
         switch theme.lowercased() {
-        case "surveillance": Color(red: 0.48, green: 0.28, blue: 0.68)
-        case "health": Color(red: 0.72, green: 0.20, blue: 0.24)
-        case "environment": Color(red: 0.36, green: 0.56, blue: 0.18)
-        case "democracy": Color(red: 0.20, green: 0.36, blue: 0.68)
-        case "money": Color(red: 0.22, green: 0.52, blue: 0.30)
-        case "technology": Color(red: 0.14, green: 0.42, blue: 0.74)
+        case "surveillance": Color.purple
+        case "health": CivicStyle.red
+        case "environment": CivicStyle.green
+        case "democracy": CivicStyle.blue
+        case "money": CivicStyle.green
+        case "technology": CivicStyle.blue
         default: CivicStyle.blue
         }
     }

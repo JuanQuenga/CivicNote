@@ -73,9 +73,9 @@ struct UnionTabView<Tab: Hashable, Content: View, Item: View>: View {
     private var bottomScrim: some View {
         LinearGradient(
             stops: [
-                .init(color: Color(uiColor: .systemBackground).opacity(0), location: 0),
-                .init(color: Color(uiColor: .systemBackground).opacity(0.84), location: 0.42),
-                .init(color: Color(uiColor: .systemBackground), location: 1),
+                .init(color: CivicStyle.paper.opacity(0), location: 0),
+                .init(color: CivicStyle.paper.opacity(0.86), location: 0.42),
+                .init(color: CivicStyle.paper, location: 1),
             ],
             startPoint: .top,
             endPoint: .bottom

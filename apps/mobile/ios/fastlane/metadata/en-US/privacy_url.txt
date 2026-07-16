@@ -1,1 +1,1 @@
-https://civicnote.org/privacy
+https://civic-research-hub.vercel.app/privacy

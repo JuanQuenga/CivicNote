@@ -1,3 +1,5 @@
+require "fileutils"
+
 default_platform(:ios)
 
 PROJECT = "CivicNote.xcodeproj"
@@ -21,7 +23,19 @@ platform :ios do
 
   desc "Frame raw screenshots with device art and marketing headlines"
   lane :frame do
-    frame_screenshots(path: "./fastlane/screenshots")
+    fastlane_path = File.expand_path(__dir__)
+    screenshots_path = File.join(fastlane_path, "screenshots")
+    staged_framefile = File.join(screenshots_path, "Framefile.json")
+    staged_background = File.join(screenshots_path, "background.jpg")
+    staged_font = File.join(screenshots_path, "font.ttf")
+    FileUtils.cp(File.join(fastlane_path, "Framefile.json"), staged_framefile)
+    FileUtils.cp(File.join(fastlane_path, "background.jpg"), staged_background)
+    FileUtils.ln_sf("/System/Library/Fonts/SFNS.ttf", staged_font)
+    begin
+      frame_screenshots(path: screenshots_path)
+    ensure
+      FileUtils.rm_f([staged_framefile, staged_background, staged_font])
+    end
   end
 
   desc "Archive Release and upload to TestFlight"
@@ -44,14 +58,21 @@ platform :ios do
       project: PROJECT,
       scheme: SCHEME,
       configuration: "Release",
-      export_method: "app-store"
+      export_method: "app-store",
+      export_options: {
+        provisioningProfiles: {
+          "org.civicnote.mobile" => "CivicNote App Store 2026-07-16"
+        }
+      },
+      xcargs: "-allowProvisioningUpdates -authenticationKeyID #{ENV.fetch("APP_STORE_CONNECT_API_KEY_KEY_ID")} -authenticationKeyIssuerID #{ENV.fetch("APP_STORE_CONNECT_API_KEY_ISSUER_ID")} -authenticationKeyPath #{ENV.fetch("APP_STORE_CONNECT_API_KEY_KEY_FILEPATH")}"
     )
     upload_to_app_store(
       submit_for_review: false,
       automatic_release: false,
       precheck_include_in_app_purchases: false,
       overwrite_screenshots: true,
-      run_precheck_before_submit: true
+      run_precheck_before_submit: true,
+      force: true
     )
   end
 

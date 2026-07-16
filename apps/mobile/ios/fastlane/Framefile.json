@@ -1,9 +1,10 @@
 {
   "default": {
     "title": {
-      "color": "#1c1917"
+      "color": "#1c1917",
+      "font": "font.ttf"
     },
-    "background": "#f8f5ef",
+    "background": "background.jpg",
     "padding": 60,
     "show_complete_frame": true
   },
@@ -14,7 +15,11 @@
     },
     {
       "filter": "Detail",
-      "title": { "text": "Every alert backed by evidence" }
+      "title": { "text": "Evidence, then action" }
+    },
+    {
+      "filter": "Act",
+      "title": { "text": "Show up prepared" }
     },
     {
       "filter": "Topics",
