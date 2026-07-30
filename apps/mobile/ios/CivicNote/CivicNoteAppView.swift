@@ -1,6 +1,11 @@
 import SwiftUI
 
 struct CivicNoteAppView: View {
+    /// Tab order follows how often a reader needs the screen: the dated brief
+    /// first, then the actions with deadlines, then the local map. The topic
+    /// watchlist is set once and revisited rarely, so it sits after those.
+    private static let tabOrder: [CivicTab] = [.today, .act, .nearby, .topics, .settings]
+
     private let environment: AppEnvironment
     @ObservedObject private var coordinator: AppCoordinator
     @ObservedObject private var preferences: PreferencesStore
@@ -37,7 +42,7 @@ struct CivicNoteAppView: View {
     private var mainTabs: some View {
         UnionTabView(
             selection: $coordinator.selectedTab,
-            tabs: CivicTab.allCases,
+            tabs: Self.tabOrder,
             isTabBarHidden: !coordinator.selectedPathIsEmpty
         ) {
             NavigationStack(path: $coordinator.todayPath) {
@@ -45,12 +50,6 @@ struct CivicNoteAppView: View {
                     .withCivicDestinations(environment: environment)
             }
             .unionTab(CivicTab.today)
-
-            NavigationStack(path: $coordinator.topicsPath) {
-                TopicsView(repository: repository, preferences: preferences)
-                    .withCivicDestinations(environment: environment)
-            }
-            .unionTab(CivicTab.topics)
 
             NavigationStack(path: $coordinator.actPath) {
                 ActView(repository: repository)
@@ -63,6 +62,12 @@ struct CivicNoteAppView: View {
                     .withCivicDestinations(environment: environment)
             }
             .unionTab(CivicTab.nearby)
+
+            NavigationStack(path: $coordinator.topicsPath) {
+                TopicsView(repository: repository, preferences: preferences)
+                    .withCivicDestinations(environment: environment)
+            }
+            .unionTab(CivicTab.topics)
 
             NavigationStack(path: $coordinator.settingsPath) {
                 SettingsView(environment: environment)
@@ -77,63 +82,73 @@ struct CivicNoteAppView: View {
 
 private struct LaunchLoadingView: View {
     var body: some View {
-        VStack(spacing: 18) {
-            ZStack {
-                Circle()
-                    .fill(CivicStyle.red.opacity(0.09))
-                    .frame(width: 104, height: 104)
-                Image(systemName: "checkmark.seal.fill")
-                    .font(.system(size: 46, weight: .semibold))
-                    .symbolRenderingMode(.hierarchical)
-                    .foregroundStyle(CivicStyle.red)
-            }
-            VStack(spacing: 6) {
-                Text("CivicNote")
-                    .font(.system(.title, design: .rounded, weight: .bold))
-                    .foregroundStyle(CivicStyle.ink)
-                Text("Preparing your civic brief")
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-            }
+        VStack(spacing: CivicSpace.lg) {
+            Text("CivicNote")
+                .font(CivicType.display)
+                .foregroundStyle(CivicStyle.ink)
+                .fixedSize(horizontal: false, vertical: true)
             ProgressView()
                 .tint(CivicStyle.red)
         }
+        .padding(.horizontal, CivicSpace.gutter)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(CivicStyle.paper.ignoresSafeArea())
     }
 }
 
 private struct CivicTabItem: View {
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     let tab: CivicTab
     let isSelected: Bool
 
     var body: some View {
-        VStack(spacing: 2) {
-            Image(systemName: isSelected ? tab.selectedSymbol : tab.symbol)
-                .font(.system(size: 19, weight: isSelected ? .semibold : .medium))
+        VStack(spacing: CivicSpace.xs) {
+            Image(systemName: isSelected ? selectedSymbol : symbol)
+                .font(TabBarChrome.glyph)
                 .symbolRenderingMode(.hierarchical)
             if !dynamicTypeSize.isAccessibilitySize {
                 Text(tab.title)
-                    .font(.caption2.weight(.semibold))
+                    .font(TabBarChrome.label)
                     .lineLimit(1)
                     .minimumScaleFactor(0.75)
             }
         }
         .foregroundStyle(isSelected ? CivicStyle.red : Color.secondary)
-        .padding(.horizontal, 4)
-        .padding(.vertical, 3)
+        .padding(.horizontal, CivicSpace.xs)
+        .padding(.vertical, CivicSpace.xs)
         .background {
             if isSelected {
-                Capsule()
-                    .fill(CivicStyle.red.opacity(0.10))
-                    .overlay { Capsule().stroke(CivicStyle.red.opacity(0.08), lineWidth: 1) }
+                Capsule().fill(CivicStyle.red.opacity(0.10))
             }
         }
-        .animation(.snappy(duration: 0.22), value: isSelected)
+        .animation(reduceMotion ? nil : .snappy(duration: 0.22), value: isSelected)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(tab.title)
         .accessibilityIdentifier("tab-\(tab.rawValue)")
+    }
+
+    /// The icon pairing lives next to the label it sits under. `house` said
+    /// "home screen" for a tab that is a dated brief of what changed;
+    /// `book.closed` said "reading" for a tab that is a watchlist.
+    private var symbol: String {
+        switch tab {
+        case .today: "newspaper"
+        case .act: "checklist.unchecked"
+        case .nearby: "map"
+        case .topics: "bookmark"
+        case .settings: "gearshape"
+        }
+    }
+
+    private var selectedSymbol: String {
+        switch tab {
+        case .today: "newspaper.fill"
+        case .act: "checklist"
+        case .nearby: "map.fill"
+        case .topics: "bookmark.fill"
+        case .settings: "gearshape.fill"
+        }
     }
 }
 

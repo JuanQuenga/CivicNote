@@ -4,121 +4,131 @@ struct ActView: View {
     @ObservedObject var repository: CivicRepositoryStore
 
     private var actionableEvents: [CivicEvent] {
-        repository.filteredEvents.filter { !$0.actions.isEmpty }
+        repository.filteredEvents
+            .filter { !$0.actions.isEmpty }
+            .sorted(by: Self.soonestFirst)
+    }
+
+    private var nextDeadline: Date? {
+        let now = Date()
+        return actionableEvents
+            .compactMap(Self.actionDate)
+            .filter { $0 >= now }
+            .min()
+    }
+
+    /// A date, or nothing. The masthead status never carries a slogan.
+    private var status: String? {
+        guard let nextDeadline else { return nil }
+        guard let countdown = CivicFormat.countdown(to: nextDeadline) else {
+            return "Next deadline \(CivicFormat.day(nextDeadline))"
+        }
+        return "Next deadline \(CivicFormat.day(nextDeadline)) · \(countdown)"
+    }
+
+    private var countLabel: String {
+        actionableEvents.count == 1 ? "1 item" : "\(actionableEvents.count) items"
     }
 
     var body: some View {
         ScrollView {
-            LazyVStack(alignment: .leading, spacing: 20) {
+            LazyVStack(alignment: .leading, spacing: CivicSpace.xl) {
                 CivicMasthead(
-                    eyebrow: "FROM CONCERN TO LEVERAGE",
-                    title: "Show up prepared",
-                    subtitle: "Find the decision point, understand the record, and speak in your own voice."
+                    title: "Act",
+                    standfirst: actionableEvents.isEmpty ? nil : "Sorted by the closest deadline.",
+                    status: status
                 )
-                ActionGuideCard()
-                SectionLabel(title: "Open actions", detail: "Scripts are starting points")
+
+                CivicFeedStatus(state: repository.state)
+
                 if actionableEvents.isEmpty {
                     CivicEmptyState(
                         title: "No open actions",
-                        message: "We’ll surface the next useful decision point here.",
-                        symbol: "checklist.checked",
-                        tint: CivicStyle.blue
+                        message: "Follow a topic under Topics. An action lands here once an event names the body that decides and a date to reach it by.",
+                        symbol: "checklist"
                     )
                 } else {
-                    ForEach(actionableEvents) { event in
-                        NavigationLink(value: CivicRoute.event(event.key)) {
-                            HStack(alignment: .top, spacing: 14) {
-                                Image(systemName: event.urgency == .urgent ? "megaphone.fill" : "text.bubble.fill")
-                                    .font(.body.weight(.semibold))
-                                    .symbolRenderingMode(.hierarchical)
-                                    .foregroundStyle(event.urgency.color)
-                                    .frame(width: 44, height: 44)
-                                    .background(event.urgency.color.opacity(0.11), in: RoundedRectangle(cornerRadius: 13, style: .continuous))
-                                VStack(alignment: .leading, spacing: 6) {
-                                    Text(event.headline)
-                                        .font(.headline)
-                                        .foregroundStyle(CivicStyle.ink)
-                                        .fixedSize(horizontal: false, vertical: true)
-                                    Text(event.primaryAction?.audience ?? event.geographicScope)
-                                        .font(.caption)
-                                        .foregroundStyle(.secondary)
-                                    if let timing = event.timingLabel {
-                                        Label(timing, systemImage: "clock.fill")
-                                            .font(.caption.weight(.semibold))
-                                            .foregroundStyle(event.urgency.color)
-                                    }
-                                }
-                                Spacer(minLength: 4)
-                                Image(systemName: "chevron.right")
-                                    .font(.caption.weight(.bold))
-                                    .foregroundStyle(.tertiary)
-                            }
-                            .padding(16)
-                            .civicCard(radius: 21)
+                    VStack(alignment: .leading, spacing: 0) {
+                        SectionLabel(title: "Open actions", detail: countLabel)
+                        ForEach(actionableEvents) { event in
+                            ActionItem(event: event)
                         }
-                        .buttonStyle(CivicPressStyle())
                     }
                 }
             }
-            .padding(18)
-            .padding(.bottom, 34)
+            .padding(.horizontal, CivicSpace.gutter)
+            .padding(.top, CivicSpace.md)
+            .padding(.bottom, CivicSpace.screenBottom)
         }
         .background(CivicStyle.paper.ignoresSafeArea())
-        .navigationTitle("Act")
-        .navigationBarTitleDisplayMode(.inline)
-        .civicNavigationChrome()
+        .civicMastheadChrome("Act")
+    }
+
+    /// The date this item stops being actionable: the action's own deadline
+    /// first, then the event's, then the meeting.
+    private static func actionDate(_ event: CivicEvent) -> Date? {
+        event.primaryAction?.deadlineAt
+            ?? event.deadlineAt
+            ?? event.meeting?.publicCommentDeadline
+            ?? event.meeting?.startsAt
+            ?? event.startsAt
+    }
+
+    private static func soonestFirst(_ lhs: CivicEvent, _ rhs: CivicEvent) -> Bool {
+        switch (actionDate(lhs), actionDate(rhs)) {
+        case let (left?, right?): return left < right
+        case (_?, nil): return true
+        case (nil, _?): return false
+        case (nil, nil): return lhs.updatedAt > rhs.updatedAt
+        }
     }
 }
 
-private struct ActionGuideCard: View {
-    var body: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            HStack(spacing: 10) {
-                Image(systemName: "point.3.connected.trianglepath.dotted")
-                    .font(.title3.weight(.semibold))
-                    .symbolRenderingMode(.hierarchical)
-                    .foregroundStyle(Color.white.opacity(0.92))
-                Text("A useful three-step loop")
-                    .font(.title3.weight(.bold))
-            }
-            step(1, "Find the decision", "Who votes, approves, funds, or signs?", "scope")
-            step(2, "Ask for the record", "Contracts, demand, audits, minutes, and tradeoffs.", "doc.text.magnifyingglass")
-            step(3, "Show up before it hardens", "Comment, organize neighbors, and track the final vote.", "person.2.wave.2.fill")
+/// One open action: who decides, by when, and the one thing to do about it.
+/// The row is the primary tap; the external link is the second.
+private struct ActionItem: View {
+    let event: CivicEvent
+
+    private var action: CivicAction? { event.primaryAction }
+
+    /// The mechanism, with the action's own deadline when it has one the
+    /// event dateline does not already carry.
+    private var rowDetail: String? {
+        guard let action else { return nil }
+        guard let deadline = action.deadlineAt else { return action.title }
+        guard let countdown = CivicFormat.countdown(to: deadline) else {
+            return "\(action.title) by \(CivicFormat.day(deadline))"
         }
-        .padding(19)
-        .background(
-            LinearGradient(
-                colors: [Color(red: 0.075, green: 0.09, blue: 0.13), Color(red: 0.13, green: 0.16, blue: 0.22)],
-                startPoint: .topLeading,
-                endPoint: .bottomTrailing
-            ),
-            in: RoundedRectangle(cornerRadius: 26, style: .continuous)
-        )
-        .overlay {
-            RoundedRectangle(cornerRadius: 26, style: .continuous)
-                .stroke(Color.white.opacity(0.09), lineWidth: 1)
-        }
-        .shadow(color: Color.black.opacity(0.14), radius: 18, y: 8)
-        .foregroundStyle(.white)
+        return "\(action.title) by \(CivicFormat.day(deadline)) · \(countdown)"
     }
 
-    private func step(_ number: Int, _ title: String, _ detail: String, _ symbol: String) -> some View {
-        HStack(alignment: .top, spacing: 12) {
-            ZStack {
-                Circle().fill(CivicStyle.red.gradient)
-                Text("\(number)")
-                    .font(.caption.weight(.bold))
+    var body: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            NavigationLink(value: CivicRoute.event(event.key)) {
+                CivicEventRow(event: event, detail: rowDetail)
             }
-            .frame(width: 30, height: 30)
-            VStack(alignment: .leading, spacing: 3) {
-                Label(title, systemImage: symbol)
-                    .font(.subheadline.weight(.semibold))
-                    .symbolRenderingMode(.hierarchical)
-                Text(detail)
-                    .font(.caption)
-                    .foregroundStyle(.white.opacity(0.70))
-                    .lineSpacing(1)
+            .buttonStyle(CivicPressStyle())
+
+            if let action, let url = action.ctaURL {
+                Link(destination: url) {
+                    HStack(spacing: CivicSpace.xs) {
+                        Text(action.ctaLabel)
+                            .font(CivicType.metaStrong)
+                            .multilineTextAlignment(.leading)
+                            .fixedSize(horizontal: false, vertical: true)
+                        Image(systemName: "arrow.up.right")
+                            .font(.caption2.weight(.bold))
+                        Spacer(minLength: CivicSpace.sm)
+                    }
+                    .foregroundStyle(CivicStyle.red)
+                    .frame(minHeight: 44, alignment: .leading)
+                    .contentShape(Rectangle())
+                }
+                .buttonStyle(CivicPressStyle())
+                .accessibilityIdentifier("action-cta-\(event.key)")
             }
+
+            CivicRule()
         }
     }
 }

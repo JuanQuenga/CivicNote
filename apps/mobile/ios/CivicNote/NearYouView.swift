@@ -14,89 +14,126 @@ struct NearYouView: View {
         }
     }
 
+    /// The area the feed is filtered to. The label the reader chose, else the
+    /// region code, else nothing.
+    private var areaName: String {
+        let label = preferences.areaLabel.trimmingCharacters(in: .whitespacesAndNewlines)
+        if !label.isEmpty { return label }
+        return preferences.regionCode.trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+
+    private var countLabel: String {
+        localEvents.count == 1 ? "1 item" : "\(localEvents.count) items"
+    }
+
+    private var pinLabel: String {
+        pins.count == 1 ? "1 address" : "\(pins.count) addresses"
+    }
+
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 20) {
+            LazyVStack(alignment: .leading, spacing: CivicSpace.xl) {
                 CivicMasthead(
-                    eyebrow: "NEAR YOU",
-                    title: "Local decisions are where leverage starts",
-                    subtitle: "Hearings, contracts, filings, and votes for \(preferences.areaLabel.isEmpty ? "your selected area" : preferences.areaLabel)."
+                    title: "Near You",
+                    status: areaName.isEmpty ? "No home area set" : areaName
                 )
 
-                if localEvents.isEmpty {
-                    CivicEmptyState(
-                        title: "No local items yet",
-                        message: "Update your home area in Settings or follow more topics.",
-                        symbol: "mappin.slash.fill",
-                        tint: CivicStyle.blue
-                    )
-                } else {
-                    SectionLabel(title: "Local watch", detail: "\(localEvents.count) active")
-                    ForEach(localEvents) { event in
-                        NavigationLink(value: CivicRoute.event(event.key)) {
-                            HStack(spacing: 14) {
-                                Image(systemName: event.urgency == .urgent ? "building.columns.fill" : "doc.text.fill")
-                                    .font(.title3.weight(.semibold))
-                                    .symbolRenderingMode(.hierarchical)
-                                    .foregroundStyle(event.urgency.color)
-                                    .frame(width: 50, height: 54)
-                                    .background(event.urgency.color.opacity(0.10), in: RoundedRectangle(cornerRadius: 15, style: .continuous))
-                                VStack(alignment: .leading, spacing: 5) {
-                                    Text(event.headline)
-                                        .font(.headline)
-                                        .foregroundStyle(CivicStyle.ink)
-                                        .fixedSize(horizontal: false, vertical: true)
-                                    Label(event.locationLabel, systemImage: "mappin")
-                                        .font(.caption)
-                                        .foregroundStyle(.secondary)
-                                        .lineLimit(1)
-                                }
-                                Spacer(minLength: 4)
-                                Image(systemName: "chevron.right")
-                                    .font(.caption.weight(.bold))
-                                    .foregroundStyle(.tertiary)
-                            }
-                            .padding(14)
-                            .civicCard(radius: 21)
-                        }
-                        .buttonStyle(CivicPressStyle())
-                    }
-                }
+                CivicFeedStatus(state: repository.state)
 
-                if !pins.isEmpty {
-                    SectionLabel(title: "Meeting map", detail: "Confirmed coordinates")
-                    Map(position: $position) {
-                        ForEach(pins) { pin in
-                            Annotation(pin.event.headline, coordinate: pin.coordinate) {
-                                Image(systemName: "building.columns.fill")
-                                    .font(.caption.weight(.bold))
-                                    .symbolRenderingMode(.hierarchical)
-                                    .foregroundStyle(.white)
-                                    .frame(width: 38, height: 38)
-                                    .background(CivicStyle.red.gradient, in: Circle())
-                                    .overlay { Circle().stroke(.white.opacity(0.85), lineWidth: 2) }
-                                    .shadow(color: Color.black.opacity(0.22), radius: 6, y: 3)
-                            }
-                        }
-                    }
-                    .mapStyle(.standard(elevation: .realistic, emphasis: .muted))
-                    .frame(height: 280)
-                    .clipShape(RoundedRectangle(cornerRadius: 26, style: .continuous))
-                    .overlay {
-                        RoundedRectangle(cornerRadius: 26, style: .continuous)
-                            .stroke(CivicStyle.hairline, lineWidth: 1)
-                    }
-                    .shadow(color: CivicStyle.shadow, radius: 14, y: 6)
-                    .accessibilityIdentifier("near-you-map")
+                if localEvents.isEmpty {
+                    emptyArea
+                } else {
+                    eventList
+                    if !pins.isEmpty { mapSection }
+                    homeAreaRow
                 }
             }
-            .padding(18)
-            .padding(.bottom, 34)
+            .padding(.horizontal, CivicSpace.gutter)
+            .padding(.top, CivicSpace.md)
+            .padding(.bottom, CivicSpace.screenBottom)
         }
         .background(CivicStyle.paper.ignoresSafeArea())
-        .navigationTitle("Near You")
-        .navigationBarTitleDisplayMode(.inline)
-        .civicNavigationChrome()
+        .civicMastheadChrome("Near You")
+    }
+
+    private var eventList: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            SectionLabel(title: "Local decisions", detail: countLabel)
+            ForEach(localEvents) { event in
+                VStack(alignment: .leading, spacing: 0) {
+                    NavigationLink(value: CivicRoute.event(event.key)) {
+                        CivicEventRow(event: event, detail: event.locationLabel)
+                    }
+                    .buttonStyle(CivicPressStyle())
+                    CivicRule()
+                }
+            }
+        }
+    }
+
+    private var mapSection: some View {
+        VStack(alignment: .leading, spacing: CivicSpace.md) {
+            SectionLabel(title: "Meeting locations", detail: pinLabel)
+            map
+            Text("Addresses come from the meeting notice. Confirm the room and start time before you go.")
+                .font(CivicType.meta)
+                .foregroundStyle(CivicStyle.amber)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+    }
+
+    private var map: some View {
+        Map(position: $position) {
+            ForEach(pins) { pin in
+                Annotation(pin.event.headline, coordinate: pin.coordinate) {
+                    Image(systemName: "building.columns.fill")
+                        .font(.caption.weight(.bold))
+                        .foregroundStyle(.white)
+                        .padding(CivicSpace.sm)
+                        .background(CivicStyle.urgencyTint(pin.event.urgency), in: Circle())
+                }
+            }
+        }
+        .mapStyle(.standard(elevation: .flat, emphasis: .muted))
+        .frame(height: 240)
+        .clipShape(RoundedRectangle(cornerRadius: CivicRadius.hero, style: .continuous))
+        .civicSurface(.inset, radius: CivicRadius.hero)
+        .accessibilityIdentifier("near-you-map")
+    }
+
+    /// The always-visible way to change what "near you" means.
+    private var homeAreaRow: some View {
+        NavigationLink(value: CivicRoute.regionEditor) {
+            SettingsRow(
+                symbol: "mappin.and.ellipse",
+                tint: CivicStyle.blue,
+                title: areaName.isEmpty ? "Set your home area" : areaName,
+                detail: "Filters every tab to one state, or nationwide."
+            )
+        }
+        .buttonStyle(CivicPressStyle())
+        .padding(.horizontal, CivicSpace.lg)
+        .civicSurface(.inset)
+        .accessibilityIdentifier("near-you-home-area")
+    }
+
+    /// Nothing to show. The fix is one tap away, not an explanation.
+    private var emptyArea: some View {
+        VStack(alignment: .leading, spacing: CivicSpace.lg) {
+            CivicEmptyState(
+                title: areaName.isEmpty ? "Set a home area" : "No items for \(areaName)",
+                message: areaName.isEmpty
+                    ? "Pick a state or region. CivicNote then lists the meetings, contracts, and votes recorded there."
+                    : "Pick a wider region, or follow another topic under Topics.",
+                symbol: "mappin.and.ellipse",
+                tint: CivicStyle.blue
+            )
+            NavigationLink(value: CivicRoute.regionEditor) {
+                Text(areaName.isEmpty ? "Choose a home area" : "Change home area")
+            }
+            .buttonStyle(CivicFilledButtonStyle())
+            .accessibilityIdentifier("near-you-home-area")
+        }
     }
 }
 

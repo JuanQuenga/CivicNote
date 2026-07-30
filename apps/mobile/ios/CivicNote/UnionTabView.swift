@@ -1,6 +1,26 @@
 import SwiftUI
 import UIKit
 
+/// Metrics for the floating tab bar. These sit outside `CivicSpace` on purpose:
+/// they size a system control, not content. Every padding inside the bar still
+/// comes from the scale.
+enum TabBarChrome {
+    /// Caps the bar's width so it stays thumb-reachable on iPad.
+    static let maxWidth: CGFloat = 500
+    /// Touch target per tab. `minHeight`, so the bar grows with Dynamic Type.
+    static let itemMinHeight: CGFloat = 48
+    /// Height of the fade that carries scrolling content into `CivicStyle.paper`
+    /// behind the bar, so there is no seam.
+    static let scrimHeight = CivicSpace.xxl * 3
+    /// Tab glyph. Fixed so five items keep their row at any text size.
+    static let glyph = Font.system(size: 20, weight: .medium)
+    /// Tab label. Hidden entirely at accessibility text sizes.
+    static let label = Font.caption2.weight(.semibold)
+}
+
+/// The app shell: a `TabView` with a floating capsule bar inset over it.
+/// This capsule and the selected-tab pill are the only capsules in the app —
+/// they are system chrome, not content surfaces.
 struct UnionTabView<Tab: Hashable, Content: View, Item: View>: View {
     @Binding private var selection: Tab
     private let tabs: [Tab]
@@ -27,10 +47,9 @@ struct UnionTabView<Tab: Hashable, Content: View, Item: View>: View {
             .safeAreaInset(edge: .bottom, spacing: 0) {
                 if !isTabBarHidden {
                     tabBar
-                        .frame(maxWidth: 500)
-                        .padding(.horizontal, 18)
-                        .padding(.top, 8)
-                        .padding(.bottom, 8)
+                        .frame(maxWidth: TabBarChrome.maxWidth)
+                        .padding(.horizontal, CivicSpace.gutter)
+                        .padding(.vertical, CivicSpace.sm)
                         .frame(maxWidth: .infinity)
                         .background(alignment: .bottom) { bottomScrim }
                 }
@@ -40,18 +59,20 @@ struct UnionTabView<Tab: Hashable, Content: View, Item: View>: View {
     @ViewBuilder
     private var tabBar: some View {
         if #available(iOS 26, *) {
-            tabItems.padding(4).glassEffect(.regular.interactive(), in: .capsule)
+            tabItems
+                .padding(CivicSpace.xs)
+                .glassEffect(.regular.interactive(), in: .capsule)
         } else {
             tabItems
-                .padding(4)
+                .padding(CivicSpace.xs)
                 .background(.ultraThinMaterial, in: Capsule())
-                .overlay { Capsule().stroke(Color.primary.opacity(0.10), lineWidth: 0.5) }
-                .shadow(color: Color.black.opacity(0.12), radius: 20, y: 9)
+                .overlay { Capsule().strokeBorder(CivicStyle.hairline, lineWidth: 1) }
+                .shadow(color: CivicStyle.shadow, radius: 10, y: 4)
         }
     }
 
     private var tabItems: some View {
-        HStack(spacing: 2) {
+        HStack(spacing: CivicSpace.xs) {
             ForEach(tabs, id: \.self) { tab in
                 let isSelected = selection == tab
                 Button {
@@ -60,11 +81,10 @@ struct UnionTabView<Tab: Hashable, Content: View, Item: View>: View {
                     UISelectionFeedbackGenerator().selectionChanged()
                 } label: {
                     item(tab, isSelected)
-                        .frame(maxWidth: .infinity, minHeight: 44)
-                        .frame(height: 52)
+                        .frame(maxWidth: .infinity, minHeight: TabBarChrome.itemMinHeight)
                         .contentShape(Rectangle())
                 }
-                .buttonStyle(UnionTabButtonStyle())
+                .buttonStyle(CivicPressStyle())
                 .accessibilityAddTraits(isSelected ? .isSelected : [])
             }
         }
@@ -74,28 +94,15 @@ struct UnionTabView<Tab: Hashable, Content: View, Item: View>: View {
         LinearGradient(
             stops: [
                 .init(color: CivicStyle.paper.opacity(0), location: 0),
-                .init(color: CivicStyle.paper.opacity(0.86), location: 0.42),
+                .init(color: CivicStyle.paper.opacity(0.85), location: 0.5),
                 .init(color: CivicStyle.paper, location: 1),
             ],
             startPoint: .top,
             endPoint: .bottom
         )
-        .frame(height: 104)
-        .padding(.horizontal, -18)
-        .padding(.bottom, -8)
+        .frame(height: TabBarChrome.scrimHeight)
         .allowsHitTesting(false)
         .ignoresSafeArea(edges: .bottom)
-    }
-}
-
-private struct UnionTabButtonStyle: ButtonStyle {
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
-
-    func makeBody(configuration: Configuration) -> some View {
-        configuration.label
-            .scaleEffect(reduceMotion ? 1 : (configuration.isPressed ? 0.92 : 1))
-            .opacity(configuration.isPressed ? 0.72 : 1)
-            .animation(reduceMotion ? nil : .snappy(duration: 0.2), value: configuration.isPressed)
     }
 }
 

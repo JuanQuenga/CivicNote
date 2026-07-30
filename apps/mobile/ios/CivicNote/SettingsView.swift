@@ -6,6 +6,7 @@ struct SettingsView: View {
     let environment: AppEnvironment
     @ObservedObject private var preferences: PreferencesStore
     @ObservedObject private var notifications: NotificationService
+    @State private var isConfirmingReset = false
 
     init(environment: AppEnvironment) {
         self.environment = environment
@@ -15,72 +16,103 @@ struct SettingsView: View {
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 20) {
-                CivicMasthead(eyebrow: "YOUR CIVIC RADAR", title: "Alerts without the noise", subtitle: "Control what reaches you. CivicNote keeps every preference visible.")
-                NotificationStatusCard(service: notifications, preferences: preferences)
+            LazyVStack(alignment: .leading, spacing: CivicSpace.xl) {
+                CivicMasthead(title: "Settings")
 
-                SettingsGroup(title: "Your watchlist") {
+                AlertsPanel(service: notifications, preferences: preferences)
+
+                SettingsGroup(title: "What alerts cover") {
                     Button { environment.coordinator.showTopics() } label: {
-                        SettingsRow(symbol: "bookmark.fill", tint: CivicStyle.blue, title: "Followed topics", detail: "\(preferences.topicSlugs.count) selected")
+                        SettingsRow(
+                            symbol: "bookmark",
+                            tint: Color.secondary,
+                            title: "Topics",
+                            detail: AlertCopy.topicList(preferences.topicSlugs)
+                        )
                     }
                     .buttonStyle(.plain)
-                    Divider().padding(.leading, 48)
+                    Divider().padding(.leading, SettingsRow.dividerInset)
                     NavigationLink(value: CivicRoute.regionEditor) {
-                        SettingsRow(symbol: "mappin.and.ellipse", tint: CivicStyle.green, title: "Home area", detail: preferences.areaLabel.isEmpty ? "Not set" : preferences.areaLabel)
+                        SettingsRow(
+                            symbol: "mappin.and.ellipse",
+                            tint: CivicStyle.blue,
+                            title: "Home area",
+                            detail: AlertCopy.areaName(label: preferences.areaLabel, code: preferences.regionCode)
+                        )
                     }
                     .buttonStyle(.plain)
                 }
 
-                SettingsGroup(title: "Alert cadence") {
-                    Picker("Cadence", selection: $preferences.cadence) {
-                        ForEach(AlertCadence.allCases) { Text($0.title).tag($0) }
-                    }
-                    .pickerStyle(.segmented)
-                    .accessibilityIdentifier("cadence-picker")
-                    Text(preferences.cadence == .instant ? "Instant alerts are reserved for timely decision points and major changes." : "Briefs group relevant updates at your chosen pace.")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                        .padding(.top, 10)
-                }
-
-                SettingsGroup(title: "Perspective") {
-                    Picker("Position", selection: $preferences.position) {
-                        ForEach(CivicPosition.allCases) { Text($0.title).tag($0) }
-                    }
-                    .pickerStyle(.segmented)
-                }
-
-                SettingsGroup(title: "Trust & transparency") {
+                SettingsGroup(title: "About") {
                     NavigationLink(value: CivicRoute.trust) {
-                        SettingsRow(symbol: "checkmark.shield.fill", tint: CivicStyle.green, title: "How CivicNote verifies updates", detail: "Sources, timestamps, and corrections")
+                        SettingsRow(
+                            symbol: "doc.text.magnifyingglass",
+                            tint: CivicStyle.green,
+                            title: "How verification works",
+                            detail: "Where each event comes from and how corrections are published"
+                        )
                     }
                     .buttonStyle(.plain)
                     if let url = URL(string: "https://civicnote.org") {
-                        Divider().padding(.leading, 48)
+                        Divider().padding(.leading, SettingsRow.dividerInset)
                         Link(destination: url) {
-                            SettingsRow(symbol: "safari.fill", tint: CivicStyle.blue, title: "CivicNote on the web", detail: "Privacy, support, and methodology")
+                            SettingsRow(
+                                symbol: "safari",
+                                tint: Color.secondary,
+                                title: "civicnote.org",
+                                detail: "Privacy policy and support"
+                            )
                         }
                         .buttonStyle(.plain)
                     }
                 }
 
-                Button("Reset onboarding and preferences", role: .destructive) { preferences.reset() }
-                    .font(.footnote.weight(.semibold))
-                    .padding(.horizontal, 4)
-                    .accessibilityIdentifier("reset-preferences")
-
-                Text("CivicNote is an independent civic information tool. It is not affiliated with a government agency or political campaign.\nVersion \(versionLabel)")
-                    .font(.footnote)
-                    .foregroundStyle(.secondary)
-                    .padding(.horizontal, 4)
+                closingBlock
             }
-            .padding(18)
-            .padding(.bottom, 34)
+            .padding(.horizontal, CivicSpace.gutter)
+            .padding(.top, CivicSpace.md)
+            .padding(.bottom, CivicSpace.screenBottom)
         }
         .background(CivicStyle.paper.ignoresSafeArea())
-        .navigationTitle("Settings")
-        .navigationBarTitleDisplayMode(.inline)
-        .civicNavigationChrome()
+        .civicMastheadChrome("Settings")
+    }
+
+    private var closingBlock: some View {
+        VStack(alignment: .leading, spacing: CivicSpace.lg) {
+            CivicRule()
+            Button("Erase topics, home area, and alert settings", role: .destructive) {
+                isConfirmingReset = true
+            }
+            .font(CivicType.metaStrong)
+            .foregroundStyle(CivicStyle.red)
+            .frame(minHeight: 44, alignment: .leading)
+            .accessibilityIdentifier("reset-preferences")
+            .confirmationDialog(
+                "Erase your settings?",
+                isPresented: $isConfirmingReset,
+                titleVisibility: .visible
+            ) {
+                Button("Erase settings", role: .destructive) { preferences.reset() }
+                Button("Keep them", role: .cancel) {}
+            } message: {
+                Text(resetWarning)
+            }
+
+            VStack(alignment: .leading, spacing: CivicSpace.xs) {
+                Text("CivicNote is an independent tool. It is not affiliated with a government agency or a political campaign.")
+                    .fixedSize(horizontal: false, vertical: true)
+                Text("Version \(versionLabel)")
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            .font(CivicType.meta)
+            .foregroundStyle(.secondary)
+        }
+    }
+
+    private var resetWarning: String {
+        let count = preferences.topicSlugs.count
+        let topics = count == 1 ? "1 followed topic" : "\(count) followed topics"
+        return "This clears your \(topics), your home area, and your alert settings, then starts onboarding over."
     }
 
     private var versionLabel: String {
@@ -96,123 +128,241 @@ struct NotificationSettingsView: View {
 
     var body: some View {
         ScrollView {
-            VStack(spacing: 16) {
-                NotificationStatusCard(service: service, preferences: preferences)
-                SettingsGroup(title: "Delivery") {
-                    SettingsRow(symbol: "clock.badge.exclamationmark", tint: CivicStyle.red, title: "Decision timing", detail: "Hearings, filings, votes, and deadlines", showsChevron: false)
-                    Divider().padding(.leading, 48)
-                    SettingsRow(symbol: "location.fill", tint: CivicStyle.green, title: "Local relevance", detail: "Your state and home jurisdiction", showsChevron: false)
-                    Divider().padding(.leading, 48)
-                    SettingsRow(symbol: "doc.text.magnifyingglass", tint: CivicStyle.blue, title: "Evidence", detail: "Source links and what was verified", showsChevron: false)
+            LazyVStack(alignment: .leading, spacing: CivicSpace.xl) {
+                CivicMasthead(title: "Civic alerts")
+
+                AlertsPanel(service: service, preferences: preferences, showsCadence: false)
+
+                VStack(alignment: .leading, spacing: 0) {
+                    SectionLabel(title: "What a push has to match")
+                    AlertFactRow(label: "Topics", value: AlertCopy.topicList(preferences.topicSlugs, empty: "None yet"))
+                    CivicRule()
+                    AlertFactRow(
+                        label: "Home area",
+                        value: AlertCopy.areaName(label: preferences.areaLabel, code: preferences.regionCode)
+                    )
+                    CivicRule()
+                    AlertFactRow(label: "How often", value: preferences.cadence.title)
+                    Text("Change any of these in the Settings tab.")
+                        .font(CivicType.meta)
+                        .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .padding(.top, CivicSpace.lg)
                 }
             }
-            .padding(18)
-            .padding(.bottom, 28)
+            .padding(.horizontal, CivicSpace.gutter)
+            .padding(.top, CivicSpace.md)
+            .padding(.bottom, CivicSpace.screenBottom)
         }
         .background(CivicStyle.paper.ignoresSafeArea())
-        .navigationTitle("Civic alerts")
-        .navigationBarTitleDisplayMode(.inline)
-        .civicNavigationChrome()
+        .civicMastheadChrome("Civic alerts")
     }
 }
 
-struct NotificationStatusCard: View {
+/// The alert state, in the order a person asks about it: is it on, what will
+/// arrive, how often, and the one control that changes it. Tier one — the only
+/// tinted surface here is the caution panel iOS forces on us when permission
+/// is denied.
+private struct AlertsPanel: View {
     @ObservedObject var service: NotificationService
     @ObservedObject var preferences: PreferencesStore
+    var showsCadence = true
+
     @Environment(\.openURL) private var openURL
     @State private var isWorking = false
+    @State private var isConfirmingPause = false
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 15) {
-            HStack(spacing: 12) {
-                Image(systemName: statusSymbol)
-                    .font(.title3.weight(.semibold))
-                    .symbolRenderingMode(.hierarchical)
-                    .foregroundStyle(statusTint)
-                    .frame(width: 46, height: 46)
-                    .background(statusTint.opacity(0.11), in: RoundedRectangle(cornerRadius: 14, style: .continuous))
-                VStack(alignment: .leading, spacing: 3) {
-                    Text(statusTitle)
-                        .font(.headline)
-                        .foregroundStyle(CivicStyle.ink)
-                    Text(service.syncMessage)
-                        .font(.caption.weight(.semibold))
-                        .foregroundStyle(statusTint)
-                }
+        VStack(alignment: .leading, spacing: CivicSpace.md) {
+            Text(stateTitle)
+                .font(CivicType.title)
+                .foregroundStyle(CivicStyle.ink)
+                .fixedSize(horizontal: false, vertical: true)
+
+            if isBlocked {
+                Text(stateDetail)
+                    .font(CivicType.secondary)
+                    .foregroundStyle(CivicStyle.ink)
+                    .lineSpacing(2)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(CivicSpace.lg)
+                    .civicSurface(.inset, tint: CivicStyle.amber)
+            } else {
+                Text(stateDetail)
+                    .font(CivicType.secondary)
+                    .foregroundStyle(.secondary)
+                    .lineSpacing(2)
+                    .fixedSize(horizontal: false, vertical: true)
             }
-            Text(statusDetail)
-                .font(.subheadline)
+
+            Text(service.syncMessage)
+                .font(CivicType.meta)
                 .foregroundStyle(.secondary)
-                .lineSpacing(2)
+                .fixedSize(horizontal: false, vertical: true)
+
             if let error = service.errorMessage {
                 Label(error, systemImage: "exclamationmark.triangle.fill")
-                    .font(.caption)
+                    .font(CivicType.meta)
                     .foregroundStyle(CivicStyle.red)
+                    .fixedSize(horizontal: false, vertical: true)
             }
-            Button {
-                performAction()
-            } label: {
-                Label(buttonTitle, systemImage: preferences.notificationsEnabled ? "pause.fill" : "bell.badge.fill")
-                    .font(.body.weight(.semibold))
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 13)
+
+            if showsCadence && !isBlocked {
+                cadenceControl
             }
-            .buttonStyle(.plain)
-            .foregroundStyle(.white)
-            .background(CivicStyle.red.gradient, in: RoundedRectangle(cornerRadius: 15, style: .continuous))
-            .shadow(color: CivicStyle.red.opacity(0.18), radius: 10, y: 4)
-            .disabled(isWorking)
-            .accessibilityIdentifier("notification-action")
+
+            actionControl
         }
-        .padding(18)
-        .background(
-            LinearGradient(
-                colors: [statusTint.opacity(0.07), CivicStyle.card],
-                startPoint: .topLeading,
-                endPoint: .bottomTrailing
-            ),
-            in: RoundedRectangle(cornerRadius: 26, style: .continuous)
-        )
-        .overlay {
-            RoundedRectangle(cornerRadius: 26, style: .continuous)
-                .stroke(statusTint.opacity(0.12), lineWidth: 1)
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    private var cadenceControl: some View {
+        VStack(alignment: .leading, spacing: CivicSpace.sm) {
+            Text("How often")
+                .font(CivicType.metaStrong)
+                .foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
+            Picker("How often", selection: $preferences.cadence) {
+                ForEach(AlertCadence.allCases) { Text($0.title).tag($0) }
+            }
+            .pickerStyle(.segmented)
+            .accessibilityIdentifier("cadence-picker")
+            Text(AlertCopy.cadenceLine(preferences.cadence))
+                .font(CivicType.meta)
+                .foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
         }
-        .shadow(color: CivicStyle.shadow, radius: 14, y: 6)
+        .padding(.top, CivicSpace.xs)
     }
 
-    private var statusTitle: String {
-        if service.authorizationStatus == .denied { return "Alerts are blocked in iOS Settings" }
-        if preferences.notificationsEnabled && service.notificationsAuthorized { return "Civic alerts are on" }
-        return "Civic alerts are paused"
-    }
-
-    private var statusDetail: String {
-        if service.authorizationStatus == .notDetermined { return "Permission is requested only after you choose to turn alerts on." }
-        return preferences.notificationsEnabled ? "Relevant updates follow your topics, area, position, and cadence." : "Your preferences stay saved while delivery is paused."
-    }
-
-    private var statusSymbol: String { preferences.notificationsEnabled ? "bell.badge.fill" : "bell.slash.fill" }
-    private var statusTint: Color { preferences.notificationsEnabled ? CivicStyle.green : CivicStyle.red }
-    private var buttonTitle: String {
-        if service.authorizationStatus == .denied { return "Open iOS Settings" }
-        return preferences.notificationsEnabled ? "Pause alerts" : "Turn on civic alerts"
-    }
-
-    private func performAction() {
-        if service.authorizationStatus == .denied {
-            if let url = URL(string: UIApplication.openSettingsURLString) { openURL(url) }
-            return
+    @ViewBuilder
+    private var actionControl: some View {
+        if isBlocked {
+            Button("Open iOS Settings") { openSystemSettings() }
+                .buttonStyle(CivicFilledButtonStyle())
+                .accessibilityIdentifier("notification-action")
+        } else if isOn {
+            Button("Pause alerts") { isConfirmingPause = true }
+                .font(CivicType.metaStrong)
+                .buttonStyle(.bordered)
+                .tint(CivicStyle.red)
+                .frame(minHeight: 44)
+                .disabled(isWorking)
+                .accessibilityIdentifier("notification-action")
+                .confirmationDialog(
+                    "Pause every alert?",
+                    isPresented: $isConfirmingPause,
+                    titleVisibility: .visible
+                ) {
+                    Button("Pause alerts", role: .destructive) { pauseAlerts() }
+                    Button("Keep them on", role: .cancel) {}
+                } message: {
+                    Text("Nothing will be pushed until you turn alerts back on. Your topics and home area stay saved.")
+                }
+        } else {
+            Button("Turn on alerts") { enableAlerts() }
+                .buttonStyle(CivicFilledButtonStyle())
+                .disabled(isWorking)
+                .accessibilityIdentifier("notification-action")
         }
+    }
+
+    private var isBlocked: Bool { service.authorizationStatus == .denied }
+    private var isOn: Bool { preferences.notificationsEnabled && service.notificationsAuthorized }
+
+    private var stateTitle: String {
+        if isBlocked { return "iOS is blocking CivicNote alerts" }
+        return isOn ? "Alerts are on" : "Alerts are off"
+    }
+
+    private var stateDetail: String {
+        if isBlocked {
+            return "Notifications are turned off for CivicNote in iOS Settings, so nothing arrives no matter what is set here."
+        }
+        if isOn {
+            guard !preferences.topicSlugs.isEmpty else {
+                return "You follow no topics, so nothing will be pushed. Pick a topic in the Topics tab."
+            }
+            let count = preferences.topicSlugs.count
+            let topics = count == 1 ? "the topic you follow" : "one of the \(count) topics you follow"
+            let area = AlertCopy.areaName(label: preferences.areaLabel, code: preferences.regionCode)
+            return "A push goes out when CivicNote publishes an event in \(topics) that lands in \(area)."
+        }
+        if service.authorizationStatus == .notDetermined {
+            return "iOS asks for permission the first time you turn alerts on."
+        }
+        return "Nothing is pushed. Your topics and home area stay saved."
+    }
+
+    private func openSystemSettings() {
+        if let url = URL(string: UIApplication.openSettingsURLString) { openURL(url) }
+    }
+
+    private func enableAlerts() {
         isWorking = true
         Task {
-            if preferences.notificationsEnabled {
-                await service.pause()
-            } else if service.authorizationStatus == .notDetermined {
+            if service.authorizationStatus == .notDetermined {
                 await service.requestPermission()
             } else {
                 await service.resume()
             }
             isWorking = false
+        }
+    }
+
+    private func pauseAlerts() {
+        isWorking = true
+        Task {
+            await service.pause()
+            isWorking = false
+        }
+    }
+}
+
+/// One stated fact about delivery. Label left, value right, rules between.
+private struct AlertFactRow: View {
+    let label: String
+    let value: String
+
+    var body: some View {
+        HStack(alignment: .firstTextBaseline, spacing: CivicSpace.md) {
+            Text(label)
+                .font(CivicType.meta)
+                .foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
+            Spacer(minLength: CivicSpace.sm)
+            Text(value)
+                .font(CivicType.metaStrong)
+                .foregroundStyle(CivicStyle.ink)
+                .multilineTextAlignment(.trailing)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+        .padding(.vertical, CivicSpace.md)
+        .accessibilityElement(children: .combine)
+    }
+}
+
+/// Plain functions so both alert screens say the same true thing.
+private enum AlertCopy {
+    /// Deliberately ignores `areaLabel`. Only `regionCode` filters the feed
+    /// (`PreferencesStore.event(_:matchesRegionCode:)`), so a sentence about
+    /// what gets pushed must not name a township the app never matches on.
+    static func areaName(label: String, code: String) -> String {
+        CivicFormat.regionName(code)
+    }
+
+    static func topicList(_ slugs: Set<String>, empty: String = "None yet. Pick the topics you want alerts about.") -> String {
+        let names = slugs.sorted().map(CivicFormat.topicName)
+        guard !names.isEmpty else { return empty }
+        return names.joined(separator: ", ")
+    }
+
+    static func cadenceLine(_ cadence: AlertCadence) -> String {
+        switch cadence {
+        case .instant: return "Each event is pushed as CivicNote publishes it."
+        case .daily: return "Events are held and sent in one push a day."
+        case .weekly: return "Events are held and sent in one push a week."
         }
     }
 }
@@ -221,15 +371,7 @@ struct RegionEditorView: View {
     @ObservedObject var preferences: PreferencesStore
     @State private var customArea = ""
 
-    private let regions = [
-        ("US", "Nationwide"),
-        ("US-CA", "California"),
-        ("US-FL", "Florida"),
-        ("US-IL", "Illinois"),
-        ("US-MI", "Michigan"),
-        ("US-NY", "New York"),
-        ("US-TX", "Texas"),
-    ]
+    private let regions = CivicFormat.filterableRegions
 
     var body: some View {
         List {
@@ -248,18 +390,22 @@ struct RegionEditorView: View {
                     .foregroundStyle(CivicStyle.ink)
                 }
             }
-            Section("Optional area label") {
-                TextField("City, county, or township", text: $customArea)
+            Section {
+                TextField("Ypsilanti Township", text: $customArea)
                     .textContentType(.addressCity)
-                Button("Save area label") {
+                Button("Save this label") {
                     let value = customArea.trimmingCharacters(in: .whitespacesAndNewlines)
                     if !value.isEmpty { preferences.areaLabel = value }
                 }
                 .disabled(customArea.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+            } header: {
+                Text("City, county, or township")
+            } footer: {
+                Text("A name for your own reference. CivicNote cannot filter below the state level yet, so this does not narrow your feed or your alerts — those follow \(CivicFormat.regionName(preferences.regionCode)).")
             }
             Section {
-                Text("CivicNote stores a coarse region and label, not your precise location.")
-                    .font(.footnote)
+                Text("CivicNote stores the state code and the label you type here. It never reads your device location.")
+                    .font(CivicType.meta)
                     .foregroundStyle(.secondary)
             }
         }
@@ -275,28 +421,38 @@ struct RegionEditorView: View {
 
 struct TrustView: View {
     var body: some View {
-        List {
-            trustRow("building.columns.fill", "Prefer primary records", "Agendas, filings, contracts, votes, disclosures, and agency data come first.")
-            trustRow("clock.badge.checkmark.fill", "Show freshness", "Time-sensitive claims carry a verification time and official schedule source.")
-            trustRow("text.badge.checkmark", "Separate fact from analysis", "Reported facts, uncertainty, and CivicNote interpretation remain distinct.")
-            trustRow("arrow.triangle.2.circlepath", "Correct transparently", "Material corrections are visible rather than silently overwritten.")
-        }
-        .scrollContentBackground(.hidden)
-        .background(CivicStyle.paper.ignoresSafeArea())
-        .navigationTitle("How verification works")
-        .navigationBarTitleDisplayMode(.inline)
-        .civicNavigationChrome()
-    }
+        ScrollView {
+            LazyVStack(alignment: .leading, spacing: CivicSpace.xl) {
+                CivicMasthead(
+                    title: "How verification works",
+                    standfirst: "Every event links to the record it came from, and to the body that decided it."
+                )
 
-    private func trustRow(_ symbol: String, _ title: String, _ detail: String) -> some View {
-        Label {
-            VStack(alignment: .leading, spacing: 4) {
-                Text(title).font(.headline)
-                Text(detail).font(.subheadline).foregroundStyle(.secondary)
+                DetailSection(title: "Sources", showsRule: false) {
+                    Text("Each event lists the records it was built from: agendas, filings, contracts, vote rolls, disclosures, and agency data. Tap a source to open the original document.")
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+
+                DetailSection(title: "Dates") {
+                    Text("Hearing dates, comment deadlines, and vote dates come from the schedule the body itself published, with the time CivicNote last checked it. Confirm the time with the body before you travel.")
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+
+                DetailSection(title: "Claims and analysis") {
+                    Text("A reported fact carries its source. Where CivicNote characterizes what a decision does, the event marks that line as interpretation and states how strong the evidence is.")
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+
+                DetailSection(title: "Corrections") {
+                    Text("When a fact changes, the event is updated and the change is recorded instead of being overwritten quietly.")
+                        .fixedSize(horizontal: false, vertical: true)
+                }
             }
-            .padding(.vertical, 6)
-        } icon: {
-            Image(systemName: symbol).foregroundStyle(CivicStyle.red)
+            .padding(.horizontal, CivicSpace.gutter)
+            .padding(.top, CivicSpace.md)
+            .padding(.bottom, CivicSpace.screenBottom)
         }
+        .background(CivicStyle.paper.ignoresSafeArea())
+        .civicMastheadChrome("How verification works")
     }
 }

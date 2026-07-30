@@ -16,12 +16,17 @@ final class CivicNoteUITests: XCTestCase {
         app.launchArguments = ["-uiTestMode", "-uiTestOnboarding"]
         app.launch()
         XCTAssertTrue(app.buttons["onboarding-continue"].waitForExistence(timeout: 5))
-        for _ in 0..<5 {
+
+        // Walk to the alerts step. How many steps precede it is a design detail,
+        // so advance until the footer swaps "Continue" for the alerts prompt
+        // instead of tapping a fixed number of times.
+        let skip = app.buttons["onboarding-skip-notifications"]
+        for _ in 0..<8 where !skip.exists {
             let next = app.buttons["onboarding-continue"]
-            XCTAssertTrue(next.waitForExistence(timeout: 2))
+            guard next.exists, next.isEnabled else { break }
             next.tap()
         }
-        let skip = app.buttons["onboarding-skip-notifications"]
+
         XCTAssertTrue(skip.waitForExistence(timeout: 2))
         skip.tap()
         XCTAssertTrue(app.buttons["tab-today"].waitForExistence(timeout: 5))

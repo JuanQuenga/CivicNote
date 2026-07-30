@@ -346,7 +346,7 @@ export const seedTopics: Array<ResearchTopic> = [
       {
         type: "claimLedger",
         eyebrow: "Common arguments",
-        title: "Separate real objections from distractions",
+        title: "What the record supports on each objection",
         rows: [
           {
             claim:
@@ -417,7 +417,7 @@ export const seedTopics: Array<ResearchTopic> = [
         title: "Congressional Stock Trading Polling",
         publisher: "YouGov / The Economist",
         year: 2024,
-        url: "https://today.yougov.com/",
+        url: "https://yougov.com/en-us/",
         note: "Cross-party public-support snapshot.",
       },
       {
@@ -469,7 +469,7 @@ export const seedTopics: Array<ResearchTopic> = [
     ],
     arguments: [
       {
-        title: "The topic is network effect",
+        title: "One camera, a national query network",
         claim:
           "A single camera may look local, but shared hotlists, regional access, and searchable audit trails can turn local capture into statewide or national surveillance.",
         counterpoint:
@@ -660,7 +660,7 @@ export const seedTopics: Array<ResearchTopic> = [
         eyebrow: "Public records",
         title: "What people can prove with records",
         summary:
-          "The most useful record requests ask for operating documents, not generic assurances.",
+          "Contracts, retention schedules, sharing agreements, and audit logs answer these questions. Policy summaries and vendor assurances do not.",
         rows: [
           {
             label: "Deployment scale",
@@ -782,7 +782,7 @@ export const seedTopics: Array<ResearchTopic> = [
         title: "DeFlock ALPR Map",
         publisher: "DeFlock / ALPR Watch",
         year: 2026,
-        url: "https://deflock.me/map",
+        url: "https://maps.deflock.org/",
         note: "Crowdsourced national map for reported ALPR and Flock camera locations.",
       },
     ],
@@ -1150,7 +1150,7 @@ export const seedTopics: Array<ResearchTopic> = [
           "Data Center Power Demands Are Contributing to Higher Energy Bills",
         publisher: "Environmental and Energy Study Institute",
         year: 2026,
-        url: "https://www.eesi.org/articles/view/h",
+        url: "https://www.eesi.org/articles/view/data-center-power-demands-are-contributing-to-higher-energy-bills",
         note: "Ratepayer-risk overview.",
       },
       {
@@ -1260,7 +1260,7 @@ export const seedTopics: Array<ResearchTopic> = [
         claim:
           "IARC classified glyphosate as a probable human carcinogen based on published hazard evidence, while EPA has said glyphosate is not likely to be carcinogenic to humans when used according to label directions.",
         counterpoint:
-          "A credible public topic should show both frames: hazard classification asks whether a substance can cause cancer under some conditions, while regulatory risk assessment asks whether expected uses create unacceptable risk.",
+          "The two findings answer different questions: hazard classification asks whether a substance can cause cancer under some conditions, while regulatory risk assessment asks whether expected uses create unacceptable risk.",
         sourceIndexes: [0, 1, 3],
       },
       {
@@ -1385,9 +1385,9 @@ export const seedTopics: Array<ResearchTopic> = [
       },
       {
         date: "2026",
-        title: "Environmental exposure remains the civic hook",
+        title: "Federal records stay open for review",
         description:
-          "USGS environmental monitoring and EPA label decisions remain practical entry points for public records, local policy, and exposure-reduction campaigns.",
+          "EPA's registration-review materials and USGS occurrence data are the two federal records local buffer, notice, and monitoring rules are argued from.",
         sourceIndexes: [1, 2, 4],
       },
     ],
@@ -1417,7 +1417,7 @@ export const seedTopics: Array<ResearchTopic> = [
         eyebrow: "How to read it",
         title: "Glyphosate needs two questions at once",
         body: [
-          "A serious glyphosate page should not collapse the dispute into a single safety slogan. IARC made a cancer-hazard classification, EPA made a U.S. label-based risk assessment, and environmental monitoring asks a third question about where the chemical and AMPA travel after use.",
+          "Three separate assessments are in play. IARC made a cancer-hazard classification, EPA made a U.S. label-based risk assessment, and environmental monitoring asks a third question about where glyphosate and its breakdown product AMPA travel after use.",
           "The public-interest frame is exposure governance: which uses are avoidable, which workers and communities carry the burden, and what monitoring exists before agencies approve continued use.",
         ],
         bullets: [
@@ -1433,7 +1433,7 @@ export const seedTopics: Array<ResearchTopic> = [
         eyebrow: "Science split",
         title: "What the major evidence lanes say",
         summary:
-          "The strongest page presents disagreements plainly and then focuses on exposure reduction.",
+          "IARC, EPA, and USGS reached their conclusions under different standards. Each row states the finding and the limit of what it establishes.",
         rows: [
           {
             label: "Cancer hazard",
@@ -1837,7 +1837,7 @@ export const seedTopics: Array<ResearchTopic> = [
         title: "AIPAC-linked spending shapes 2026 Illinois House primaries",
         publisher: "Associated Press",
         publishedAt: "2026-03-17",
-        url: "https://apnews.com/article/564cfdd46e0119501939452018be846a",
+        url: "https://apnews.com/article/aipac-israel-democratic-party-spending-dark-money-illinois-new-jersey-564cfdd46e0119501939452018be846a",
         summary:
           "Reporting shows continuing debate over pro-Israel super PAC spending in Democratic congressional primaries.",
         tag: "Campaign finance",
@@ -1850,7 +1850,7 @@ export const seedTopics: Array<ResearchTopic> = [
         title:
           "Keep law, humanitarian facts, and U.S. influence in separate lanes",
         body: [
-          "The page has to be sharper than a general Israel-Palestine explainer. The legal lane asks what courts and UN investigators found, the humanitarian lane asks what happened to civilians, and the U.S. politics lane asks how money, lobbying, aid, and votes interact.",
+          "Three questions run in parallel here. The legal lane asks what courts and UN investigators found, the humanitarian lane asks what happened to civilians, and the U.S. politics lane asks how money, lobbying, aid, and votes interact.",
           "That separation matters because each lane has a different evidence standard. A UN Commission finding, an ICJ provisional order, a campaign-finance filing, and a congressional vote should not be treated as the same kind of proof.",
         ],
         bullets: [
@@ -2043,7 +2043,7 @@ export const seedTopics: Array<ResearchTopic> = [
           "AIPAC faces test of its power in Illinois primary as Democrats debate future of Israel relationship",
         publisher: "Associated Press",
         year: 2026,
-        url: "https://apnews.com/article/564cfdd46e0119501939452018be846a",
+        url: "https://apnews.com/article/aipac-israel-democratic-party-spending-dark-money-illinois-new-jersey-564cfdd46e0119501939452018be846a",
         note: "2026 congressional-primary spending context.",
       },
       {
@@ -2157,7 +2157,7 @@ export const seedTopics: Array<ResearchTopic> = [
         difficulty: "30 minutes",
         urgency: "high",
         ctaLabel: "Open AP Coverage",
-        ctaUrl: "https://apnews.com/article/8f78773f583e4404136707c62acc648a",
+        ctaUrl: "https://apnews.com/article/trump-voter-eligibility-purge-noncitizens-disenfranchised-8f78773f583e4404136707c62acc648a",
         script:
           "Has this office received federal or third-party requests for voter-roll data, citizenship data, driver's license data, or Social Security fields, and what legal review was performed?",
       },
@@ -2170,7 +2170,7 @@ export const seedTopics: Array<ResearchTopic> = [
         urgency: "medium",
         ctaLabel: "Review EO Status",
         ctaUrl:
-          "https://www.brennancenter.org/our-work/research-reports/status-trumps-anti-voting-executive-order",
+          "https://www.brennancenter.org/our-work/research-reports/status-trumps-2025-anti-voting-executive-order",
         script:
           "Before endorsing this rule, please publish how many eligible citizens could be rejected, delayed, or forced into provisional ballots because of documentation or data-match errors.",
       },
@@ -2205,7 +2205,7 @@ export const seedTopics: Array<ResearchTopic> = [
           "Trump administration promotes national voter-eligibility checks",
         publisher: "Associated Press",
         publishedAt: "2026-05-17",
-        url: "https://apnews.com/article/8f78773f583e4404136707c62acc648a",
+        url: "https://apnews.com/article/trump-voter-eligibility-purge-noncitizens-disenfranchised-8f78773f583e4404136707c62acc648a",
         summary:
           "AP reported a broader federal push to scan state voter rolls and promote claims about noncitizen voting even though such cases are rare.",
         tag: "Voter rolls",
@@ -2214,7 +2214,7 @@ export const seedTopics: Array<ResearchTopic> = [
         title: "Court hearing tests Trump's mail-voting order",
         publisher: "Associated Press",
         publishedAt: "2026-05-14",
-        url: "https://apnews.com/article/ac61e7d4bb77f9901eb6f1a2c1f4b087",
+        url: "https://apnews.com/article/trump-election-executive-order-democrats-voter-list-ac61e7d4bb77f9901eb6f1a2c1f4b087",
         summary:
           "Democrats and civil-rights groups argued that Trump exceeded his authority by restricting mail-ballot access.",
         tag: "Litigation",
@@ -2227,7 +2227,7 @@ export const seedTopics: Array<ResearchTopic> = [
         title:
           "The story is the conversion of rare fraud into broad restriction",
         body: [
-          "A serious election-integrity page should not claim fraud never happens. It should show that documented fraud cases exist, then ask whether the proposed remedy is proportional to the verified scale.",
+          "Documented fraud cases exist and are recorded in prosecution databases. The open question for each proposal is whether the remedy is proportional to the verified scale.",
           "Trump's recent voter-fraud frame uses noncitizen voting, mail ballots, and voter-list data matching to justify federal intervention. The civic-risk question is whether eligible voters get blocked by paperwork and database errors while unsupported claims receive official power.",
         ],
         bullets: [
@@ -2397,7 +2397,7 @@ export const seedTopics: Array<ResearchTopic> = [
         title: "Status of Trump's Anti-Voting Executive Order",
         publisher: "Brennan Center for Justice",
         year: 2026,
-        url: "https://www.brennancenter.org/our-work/research-reports/status-trumps-anti-voting-executive-order",
+        url: "https://www.brennancenter.org/our-work/research-reports/status-trumps-2025-anti-voting-executive-order",
         note: "Tracker for 2025 and 2026 election executive-order litigation.",
       },
       {
@@ -2413,7 +2413,7 @@ export const seedTopics: Array<ResearchTopic> = [
           "Lawyers urge judge to block Trump order that would create eligible voter list, limit mail ballots",
         publisher: "Associated Press",
         year: 2026,
-        url: "https://apnews.com/article/ac61e7d4bb77f9901eb6f1a2c1f4b087",
+        url: "https://apnews.com/article/trump-election-executive-order-democrats-voter-list-ac61e7d4bb77f9901eb6f1a2c1f4b087",
         note: "May 2026 litigation update.",
       },
       {
@@ -2421,7 +2421,7 @@ export const seedTopics: Array<ResearchTopic> = [
           "Trump administration promotes program to check voter eligibility",
         publisher: "Associated Press",
         year: 2026,
-        url: "https://apnews.com/article/8f78773f583e4404136707c62acc648a",
+        url: "https://apnews.com/article/trump-voter-eligibility-purge-noncitizens-disenfranchised-8f78773f583e4404136707c62acc648a",
         note: "May 2026 reporting on federal voter-roll scanning.",
       },
     ],
@@ -2614,7 +2614,7 @@ export const seedTopics: Array<ResearchTopic> = [
         eyebrow: "Briefing",
         body: [
           "Bundibugyo virus disease is a severe Ebola disease caused by Bundibugyo virus. WHO says infection spreads through close contact with infected bodily fluids, contaminated surfaces, unsafe burials, and health-care exposure when infection prevention and control fails.",
-          "The current outbreak was confirmed in Ituri Province, DRC, with imported cases in Kampala, Uganda. The map marks reported case areas and a ruled-out Kinshasa alert so users can separate confirmed outbreak geography from discarded signals.",
+          "The current outbreak was confirmed in Ituri Province, DRC, with imported cases in Kampala, Uganda. The case ledger below separates confirmed outbreak geography from alerts that were investigated and ruled out, such as the Kinshasa traveler who tested negative on confirmatory testing.",
           "There is no licensed vaccine or specific therapeutic for Bundibugyo virus disease. The practical response is early isolation, optimized supportive care, laboratory testing, PPE, contact tracing, safe burials, community trust, and cross-border screening.",
         ],
         bullets: [
@@ -2871,7 +2871,7 @@ export const seedTopics: Array<ResearchTopic> = [
         title: "Ebola disease fact sheet",
         publisher: "World Health Organization",
         year: 2025,
-        url: "https://www.who.int/news-room/fact-sheets/detail/ebola-virus-disease",
+        url: "https://www.who.int/news-room/fact-sheets/detail/ebola-disease",
         note: "General Ebola disease transmission, symptoms, treatment, and prevention background.",
       },
     ],
