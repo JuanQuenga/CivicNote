@@ -5,6 +5,7 @@ import {
   readEventListParams,
   readPauseArgs,
   readReconcileArgs,
+  readTopicRequestArgs,
 } from "./lib/httpValidation"
 import type { ReconcileArgs } from "./lib/installations"
 
@@ -138,6 +139,33 @@ const pauseRef = makeFunctionReference<
   boolean
 >("installations:pause")
 
+type TopicRequestSummary = {
+  id: string
+  subject: string
+  status: "pending" | "approved" | "rejected" | "duplicate" | "failed"
+  note?: string
+  topicSlug?: string
+  createdAt: string
+  reviewedAt?: string
+}
+
+const submitTopicRequestRef = makeFunctionReference<
+  "mutation",
+  {
+    installationId: string
+    subject: string
+    reason?: string
+    regionHint?: string
+  },
+  { requestId: string; alreadyRequested: boolean }
+>("topicRequests:submit")
+
+const listTopicRequestsRef = makeFunctionReference<
+  "query",
+  { installationId: string },
+  Array<TopicRequestSummary>
+>("topicRequests:listMine")
+
 const http = httpRouter()
 
 http.route({
@@ -219,6 +247,40 @@ http.route({
 })
 
 http.route({
+  path: "/api/v1/topic-requests",
+  method: "POST",
+  handler: httpAction(async (ctx, request) => {
+    try {
+      const payload: unknown = await request.json()
+      const args = readTopicRequestArgs(payload)
+      if (!args) {
+        return json(request, { error: "Invalid topic request" }, 400)
+      }
+      const result = await ctx.runMutation(submitTopicRequestRef, args)
+      return json(request, { ok: true, ...result }, 200)
+    } catch (error) {
+      return mutationError(request, error, "Could not submit that request")
+    }
+  }),
+})
+
+http.route({
+  path: "/api/v1/topic-requests",
+  method: "GET",
+  handler: httpAction(async (ctx, request) => {
+    const installationId =
+      new URL(request.url).searchParams.get("installationId") ?? ""
+    if (installationId.length < 16 || installationId.length > 200) {
+      return json(request, { error: "Invalid installationId" }, 400)
+    }
+    const requests = await ctx.runQuery(listTopicRequestsRef, {
+      installationId,
+    })
+    return json(request, { requests }, 200)
+  }),
+})
+
+http.route({
   path: "/api/push/register",
   method: "POST",
   handler: httpAction(async (ctx, request) => {
@@ -266,6 +328,7 @@ for (const path of [
   "/api/v1/events",
   "/api/v1/installations/reconcile",
   "/api/v1/installations/pause",
+  "/api/v1/topic-requests",
   "/api/push/register",
   "/api/push/unregister",
 ]) {

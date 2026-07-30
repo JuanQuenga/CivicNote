@@ -1,40 +1,62 @@
 import { v } from "convex/values"
 
 import { internal } from "./_generated/api"
-import { internalAction, internalMutation, query } from "./_generated/server"
+import {
+  internalAction,
+  internalMutation,
+  internalQuery,
+  query,
+} from "./_generated/server"
+import { geographicScope, googleNewsFeedUrl } from "./lib/validators"
+import type { Doc } from "./_generated/dataModel"
 
-const topicFeeds = [
+// The six feeds CivicNote shipped with. They now live in the `topicFeeds`
+// table alongside reader-requested ones; this array only seeds that table the
+// first time the crawler runs against an empty deployment.
+const editorialFeeds = [
   {
     topicSlug: "congressional-stock-trading",
     tag: "Federal ethics",
-    url: "https://news.google.com/rss/search?q=congressional%20stock%20trading%20ban",
+    query: "congressional stock trading ban",
+    scope: "national" as const,
+    jurisdictionKeys: ["us"],
   },
   {
     topicSlug: "michigan-surveillance-stack",
     tag: "Michigan surveillance",
-    url: "https://news.google.com/rss/search?q=Michigan%20license%20plate%20readers%20Flock%20privacy",
+    query: "Michigan license plate readers Flock privacy",
+    scope: "state" as const,
+    jurisdictionKeys: ["us-mi"],
   },
   {
     topicSlug: "michigan-data-centers",
     tag: "Michigan data centers",
-    url: "https://news.google.com/rss/search?q=Michigan%20data%20center%20water%20power%20moratorium",
+    query: "Michigan data center water power moratorium",
+    scope: "state" as const,
+    jurisdictionKeys: ["us-mi"],
   },
   {
     topicSlug: "glyphosate-health-environment",
     tag: "Glyphosate",
-    url: "https://news.google.com/rss/search?q=glyphosate%20EPA%20IARC%20health%20environment",
+    query: "glyphosate EPA IARC health environment",
+    scope: "national" as const,
+    jurisdictionKeys: ["us"],
   },
   {
     topicSlug: "israel-gaza-us-influence",
     tag: "Israel Gaza",
-    url: "https://news.google.com/rss/search?q=Israel%20Gaza%20genocide%20ICJ%20AIPAC%20Congress",
+    query: "Israel Gaza genocide ICJ AIPAC Congress",
+    scope: "international" as const,
+    jurisdictionKeys: [],
   },
   {
     topicSlug: "voter-fraud-claims-election-rules",
     tag: "Election rules",
-    url: "https://news.google.com/rss/search?q=Trump%20voter%20fraud%20mail%20voting%20executive%20order%202026",
+    query: "Trump voter fraud mail voting executive order 2026",
+    scope: "national" as const,
+    jurisdictionKeys: ["us"],
   },
-] as const
+]
 
 type ParsedNewsItem = {
   topicSlug: string
@@ -64,25 +86,102 @@ export const latestByTopic = query({
   },
 })
 
+// Fills `topicFeeds` from `editorialFeeds` on a deployment that has never had
+// the table. Idempotent: an existing slug is left exactly as it is, so an
+// edited feed is never overwritten by the shipped default.
+export const seedEditorialFeeds = internalMutation({
+  args: {},
+  handler: async (ctx) => {
+    const createdAt = new Date().toISOString()
+    let created = 0
+    for (const feed of editorialFeeds) {
+      const existing = await ctx.db
+        .query("topicFeeds")
+        .withIndex("by_slug", (q) => q.eq("topicSlug", feed.topicSlug))
+        .unique()
+      if (existing) continue
+      await ctx.db.insert("topicFeeds", {
+        ...feed,
+        url: googleNewsFeedUrl(feed.query),
+        source: "editorial",
+        active: true,
+        createdAt,
+      })
+      created += 1
+    }
+    return { created }
+  },
+})
+
+export const listActiveFeeds = internalQuery({
+  args: {},
+  handler: async (ctx) => {
+    return await ctx.db
+      .query("topicFeeds")
+      .withIndex("by_active", (q) => q.eq("active", true))
+      .collect()
+  },
+})
+
+export const recordCrawlResult = internalMutation({
+  args: {
+    feedId: v.id("topicFeeds"),
+    crawledAt: v.string(),
+    error: v.optional(v.string()),
+  },
+  handler: async (ctx, args) => {
+    await ctx.db.patch(args.feedId, {
+      lastCrawledAt: args.crawledAt,
+      lastCrawlError: args.error,
+    })
+  },
+})
+
 export const refreshAllTopicNews = internalAction({
   args: {},
   handler: async (ctx) => {
     const fetchedAt = new Date().toISOString()
+    await ctx.runMutation(internal.news.seedEditorialFeeds, {})
+    // Annotated because `internal.news` refers back into this file, and
+    // inference through that cycle collapses to `any`.
+    const feeds: Array<Doc<"topicFeeds">> = await ctx.runQuery(
+      internal.news.listActiveFeeds,
+      {}
+    )
+
     const results = await Promise.allSettled(
-      topicFeeds.map(async (feed) => {
-        const response = await fetch(feed.url)
-        if (!response.ok) {
-          throw new Error(`Failed to fetch ${feed.url}: ${response.status}`)
+      feeds.map(async (feed) => {
+        try {
+          const response = await fetch(feed.url)
+          if (!response.ok) {
+            throw new Error(`Failed to fetch ${feed.url}: ${response.status}`)
+          }
+
+          const xml = await response.text()
+          const items = parseRssItems(xml, feed.topicSlug, feed.tag).slice(0, 6)
+          await ctx.runMutation(internal.news.upsertTopicNewsItems, {
+            fetchedAt,
+            scope: feed.scope,
+            jurisdictionKeys: feed.jurisdictionKeys,
+            items,
+          })
+          await ctx.runMutation(internal.news.recordCrawlResult, {
+            feedId: feed._id,
+            crawledAt: fetchedAt,
+          })
+          return { topicSlug: feed.topicSlug, count: items.length }
+        } catch (error) {
+          const message =
+            error instanceof Error ? error.message : "Unknown error"
+          // A feed that 404s should not go silent. Recording the failure on the
+          // row is what makes a stale reader-requested feed visible later.
+          await ctx.runMutation(internal.news.recordCrawlResult, {
+            feedId: feed._id,
+            crawledAt: fetchedAt,
+            error: message,
+          })
+          throw error
         }
-
-        const xml = await response.text()
-        const items = parseRssItems(xml, feed.topicSlug, feed.tag).slice(0, 6)
-        await ctx.runMutation(internal.news.upsertTopicNewsItems, {
-          fetchedAt,
-          items,
-        })
-
-        return { topicSlug: feed.topicSlug, count: items.length }
       })
     )
 
@@ -102,6 +201,8 @@ export const refreshAllTopicNews = internalAction({
 export const upsertTopicNewsItems = internalMutation({
   args: {
     fetchedAt: v.string(),
+    scope: geographicScope,
+    jurisdictionKeys: v.array(v.string()),
     items: v.array(
       v.object({
         topicSlug: v.string(),
@@ -144,7 +245,7 @@ export const upsertTopicNewsItems = internalMutation({
           documentType: "reporting",
           publishedAt: item.publishedAt,
           retrievedAt: args.fetchedAt,
-          jurisdictionKeys: getGeography(item.topicSlug).jurisdictionKeys,
+          jurisdictionKeys: args.jurisdictionKeys,
           provenanceNote:
             "Discovered through Google News RSS; requires editorial verification before publication.",
           reliability: "reported",
@@ -163,7 +264,6 @@ export const upsertTopicNewsItems = internalMutation({
         .query("civicEvents")
         .withIndex("by_key", (q) => q.eq("key", eventKey))
         .unique()
-      const geography = getGeography(item.topicSlug)
       const draft = {
         topicSlugs: [item.topicSlug],
         headline: item.title,
@@ -171,8 +271,8 @@ export const upsertTopicNewsItems = internalMutation({
         whyItMatters:
           "This report may represent a civic development. Verify the underlying record, affected jurisdiction, and decision point before alerting subscribers.",
         eventKind: "breaking_news" as const,
-        geographicScope: geography.scope,
-        jurisdictionKeys: geography.jurisdictionKeys,
+        geographicScope: args.scope,
+        jurisdictionKeys: args.jurisdictionKeys,
         urgency: "medium" as const,
         confidence: "developing" as const,
         lifecycleStatus: "open" as const,
@@ -194,18 +294,6 @@ export const upsertTopicNewsItems = internalMutation({
   },
 })
 
-function getGeography(topicSlug: string): {
-  scope: "state" | "national" | "international"
-  jurisdictionKeys: Array<string>
-} {
-  if (topicSlug.startsWith("michigan-")) {
-    return { scope: "state", jurisdictionKeys: ["us-mi"] }
-  }
-  if (topicSlug === "israel-gaza-us-influence") {
-    return { scope: "international", jurisdictionKeys: [] }
-  }
-  return { scope: "national", jurisdictionKeys: ["us"] }
-}
 
 function stableHash(value: string) {
   let hash = 2166136261

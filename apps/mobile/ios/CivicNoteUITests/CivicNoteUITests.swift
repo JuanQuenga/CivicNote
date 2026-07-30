@@ -40,6 +40,20 @@ final class CivicNoteUITests: XCTestCase {
         XCTAssertTrue(app.scrollViews["event-detail"].waitForExistence(timeout: 5))
     }
 
+    /// Fixture mode has no server, so the screen states that rather than
+    /// offering a form that could not send. What is under test is the route.
+    func testTopicRequestNavigation() {
+        let app = fixtureApp()
+        app.launch()
+        app.tapTab("topics")
+        let entry = app.buttons["topics-request-entry"]
+        XCTAssertTrue(entry.waitForExistence(timeout: 5))
+        entry.tap()
+        XCTAssertTrue(app.scrollViews["topic-requests"].waitForExistence(timeout: 5))
+        let notice = app.descendants(matching: .any).matching(identifier: "empty-state").firstMatch
+        XCTAssertTrue(notice.waitForExistence(timeout: 2))
+    }
+
     @MainActor
     func testScreenshotScenarios() {
         capture(tab: "today", name: "Today")

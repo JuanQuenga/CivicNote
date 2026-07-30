@@ -8,6 +8,14 @@ const urgency = v.union(
   v.literal("critical")
 )
 
+const geographicScope = v.union(
+  v.literal("local"),
+  v.literal("state"),
+  v.literal("regional"),
+  v.literal("national"),
+  v.literal("international")
+)
+
 const topicUrgency = v.union(
   v.literal("low"),
   v.literal("medium"),
@@ -218,6 +226,51 @@ export default defineSchema({
     .index("by_topic", ["topicSlug"])
     .index("by_url", ["url"]),
 
+  // What the crawler polls. This was a hardcoded array in news.ts; it is a
+  // table so a reader can add to it. Editorial feeds and reader-requested
+  // feeds are the same shape and are crawled identically — `source` only
+  // records where the row came from.
+  topicFeeds: defineTable({
+    topicSlug: v.string(),
+    tag: v.string(),
+    query: v.string(),
+    url: v.string(),
+    scope: geographicScope,
+    jurisdictionKeys: v.array(v.string()),
+    source: v.union(v.literal("editorial"), v.literal("reader")),
+    active: v.boolean(),
+    createdAt: v.string(),
+    lastCrawledAt: v.optional(v.string()),
+    lastCrawlError: v.optional(v.string()),
+  })
+    .index("by_slug", ["topicSlug"])
+    .index("by_active", ["active"]),
+
+  // A reader asking CivicNote to start watching something. The review is
+  // automated, so the row keeps the reviewer's verdict and reasoning: a
+  // rejected request has to be able to tell the person why.
+  topicRequests: defineTable({
+    installationId: v.string(),
+    subject: v.string(),
+    reason: v.optional(v.string()),
+    regionHint: v.optional(v.string()),
+    status: v.union(
+      v.literal("pending"),
+      v.literal("approved"),
+      v.literal("rejected"),
+      v.literal("duplicate"),
+      v.literal("failed")
+    ),
+    verdictNote: v.optional(v.string()),
+    duplicateOfSlug: v.optional(v.string()),
+    topicSlug: v.optional(v.string()),
+    createdAt: v.string(),
+    reviewedAt: v.optional(v.string()),
+    attempts: v.number(),
+  })
+    .index("by_status", ["status"])
+    .index("by_installation", ["installationId"]),
+
   jurisdictions: defineTable({
     key: v.string(),
     name: v.string(),
@@ -409,13 +462,7 @@ export default defineSchema({
       v.literal("court_ruling"),
       v.literal("breaking_news")
     ),
-    geographicScope: v.union(
-      v.literal("local"),
-      v.literal("state"),
-      v.literal("regional"),
-      v.literal("national"),
-      v.literal("international")
-    ),
+    geographicScope,
     jurisdictionKeys: v.array(v.string()),
     urgency,
     confidence: v.union(

@@ -38,6 +38,8 @@ struct TopicsView: View {
                         }
                     }
                 }
+
+                requestEntry
             }
             .padding(.horizontal, CivicSpace.gutter)
             .padding(.top, CivicSpace.md)
@@ -90,6 +92,42 @@ struct TopicsView: View {
         .buttonStyle(CivicPressStyle())
         .accessibilityLabel("Alerts are off. Nothing sends a notification until you turn alerts on.")
         .accessibilityIdentifier("topics-alerts-off")
+    }
+
+    /// The list above is what CivicNote already watches; this says what to do
+    /// when the thing you care about is not on it.
+    private var requestEntry: some View {
+        NavigationLink(value: CivicRoute.topicRequests) {
+            HStack(alignment: .top, spacing: CivicSpace.md) {
+                Image(systemName: "plus.magnifyingglass")
+                    .font(CivicType.meta)
+                    .symbolRenderingMode(.hierarchical)
+                    .foregroundStyle(CivicStyle.red)
+                VStack(alignment: .leading, spacing: CivicSpace.xs) {
+                    Text("Not here? Ask CivicNote to watch it")
+                        .font(CivicType.metaStrong)
+                        .foregroundStyle(CivicStyle.ink)
+                        .multilineTextAlignment(.leading)
+                        .fixedSize(horizontal: false, vertical: true)
+                    Text("Name a subject. If it is a public matter with a public record, CivicNote starts a feed for it.")
+                        .font(CivicType.meta)
+                        .foregroundStyle(.secondary)
+                        .multilineTextAlignment(.leading)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+                Spacer(minLength: CivicSpace.sm)
+                Image(systemName: "chevron.right")
+                    .font(.caption.weight(.bold))
+                    .foregroundStyle(.tertiary)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(CivicSpace.lg)
+            .civicSurface(.inset, tint: CivicStyle.red)
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(CivicPressStyle())
+        .accessibilityLabel("Ask CivicNote to watch a subject that is not listed")
+        .accessibilityIdentifier("topics-request-entry")
     }
 
     // MARK: - Signal
@@ -254,33 +292,3 @@ private struct TopicRow: View {
     }
 }
 
-/// The follow state, stated twice: word and mark. Red carries the untaken
-/// action; once the topic is followed the state stops spending color.
-private struct FollowMark: View {
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
-    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
-    let isFollowing: Bool
-
-    var body: some View {
-        HStack(spacing: CivicSpace.xs) {
-            Image(systemName: isFollowing ? "checkmark" : "plus")
-                .font(.caption.weight(.bold))
-            if !dynamicTypeSize.isAccessibilitySize {
-                Text(isFollowing ? "Following" : "Follow")
-                    .font(CivicType.metaStrong)
-                    .lineLimit(1)
-            }
-        }
-        .foregroundStyle(isFollowing ? Color.secondary : CivicStyle.red)
-        .padding(.horizontal, CivicSpace.md)
-        .padding(.vertical, CivicSpace.sm)
-        .frame(minHeight: 44)
-        .civicSurface(
-            .inset,
-            radius: CivicRadius.control,
-            tint: isFollowing ? nil : CivicStyle.red
-        )
-        .animation(reduceMotion ? nil : .snappy(duration: 0.18), value: isFollowing)
-        .accessibilityHidden(true)
-    }
-}

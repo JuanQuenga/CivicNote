@@ -260,6 +260,51 @@ struct PauseResponseDTO: Decodable {
     let ok: Bool
 }
 
+struct TopicRequestSubmission: Encodable {
+    let installationId: String
+    let subject: String
+    let reason: String?
+    let regionHint: String?
+}
+
+struct TopicRequestSubmissionResponseDTO: Decodable {
+    let ok: Bool
+    let alreadyRequested: Bool
+}
+
+struct TopicRequestsResponseDTO: Decodable {
+    let requests: [TopicRequestDTO]
+}
+
+struct TopicRequestDTO: Decodable {
+    let id: String
+    let subject: String
+    let status: String
+    let note: String?
+    let topicSlug: String?
+    let createdAt: Date
+    let reviewedAt: Date?
+
+    func domain() -> TopicRequest {
+        TopicRequest(
+            id: id,
+            subject: subject,
+            status: TopicRequestStatus(transportValue: status),
+            note: note,
+            topicSlug: topicSlug,
+            createdAt: createdAt,
+            reviewedAt: reviewedAt
+        )
+    }
+}
+
+/// The server's error envelope. Its `error` is written for the reader — a rate
+/// limit or a too-short subject explains itself — so it is shown verbatim
+/// rather than replaced with a status code.
+struct CivicErrorDTO: Decodable {
+    let error: String
+}
+
 enum CivicJSON {
     static func decoder() -> JSONDecoder {
         let decoder = JSONDecoder()

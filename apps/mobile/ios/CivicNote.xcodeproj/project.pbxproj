@@ -24,6 +24,8 @@
 		C1000000000000000000000F /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1000000000000000000000F /* SettingsView.swift */; };
 		C10000000000000000000010 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D10000000000000000000010 /* OnboardingView.swift */; };
 		C10000000000000000000011 /* EventDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D10000000000000000000011 /* EventDetailView.swift */; };
+		C10000000000000000000019 /* TopicRequestStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1000000000000000000001D /* TopicRequestStore.swift */; };
+		C1000000000000000000001A /* TopicRequestsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1000000000000000000001E /* TopicRequestsView.swift */; };
 		C10000000000000000000013 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D10000000000000000000013 /* Images.xcassets */; };
 		C10000000000000000000014 /* SplashScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D10000000000000000000014 /* SplashScreen.storyboard */; };
 		C10000000000000000000015 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = D10000000000000000000015 /* PrivacyInfo.xcprivacy */; };
@@ -70,6 +72,8 @@
 		D1000000000000000000000F /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		D10000000000000000000010 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		D10000000000000000000011 /* EventDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventDetailView.swift; sourceTree = "<group>"; };
+		D1000000000000000000001D /* TopicRequestStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopicRequestStore.swift; sourceTree = "<group>"; };
+		D1000000000000000000001E /* TopicRequestsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopicRequestsView.swift; sourceTree = "<group>"; };
 		D10000000000000000000013 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		D10000000000000000000014 /* SplashScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = SplashScreen.storyboard; sourceTree = "<group>"; };
 		D10000000000000000000015 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
@@ -116,6 +120,8 @@
 				D10000000000000000000009 /* CivicNoteAppView.swift */,
 				D1000000000000000000000B /* TodayView.swift */,
 				D1000000000000000000000C /* TopicsView.swift */,
+				D1000000000000000000001D /* TopicRequestStore.swift */,
+				D1000000000000000000001E /* TopicRequestsView.swift */,
 				D1000000000000000000000D /* ActView.swift */,
 				D1000000000000000000000E /* NearYouView.swift */,
 				D1000000000000000000000F /* SettingsView.swift */,
@@ -238,7 +244,7 @@
 		13B07F871A680F5B00A75B9A /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
-			files = (C10000000000000000000001, C10000000000000000000002, C10000000000000000000003, C10000000000000000000004, C10000000000000000000005, C10000000000000000000006, C10000000000000000000007, C10000000000000000000008, C10000000000000000000009, C1000000000000000000000A, C1000000000000000000000B, C1000000000000000000000C, C1000000000000000000000D, C1000000000000000000000E, C1000000000000000000000F, C10000000000000000000010, C10000000000000000000011, C10000000000000000000012,);
+			files = (C10000000000000000000001, C10000000000000000000002, C10000000000000000000003, C10000000000000000000004, C10000000000000000000005, C10000000000000000000006, C10000000000000000000007, C10000000000000000000008, C10000000000000000000009, C1000000000000000000000A, C1000000000000000000000B, C1000000000000000000000C, C1000000000000000000000D, C1000000000000000000000E, C1000000000000000000000F, C10000000000000000000010, C10000000000000000000011, C10000000000000000000019, C1000000000000000000001A,);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		A60000000000000000000001 /* Sources */ = {isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (C10000000000000000000016 /* CivicNoteTests.swift in Sources */,); runOnlyForDeploymentPostprocessing = 0; };

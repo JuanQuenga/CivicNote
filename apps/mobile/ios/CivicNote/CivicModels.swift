@@ -152,6 +152,77 @@ struct FeedSnapshot: Codable, Sendable, Equatable {
     let isStale: Bool
 }
 
+/// Where a reader's request stands. The server owns these values; an
+/// unrecognised one is treated as still in review rather than dropped, so a
+/// new server status never makes a request disappear from the reader's list.
+enum TopicRequestStatus: String, Codable, Sendable {
+    case pending
+    case approved
+    case rejected
+    case duplicate
+    case failed
+
+    init(transportValue: String) {
+        self = TopicRequestStatus(rawValue: transportValue.lowercased()) ?? .pending
+    }
+
+    var title: String {
+        switch self {
+        case .pending: "In review"
+        case .approved: "Now tracking"
+        case .rejected: "Declined"
+        case .duplicate: "Already tracked"
+        case .failed: "Review failed"
+        }
+    }
+
+    var symbol: String {
+        switch self {
+        case .pending: "clock"
+        case .approved: "checkmark.seal"
+        case .rejected: "xmark.circle"
+        case .duplicate: "arrow.triangle.merge"
+        case .failed: "exclamationmark.triangle"
+        }
+    }
+
+    /// Color only where it carries information: green for a subject that is
+    /// now being crawled, amber where the reader may need to act or wait,
+    /// no hue for an ordinary decline.
+    var tint: Color {
+        switch self {
+        case .pending: .secondary
+        case .approved: CivicStyle.green
+        case .rejected: .secondary
+        case .duplicate: CivicStyle.blue
+        case .failed: CivicStyle.amber
+        }
+    }
+
+    /// What the reader should expect next, when the server has not said.
+    var fallbackNote: String {
+        switch self {
+        case .pending: "An editor is reading this. Verdicts usually land within the hour."
+        case .approved: "The crawl has started. Items appear as each one is reviewed."
+        case .rejected: "This did not meet the bar for a tracked topic."
+        case .duplicate: "CivicNote already watches this subject."
+        case .failed: "The review did not finish. It will be retried automatically."
+        }
+    }
+}
+
+struct TopicRequest: Identifiable, Hashable, Codable, Sendable {
+    let id: String
+    let subject: String
+    let status: TopicRequestStatus
+    let note: String?
+    let topicSlug: String?
+    let createdAt: Date
+    let reviewedAt: Date?
+
+    var explanation: String { note ?? status.fallbackNote }
+}
+
 enum FeedState: Equatable, Sendable {
     case loading
     case live(Date)

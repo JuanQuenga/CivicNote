@@ -49,6 +49,7 @@ enum CivicRoute: Hashable {
     case event(String)
     case notifications
     case regionEditor
+    case topicRequests
     case trust
 }
 

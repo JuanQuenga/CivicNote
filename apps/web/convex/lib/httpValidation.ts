@@ -70,6 +70,24 @@ export function readPauseArgs(value: unknown) {
   return { installationId: value.installationId }
 }
 
+export function readTopicRequestArgs(value: unknown) {
+  if (
+    !isRecord(value) ||
+    !isBoundedString(value.installationId, 16, 200) ||
+    !isBoundedString(value.subject, 8, 200)
+  ) {
+    return null
+  }
+  return {
+    installationId: value.installationId,
+    subject: value.subject,
+    reason: isBoundedString(value.reason, 1, 400) ? value.reason : undefined,
+    regionHint: isBoundedString(value.regionHint, 1, 80)
+      ? value.regionHint
+      : undefined,
+  }
+}
+
 function readPushTarget(value: unknown): ReconcilePushTarget | undefined {
   if (value === undefined || !isRecord(value)) return undefined
   if (value.provider === "apns") {

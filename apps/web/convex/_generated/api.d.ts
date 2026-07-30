@@ -18,6 +18,9 @@ import type * as installations from "../installations.js";
 import type * as lib_httpValidation from "../lib/httpValidation.js";
 import type * as lib_installations from "../lib/installations.js";
 import type * as lib_pushProviders from "../lib/pushProviders.js";
+import type * as lib_topicReview from "../lib/topicReview.js";
+import type * as lib_topicReviewSchemas from "../lib/topicReviewSchemas.js";
+import type * as lib_validators from "../lib/validators.js";
 import type * as migrations from "../migrations.js";
 import type * as mobileRegistration from "../mobileRegistration.js";
 import type * as news from "../news.js";
@@ -29,6 +32,8 @@ import type * as seed from "../seed.js";
 import type * as seedCivic from "../seedCivic.js";
 import type * as seedTopics from "../seedTopics.js";
 import type * as subscriptions from "../subscriptions.js";
+import type * as topicRequests from "../topicRequests.js";
+import type * as topicReviewNode from "../topicReviewNode.js";
 import type * as topics from "../topics.js";
 
 import type {
@@ -48,6 +53,9 @@ declare const fullApi: ApiFromModules<{
   "lib/httpValidation": typeof lib_httpValidation;
   "lib/installations": typeof lib_installations;
   "lib/pushProviders": typeof lib_pushProviders;
+  "lib/topicReview": typeof lib_topicReview;
+  "lib/topicReviewSchemas": typeof lib_topicReviewSchemas;
+  "lib/validators": typeof lib_validators;
   migrations: typeof migrations;
   mobileRegistration: typeof mobileRegistration;
   news: typeof news;
@@ -59,6 +67,8 @@ declare const fullApi: ApiFromModules<{
   seedCivic: typeof seedCivic;
   seedTopics: typeof seedTopics;
   subscriptions: typeof subscriptions;
+  topicRequests: typeof topicRequests;
+  topicReviewNode: typeof topicReviewNode;
   topics: typeof topics;
 }>;
 

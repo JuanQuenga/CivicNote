@@ -208,6 +208,7 @@ final class AppEnvironment {
     let preferences: PreferencesStore
     let repositoryStore: CivicRepositoryStore
     let notificationService: NotificationService
+    let topicRequestStore: TopicRequestStore
     let coordinator: AppCoordinator
 
     private init() {
@@ -228,6 +229,11 @@ final class AppEnvironment {
         repositoryStore = CivicRepositoryStore(repository: repository, preferences: preferences)
         notificationService = NotificationService(
             preferences: preferences,
+            baseURL: baseURL,
+            networkEnabled: networkEnabled
+        )
+        topicRequestStore = TopicRequestStore(
+            installationID: preferences.installationID,
             baseURL: baseURL,
             networkEnabled: networkEnabled
         )

@@ -812,6 +812,40 @@ struct DetailSection<Content: View>: View {
     }
 }
 
+// MARK: - Follow
+
+/// The follow state, stated twice: word and mark. Red carries the untaken
+/// action; once the topic is followed the state stops spending color.
+/// The tappable wrapper is the caller's — this only draws the state.
+struct FollowMark: View {
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+    let isFollowing: Bool
+
+    var body: some View {
+        HStack(spacing: CivicSpace.xs) {
+            Image(systemName: isFollowing ? "checkmark" : "plus")
+                .font(.caption.weight(.bold))
+            if !dynamicTypeSize.isAccessibilitySize {
+                Text(isFollowing ? "Following" : "Follow")
+                    .font(CivicType.metaStrong)
+                    .lineLimit(1)
+            }
+        }
+        .foregroundStyle(isFollowing ? Color.secondary : CivicStyle.red)
+        .padding(.horizontal, CivicSpace.md)
+        .padding(.vertical, CivicSpace.sm)
+        .frame(minHeight: 44)
+        .civicSurface(
+            .inset,
+            radius: CivicRadius.control,
+            tint: isFollowing ? nil : CivicStyle.red
+        )
+        .animation(reduceMotion ? nil : .snappy(duration: 0.18), value: isFollowing)
+        .accessibilityHidden(true)
+    }
+}
+
 // MARK: - Buttons
 
 /// Press feedback for custom tappable surfaces (cards, rows, tiles).

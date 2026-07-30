@@ -168,6 +168,11 @@ extension View {
                 NotificationSettingsView(service: environment.notificationService, preferences: environment.preferences)
             case .regionEditor:
                 RegionEditorView(preferences: environment.preferences)
+            case .topicRequests:
+                TopicRequestsView(
+                    store: environment.topicRequestStore,
+                    preferences: environment.preferences
+                )
             case .trust:
                 TrustView()
             }

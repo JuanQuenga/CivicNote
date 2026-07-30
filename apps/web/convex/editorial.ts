@@ -24,11 +24,64 @@ export const listDrafts = internalQuery({
   },
 })
 
+// Drafts paired with the topic they were filed under, which is the context a
+// reviewer needs to judge whether the item belongs there at all.
+export const listReviewableDrafts = internalQuery({
+  args: { limit: v.optional(v.number()) },
+  handler: async (ctx, args) => {
+    const limit = Math.min(Math.max(Math.floor(args.limit ?? 12), 1), 25)
+    const events = await ctx.db
+      .query("civicEvents")
+      .withIndex("by_published")
+      .order("desc")
+      .take(250)
+
+    const drafts = events
+      .filter(
+        (event) =>
+          event.publicationStatus === "draft" &&
+          event.eventKind === "breaking_news" &&
+          event.sourceDocumentIds.length > 0
+      )
+      .slice(0, limit)
+
+    const reviewable = []
+    for (const event of drafts) {
+      const slug = event.topicSlugs[0]
+      if (!slug) continue
+      const topic = await ctx.db
+        .query("topics")
+        .withIndex("by_slug", (q) => q.eq("slug", slug))
+        .unique()
+      if (!topic) continue
+      const source = await ctx.db.get(event.sourceDocumentIds[0])
+      reviewable.push({
+        eventKey: event.key,
+        headline: event.headline,
+        summary: event.summary,
+        publisher: source?.publisher ?? "Unknown",
+        publishedAt: event.publishedAt,
+        topicTitle: topic.title,
+        topicSummary: topic.summary,
+      })
+    }
+    return reviewable
+  },
+})
+
 export const publish = internalMutation({
   args: {
     eventKey: v.string(),
-    confidence: v.union(v.literal("corroborated"), v.literal("verified")),
+    // "developing" publishes a single-sourced report as exactly that. The
+    // client labels it, so readers are never shown one outlet's account as
+    // though it were confirmed.
+    confidence: v.union(
+      v.literal("developing"),
+      v.literal("corroborated"),
+      v.literal("verified")
+    ),
     urgency,
+    whyItMatters: v.optional(v.string()),
     notificationMode: v.union(v.literal("instant"), v.literal("digest")),
   },
   handler: async (ctx, args) => {
@@ -69,6 +122,7 @@ export const publish = internalMutation({
     await ctx.db.patch(event._id, {
       confidence: args.confidence,
       urgency: args.urgency,
+      whyItMatters: args.whyItMatters?.slice(0, 800) ?? event.whyItMatters,
       notificationMode: args.notificationMode,
       publicationStatus: "published",
       notificationStatus: "pending",
