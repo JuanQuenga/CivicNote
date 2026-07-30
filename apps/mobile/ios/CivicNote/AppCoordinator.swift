@@ -21,11 +21,14 @@ enum CivicTab: String, CaseIterable, Identifiable {
         }
     }
 
+    /// The icon says what the tab holds. `house` said "home screen" for a tab
+    /// that is a dated brief of what changed, and `book.closed` said "reading"
+    /// for a tab that is a watchlist.
     var symbol: String {
         switch self {
-        case .today: "house"
-        case .topics: "book.closed"
-        case .act: "checklist"
+        case .today: "newspaper"
+        case .topics: "bookmark"
+        case .act: "checklist.unchecked"
         case .nearby: "map"
         case .settings: "gearshape"
         }
@@ -33,9 +36,9 @@ enum CivicTab: String, CaseIterable, Identifiable {
 
     var selectedSymbol: String {
         switch self {
-        case .today: "house.fill"
-        case .topics: "book.closed.fill"
-        case .act: "checklist.checked"
+        case .today: "newspaper.fill"
+        case .topics: "bookmark.fill"
+        case .act: "checklist"
         case .nearby: "map.fill"
         case .settings: "gearshape.fill"
         }
@@ -76,6 +79,17 @@ final class AppCoordinator: ObservableObject {
         case .act: actPath.isEmpty
         case .nearby: nearbyPath.isEmpty
         case .settings: settingsPath.isEmpty
+        }
+    }
+
+    /// Tapping the tab you are already on returns to the top of that stack.
+    func popToRoot(_ tab: CivicTab) {
+        switch tab {
+        case .today: todayPath = NavigationPath()
+        case .topics: topicsPath = NavigationPath()
+        case .act: actPath = NavigationPath()
+        case .nearby: nearbyPath = NavigationPath()
+        case .settings: settingsPath = NavigationPath()
         }
     }
 

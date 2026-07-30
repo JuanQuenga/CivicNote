@@ -6,6 +6,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E10000000000000000000001 /* UnionTabView in Frameworks */ = {isa = PBXBuildFile; productRef = E10000000000000000000002 /* UnionTabView */; };
 		C10000000000000000000001 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D10000000000000000000001 /* AppDelegate.swift */; };
 		C10000000000000000000002 /* CivicModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = D10000000000000000000002 /* CivicModels.swift */; };
 		C10000000000000000000003 /* CivicTransport.swift in Sources */ = {isa = PBXBuildFile; fileRef = D10000000000000000000003 /* CivicTransport.swift */; };
@@ -23,7 +24,6 @@
 		C1000000000000000000000F /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1000000000000000000000F /* SettingsView.swift */; };
 		C10000000000000000000010 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D10000000000000000000010 /* OnboardingView.swift */; };
 		C10000000000000000000011 /* EventDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D10000000000000000000011 /* EventDetailView.swift */; };
-		C10000000000000000000012 /* UnionTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D10000000000000000000012 /* UnionTabView.swift */; };
 		C10000000000000000000013 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D10000000000000000000013 /* Images.xcassets */; };
 		C10000000000000000000014 /* SplashScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D10000000000000000000014 /* SplashScreen.storyboard */; };
 		C10000000000000000000015 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = D10000000000000000000015 /* PrivacyInfo.xcprivacy */; };
@@ -70,7 +70,6 @@
 		D1000000000000000000000F /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		D10000000000000000000010 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		D10000000000000000000011 /* EventDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventDetailView.swift; sourceTree = "<group>"; };
-		D10000000000000000000012 /* UnionTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnionTabView.swift; sourceTree = "<group>"; };
 		D10000000000000000000013 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		D10000000000000000000014 /* SplashScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = SplashScreen.storyboard; sourceTree = "<group>"; };
 		D10000000000000000000015 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
@@ -84,7 +83,9 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		13B07F8C1A680F5B00A75B9A /* Frameworks */ = {isa = PBXFrameworksBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
+		13B07F8C1A680F5B00A75B9A /* Frameworks */ = {isa = PBXFrameworksBuildPhase; buildActionMask = 2147483647; files = (
+				E10000000000000000000001 /* UnionTabView in Frameworks */,
+			); runOnlyForDeploymentPostprocessing = 0; };
 		A40000000000000000000001 /* Frameworks */ = {isa = PBXFrameworksBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
 		A40000000000000000000002 /* Frameworks */ = {isa = PBXFrameworksBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
 /* End PBXFrameworksBuildPhase section */
@@ -121,7 +122,6 @@
 				D10000000000000000000010 /* OnboardingView.swift */,
 				D10000000000000000000011 /* EventDetailView.swift */,
 				D1000000000000000000000A /* SharedComponents.swift */,
-				D10000000000000000000012 /* UnionTabView.swift */,
 				D10000000000000000000013 /* Images.xcassets */,
 				D10000000000000000000014 /* SplashScreen.storyboard */,
 				D10000000000000000000015 /* PrivacyInfo.xcprivacy */,
@@ -150,6 +150,9 @@
 			dependencies = ();
 			name = CivicNote;
 			productName = CivicNote;
+			packageProductDependencies = (
+				E10000000000000000000002 /* UnionTabView */,
+			);
 			productReference = 13B07F961A680F5B00A75B9A /* CivicNote.app */;
 			productType = "com.apple.product-type.application";
 		};
@@ -196,12 +199,34 @@
 			hasScannedForEncodings = 0;
 			knownRegions = (en, Base,);
 			mainGroup = 83CBB9F61A601CBA00E9B192;
+			packageReferences = (
+				E10000000000000000000003 /* XCRemoteSwiftPackageReference "union-tab-view" */,
+			);
 			productRefGroup = 83CBBA001A601CBA00E9B192 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (13B07F861A680F5B00A75B9A /* CivicNote */, A10000000000000000000001 /* CivicNoteTests */, A10000000000000000000002 /* CivicNoteUITests */,);
 		};
 /* End PBXProject section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		E10000000000000000000003 /* XCRemoteSwiftPackageReference "union-tab-view" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/unionst/union-tab-view.git";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		E10000000000000000000002 /* UnionTabView */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E10000000000000000000003 /* XCRemoteSwiftPackageReference "union-tab-view" */;
+			productName = UnionTabView;
+		};
+/* End XCSwiftPackageProductDependency section */
 
 /* Begin PBXResourcesBuildPhase section */
 		13B07F8E1A680F5B00A75B9A /* Resources */ = {isa = PBXResourcesBuildPhase; buildActionMask = 2147483647; files = (C10000000000000000000013 /* Images.xcassets in Resources */, C10000000000000000000014 /* SplashScreen.storyboard in Resources */, C10000000000000000000015 /* PrivacyInfo.xcprivacy in Resources */,); runOnlyForDeploymentPostprocessing = 0; };

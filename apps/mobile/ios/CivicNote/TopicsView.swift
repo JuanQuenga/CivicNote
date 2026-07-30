@@ -10,8 +10,7 @@ struct TopicsView: View {
             LazyVStack(alignment: .leading, spacing: CivicSpace.xl) {
                 CivicMasthead(
                     title: "Topics",
-                    standfirst: "Following a topic puts its meetings and deadlines in Today and sends its alerts.",
-                    status: followedStatus
+                    standfirst: "Following a topic puts its meetings and deadlines in Today and sends its alerts."
                 )
 
                 if showsAlertsOffNotice {
@@ -52,11 +51,6 @@ struct TopicsView: View {
 
     private var followedCount: Int {
         repository.topics.filter { preferences.topicSlugs.contains($0.id) }.count
-    }
-
-    private var followedStatus: String? {
-        guard !repository.topics.isEmpty else { return nil }
-        return "\(followedCount) of \(repository.topics.count) followed"
     }
 
     private var showsAlertsOffNotice: Bool {

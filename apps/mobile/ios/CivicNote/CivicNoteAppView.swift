@@ -1,4 +1,5 @@
 import SwiftUI
+import UnionTabView
 
 struct CivicNoteAppView: View {
     /// Tab order follows how often a reader needs the screen: the dated brief
@@ -39,44 +40,72 @@ struct CivicNoteAppView: View {
         .onOpenURL { environment.route(url: $0) }
     }
 
+    /// `UnionTabView`'s glass bar is an iOS 26 path; below that the package
+    /// draws a bar that takes no touches, so those releases get the system tab
+    /// bar instead. Both branches host the same stacks and the same tags.
+    @ViewBuilder
     private var mainTabs: some View {
-        UnionTabView(
-            selection: $coordinator.selectedTab,
-            tabs: Self.tabOrder,
-            isTabBarHidden: !coordinator.selectedPathIsEmpty
-        ) {
-            NavigationStack(path: $coordinator.todayPath) {
-                TodayView(repository: repository, preferences: preferences)
-                    .withCivicDestinations(environment: environment)
+        if #available(iOS 26, *) {
+            UnionTabView(
+                selection: $coordinator.selectedTab,
+                tabs: Self.tabOrder,
+                glassTint: CivicStyle.red.opacity(0.06),
+                onReselect: { coordinator.popToRoot($0) }
+            ) {
+                tabContent
+            } item: { tab, isSelected in
+                CivicTabItem(tab: tab, isSelected: isSelected)
             }
-            .unionTab(CivicTab.today)
-
-            NavigationStack(path: $coordinator.actPath) {
-                ActView(repository: repository)
-                    .withCivicDestinations(environment: environment)
+        } else {
+            TabView(selection: $coordinator.selectedTab) {
+                tabContent
             }
-            .unionTab(CivicTab.act)
-
-            NavigationStack(path: $coordinator.nearbyPath) {
-                NearYouView(repository: repository, preferences: preferences)
-                    .withCivicDestinations(environment: environment)
-            }
-            .unionTab(CivicTab.nearby)
-
-            NavigationStack(path: $coordinator.topicsPath) {
-                TopicsView(repository: repository, preferences: preferences)
-                    .withCivicDestinations(environment: environment)
-            }
-            .unionTab(CivicTab.topics)
-
-            NavigationStack(path: $coordinator.settingsPath) {
-                SettingsView(environment: environment)
-                    .withCivicDestinations(environment: environment)
-            }
-            .unionTab(CivicTab.settings)
-        } item: { tab, isSelected in
-            CivicTabItem(tab: tab, isSelected: isSelected)
         }
+    }
+
+    /// One definition of the five stacks, shared by both bars. `civicTab`
+    /// carries the selection tag and the system-bar label together, so the
+    /// legacy branch needs no second copy of this list.
+    @ViewBuilder
+    private var tabContent: some View {
+        NavigationStack(path: $coordinator.todayPath) {
+            TodayView(repository: repository, preferences: preferences)
+                .withCivicDestinations(environment: environment)
+        }
+        .civicTab(.today)
+
+        NavigationStack(path: $coordinator.actPath) {
+            ActView(repository: repository)
+                .withCivicDestinations(environment: environment)
+        }
+        .civicTab(.act)
+
+        NavigationStack(path: $coordinator.nearbyPath) {
+            NearYouView(repository: repository, preferences: preferences)
+                .withCivicDestinations(environment: environment)
+        }
+        .civicTab(.nearby)
+
+        NavigationStack(path: $coordinator.topicsPath) {
+            TopicsView(repository: repository, preferences: preferences)
+                .withCivicDestinations(environment: environment)
+        }
+        .civicTab(.topics)
+
+        NavigationStack(path: $coordinator.settingsPath) {
+            SettingsView(environment: environment)
+                .withCivicDestinations(environment: environment)
+        }
+        .civicTab(.settings)
+    }
+}
+
+private extension View {
+    /// Tags a stack with its tab and gives the system bar something to draw.
+    /// On iOS 26 `unionTab` hides that bar, so the label is inert there.
+    func civicTab(_ tab: CivicTab) -> some View {
+        unionTab(tab)
+            .tabItem { Label(tab.title, systemImage: tab.symbol) }
     }
 }
 
@@ -104,12 +133,12 @@ private struct CivicTabItem: View {
 
     var body: some View {
         VStack(spacing: CivicSpace.xs) {
-            Image(systemName: isSelected ? selectedSymbol : symbol)
-                .font(TabBarChrome.glyph)
+            Image(systemName: isSelected ? tab.selectedSymbol : tab.symbol)
+                .font(.system(size: 17, weight: .semibold))
                 .symbolRenderingMode(.hierarchical)
             if !dynamicTypeSize.isAccessibilitySize {
                 Text(tab.title)
-                    .font(TabBarChrome.label)
+                    .font(.system(size: 10, weight: .semibold))
                     .lineLimit(1)
                     .minimumScaleFactor(0.75)
             }
@@ -126,29 +155,6 @@ private struct CivicTabItem: View {
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(tab.title)
         .accessibilityIdentifier("tab-\(tab.rawValue)")
-    }
-
-    /// The icon pairing lives next to the label it sits under. `house` said
-    /// "home screen" for a tab that is a dated brief of what changed;
-    /// `book.closed` said "reading" for a tab that is a watchlist.
-    private var symbol: String {
-        switch tab {
-        case .today: "newspaper"
-        case .act: "checklist.unchecked"
-        case .nearby: "map"
-        case .topics: "bookmark"
-        case .settings: "gearshape"
-        }
-    }
-
-    private var selectedSymbol: String {
-        switch tab {
-        case .today: "newspaper.fill"
-        case .act: "checklist"
-        case .nearby: "map.fill"
-        case .topics: "bookmark.fill"
-        case .settings: "gearshape.fill"
-        }
     }
 }
 

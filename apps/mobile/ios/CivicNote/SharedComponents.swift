@@ -1,5 +1,6 @@
 import SwiftUI
 import UIKit
+import UnionTabView
 
 // MARK: - Spacing
 //
@@ -22,8 +23,11 @@ enum CivicSpace {
 
     /// Horizontal page margin. Every screen uses this and nothing else.
     static let gutter: CGFloat = 16
-    /// Bottom padding on every scroll view so content clears the tab bar.
-    static let screenBottom: CGFloat = 32
+    /// Bottom padding on every scroll view, so content clears the tab bar.
+    /// `UnionTabView` pins its bar as an
+    /// overlay and reserves no space, so every scroll surface has to leave room
+    /// for it or the last card sits under the glass.
+    static let screenBottom: CGFloat = UnionTabBarMetrics.height + 24
 }
 
 // MARK: - Radius
@@ -42,20 +46,20 @@ enum CivicRadius {
 
 // MARK: - Type
 //
-// Editorial register. Serif carries anything a person reads as a statement of
-// record (screen titles, headlines, section titles). System sans carries
-// everything a person reads as apparatus (body copy, metadata, labels).
-// `design: .rounded` is gone.
+// One family: San Francisco, the system face. Hierarchy comes from size and
+// weight alone, not from a second typeface. Neither `.serif` nor `.rounded`
+// appears here — a display face borrowed for "editorial" character reads as
+// costume on a utility app, and SF at bold weights already carries a headline.
 
 enum CivicType {
-    /// Screen title. One per screen. Serif.
-    static let display = Font.system(.largeTitle, design: .serif, weight: .semibold)
-    /// Event detail headline. Serif.
-    static let headline = Font.system(.title2, design: .serif, weight: .semibold)
-    /// Card headline and detail section title. Serif.
-    static let title = Font.system(.title3, design: .serif, weight: .semibold)
-    /// Compact list-row headline. Serif.
-    static let lede = Font.system(.headline, design: .serif, weight: .semibold)
+    /// Screen title. One per screen.
+    static let display = Font.system(.largeTitle, weight: .bold)
+    /// Event detail headline.
+    static let headline = Font.system(.title2, weight: .bold)
+    /// Card headline and detail section title.
+    static let title = Font.system(.title3, weight: .semibold)
+    /// Compact list-row headline.
+    static let lede = Font.system(.headline, weight: .semibold)
 
     /// Running prose in the detail view.
     static let body = Font.body

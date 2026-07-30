@@ -4,10 +4,9 @@ final class CivicNoteUITests: XCTestCase {
     func testTabSwitching() {
         let app = fixtureApp()
         app.launch()
+        XCTAssertTrue(app.waitForTabBar())
         for tab in ["topics", "act", "nearby", "settings", "today"] {
-            let button = app.buttons["tab-\(tab)"]
-            XCTAssertTrue(button.waitForExistence(timeout: 5))
-            button.tap()
+            app.tapTab(tab)
         }
     }
 
@@ -29,7 +28,7 @@ final class CivicNoteUITests: XCTestCase {
 
         XCTAssertTrue(skip.waitForExistence(timeout: 2))
         skip.tap()
-        XCTAssertTrue(app.buttons["tab-today"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.waitForTabBar())
     }
 
     func testEventDetailNavigation() {
@@ -65,7 +64,7 @@ final class CivicNoteUITests: XCTestCase {
         app.launchArguments = ["-uiTestMode", "-screenshotFixtures", "-selectTab", tab]
         setupSnapshot(app)
         app.launch()
-        XCTAssertTrue(app.buttons["tab-today"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.waitForTabBar())
         snapshot(name)
         app.terminate()
     }
@@ -74,5 +73,28 @@ final class CivicNoteUITests: XCTestCase {
         let app = XCUIApplication()
         app.launchArguments = ["-uiTestMode", "-screenshotFixtures"]
         return app
+    }
+}
+
+/// The glass tab bar takes its touches on a `UISegmentedControl` layered behind
+/// the labels, so the tab items are not buttons and cannot be tapped by
+/// identifier. Below iOS 26 the app falls back to the system bar. Address both
+/// by position, in the order `CivicNoteAppView.tabOrder` declares.
+private extension XCUIApplication {
+    static let tabOrder = ["today", "act", "nearby", "topics", "settings"]
+
+    func waitForTabBar(timeout: TimeInterval = 5) -> Bool {
+        segmentedControls.firstMatch.waitForExistence(timeout: timeout)
+            || tabBars.firstMatch.waitForExistence(timeout: 1)
+    }
+
+    func tapTab(_ tab: String, file: StaticString = #filePath, line: UInt = #line) {
+        guard let index = Self.tabOrder.firstIndex(of: tab) else {
+            return XCTFail("Unknown tab \(tab)", file: file, line: line)
+        }
+        let bar = segmentedControls.firstMatch.exists ? segmentedControls.firstMatch : tabBars.firstMatch
+        let segment = bar.buttons.element(boundBy: index)
+        XCTAssertTrue(segment.waitForExistence(timeout: 5), "No segment for \(tab)", file: file, line: line)
+        segment.tap()
     }
 }
