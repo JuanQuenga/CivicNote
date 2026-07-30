@@ -9,8 +9,9 @@ import { z } from "zod"
 // source, invent a publisher, or decide a jurisdiction on its own.
 
 // The review runs through the Codex CLI on a local worker, against the
-// operator's ChatGPT login. Terra is the balanced tier and the default here.
-export const DEFAULT_CODEX_MODEL = "gpt-5.6-terra"
+// operator's ChatGPT login. Luna is the fast tier: the verdict is constrained
+// by a JSON schema and re-derived in code, so the work does not need reasoning.
+export const DEFAULT_CODEX_MODEL = "gpt-5.6-luna"
 
 // A worker holds a job for this long before another may take it, renews the
 // hold while it works, and the whole job is abandoned after the deadline.

@@ -58,7 +58,7 @@ In `.env.local` at the repo root or in `apps/web`:
 | ---------------------------- | -------- | --------------- | ----------------------------------------- |
 | `CONVEX_SITE_URL`            | yes      | —               | `https://<deployment>.convex.site`        |
 | `TOPIC_REVIEW_WORKER_SECRET` | yes      | —               | must match the deployment value           |
-| `TOPIC_REVIEW_CODEX_MODEL`   | no       | `gpt-5.6-terra` | the balanced tier; do not default to Sol  |
+| `TOPIC_REVIEW_CODEX_MODEL`   | no       | `gpt-5.6-luna`  | the fast tier; do not default to Sol       |
 | `CODEX_BIN`                  | no       | `codex`         | path to the CLI                           |
 | `TOPIC_REVIEW_WORKER_POLL_MS`| no       | `5000`          | idle poll interval                        |
 | `TOPIC_REVIEW_CODEX_TIMEOUT_MS` | no    | `300000`        | per-run kill timeout                      |
