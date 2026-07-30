@@ -18,7 +18,7 @@ import type * as installations from "../installations.js";
 import type * as lib_httpValidation from "../lib/httpValidation.js";
 import type * as lib_installations from "../lib/installations.js";
 import type * as lib_pushProviders from "../lib/pushProviders.js";
-import type * as lib_topicReview from "../lib/topicReview.js";
+import type * as lib_topicReviewPrompts from "../lib/topicReviewPrompts.js";
 import type * as lib_topicReviewSchemas from "../lib/topicReviewSchemas.js";
 import type * as lib_validators from "../lib/validators.js";
 import type * as migrations from "../migrations.js";
@@ -33,7 +33,7 @@ import type * as seedCivic from "../seedCivic.js";
 import type * as seedTopics from "../seedTopics.js";
 import type * as subscriptions from "../subscriptions.js";
 import type * as topicRequests from "../topicRequests.js";
-import type * as topicReviewNode from "../topicReviewNode.js";
+import type * as topicReviewJobs from "../topicReviewJobs.js";
 import type * as topics from "../topics.js";
 
 import type {
@@ -53,7 +53,7 @@ declare const fullApi: ApiFromModules<{
   "lib/httpValidation": typeof lib_httpValidation;
   "lib/installations": typeof lib_installations;
   "lib/pushProviders": typeof lib_pushProviders;
-  "lib/topicReview": typeof lib_topicReview;
+  "lib/topicReviewPrompts": typeof lib_topicReviewPrompts;
   "lib/topicReviewSchemas": typeof lib_topicReviewSchemas;
   "lib/validators": typeof lib_validators;
   migrations: typeof migrations;
@@ -68,7 +68,7 @@ declare const fullApi: ApiFromModules<{
   seedTopics: typeof seedTopics;
   subscriptions: typeof subscriptions;
   topicRequests: typeof topicRequests;
-  topicReviewNode: typeof topicReviewNode;
+  topicReviewJobs: typeof topicReviewJobs;
   topics: typeof topics;
 }>;
 

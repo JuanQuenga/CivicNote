@@ -1,5 +1,6 @@
 import { httpRouter, makeFunctionReference } from "convex/server"
 
+import { internal } from "./_generated/api"
 import { httpAction } from "./_generated/server"
 import {
   readEventListParams,
@@ -7,6 +8,7 @@ import {
   readReconcileArgs,
   readTopicRequestArgs,
 } from "./lib/httpValidation"
+import type { Id } from "./_generated/dataModel"
 import type { ReconcileArgs } from "./lib/installations"
 
 const urgencyValues = ["low", "medium", "high", "critical"] as const
@@ -166,7 +168,200 @@ const listTopicRequestsRef = makeFunctionReference<
   Array<TopicRequestSummary>
 >("topicRequests:listMine")
 
+// MARK: - Topic review worker API
+//
+// A local worker polls these to run topic review through its own authenticated
+// Codex CLI. Authentication is a dedicated bearer secret; everything the worker
+// submits is re-validated in `topicReviewJobs` before it can change anything.
+
+const WORKER_BODY_LIMIT_CHARS = 400_000
+
+const workerErrorCodes = [
+  "codex_not_found",
+  "not_logged_in",
+  "model_unsupported",
+  "rate_limited",
+  "timeout",
+  "malformed_output",
+  "exec_failed",
+] as const
+
+type WorkerErrorCode = (typeof workerErrorCodes)[number]
+
+function timingSafeEqual(a: Uint8Array, b: Uint8Array) {
+  if (a.length !== b.length) return false
+  let mismatch = 0
+  for (let index = 0; index < a.length; index++) {
+    mismatch |= a[index] ^ b[index]
+  }
+  return mismatch === 0
+}
+
+function authorizeReviewWorker(request: Request): Response | null {
+  const secret = process.env.TOPIC_REVIEW_WORKER_SECRET
+  if (!secret) {
+    return new Response("Worker endpoint not configured", { status: 503 })
+  }
+  const encoder = new TextEncoder()
+  const received = encoder.encode(request.headers.get("Authorization") ?? "")
+  const expected = encoder.encode(`Bearer ${secret}`)
+  if (!timingSafeEqual(received, expected)) {
+    return new Response("Unauthorized", { status: 401 })
+  }
+  return null
+}
+
+async function readWorkerBody(
+  request: Request
+): Promise<Record<string, unknown> | null> {
+  const text = await request.text()
+  if (text.length > WORKER_BODY_LIMIT_CHARS) return null
+  try {
+    const parsed: unknown = JSON.parse(text)
+    if (!isRecord(parsed)) return null
+    return parsed
+  } catch {
+    return null
+  }
+}
+
+function workerJson(body: unknown, status = 200) {
+  return new Response(JSON.stringify(body), {
+    status,
+    headers: { "Content-Type": "application/json" },
+  })
+}
+
 const http = httpRouter()
+
+http.route({
+  path: "/api/v1/topic-review/claim",
+  method: "POST",
+  handler: httpAction(async (ctx, request) => {
+    const unauthorized = authorizeReviewWorker(request)
+    if (unauthorized) return unauthorized
+    const body = await readWorkerBody(request)
+    if (!body || typeof body.workerId !== "string" || !body.workerId) {
+      return workerJson({ error: "invalid_request" }, 400)
+    }
+    const job = await ctx.runMutation(internal.topicReviewJobs.claimNext, {
+      workerId: body.workerId,
+      model: typeof body.model === "string" ? body.model : undefined,
+    })
+    return workerJson({ job })
+  }),
+})
+
+http.route({
+  path: "/api/v1/topic-review/renew",
+  method: "POST",
+  handler: httpAction(async (ctx, request) => {
+    const unauthorized = authorizeReviewWorker(request)
+    if (unauthorized) return unauthorized
+    const body = await readWorkerBody(request)
+    if (
+      !body ||
+      typeof body.workerId !== "string" ||
+      typeof body.jobId !== "string"
+    ) {
+      return workerJson({ error: "invalid_request" }, 400)
+    }
+    try {
+      const result = await ctx.runMutation(
+        internal.topicReviewJobs.renewClaim,
+        {
+          jobId: body.jobId as Id<"topicReviewJobs">,
+          workerId: body.workerId,
+        }
+      )
+      return workerJson(result, result.ok ? 200 : 409)
+    } catch {
+      return workerJson({ error: "invalid_request" }, 400)
+    }
+  }),
+})
+
+http.route({
+  path: "/api/v1/topic-review/submit",
+  method: "POST",
+  handler: httpAction(async (ctx, request) => {
+    const unauthorized = authorizeReviewWorker(request)
+    if (unauthorized) return unauthorized
+    const body = await readWorkerBody(request)
+    if (
+      !body ||
+      typeof body.workerId !== "string" ||
+      typeof body.jobId !== "string" ||
+      typeof body.output !== "string" ||
+      typeof body.modelName !== "string"
+    ) {
+      return workerJson({ error: "invalid_request" }, 400)
+    }
+    const usage = isRecord(body.usage) ? body.usage : undefined
+    const toCount = (value: unknown) =>
+      typeof value === "number" && Number.isFinite(value) && value >= 0
+        ? value
+        : undefined
+    try {
+      const result = await ctx.runMutation(internal.topicReviewJobs.submit, {
+        jobId: body.jobId as Id<"topicReviewJobs">,
+        workerId: body.workerId,
+        output: body.output,
+        modelName: body.modelName,
+        modelRequestId:
+          typeof body.modelRequestId === "string"
+            ? body.modelRequestId
+            : undefined,
+        usage: usage
+          ? {
+              inputTokens: toCount(usage.inputTokens),
+              outputTokens: toCount(usage.outputTokens),
+              totalTokens: toCount(usage.totalTokens),
+            }
+          : undefined,
+      })
+      if (result.status === "accepted" || result.status === "duplicate") {
+        return workerJson(result)
+      }
+      if (result.status === "not_found") return workerJson(result, 404)
+      return workerJson(result, result.code === "claim_expired" ? 409 : 422)
+    } catch {
+      return workerJson({ error: "invalid_request" }, 400)
+    }
+  }),
+})
+
+http.route({
+  path: "/api/v1/topic-review/fail",
+  method: "POST",
+  handler: httpAction(async (ctx, request) => {
+    const unauthorized = authorizeReviewWorker(request)
+    if (unauthorized) return unauthorized
+    const body = await readWorkerBody(request)
+    const isErrorCode = (value: unknown): value is WorkerErrorCode =>
+      typeof value === "string" &&
+      (workerErrorCodes as ReadonlyArray<string>).includes(value)
+    if (
+      !body ||
+      typeof body.workerId !== "string" ||
+      typeof body.jobId !== "string" ||
+      !isErrorCode(body.errorCode)
+    ) {
+      return workerJson({ error: "invalid_request" }, 400)
+    }
+    try {
+      const result = await ctx.runMutation(internal.topicReviewJobs.fail, {
+        jobId: body.jobId as Id<"topicReviewJobs">,
+        workerId: body.workerId,
+        errorCode: body.errorCode,
+        detail: typeof body.detail === "string" ? body.detail : undefined,
+      })
+      return workerJson(result, result.ok ? 200 : 409)
+    } catch {
+      return workerJson({ error: "invalid_request" }, 400)
+    }
+  }),
+})
 
 http.route({
   path: "/api/v1/topics",

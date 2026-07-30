@@ -1,0 +1,19 @@
+{
+  /* Typechecks the local Codex review worker, which runs directly under Node
+   * with type stripping (erasable syntax only, .ts import specifiers). It is
+   * excluded from the app tsconfig because that one has no node types. */
+  "compilerOptions": {
+    "strict": true,
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "lib": ["ES2023"],
+    "types": ["node"],
+    "allowImportingTsExtensions": true,
+    "erasableSyntaxOnly": true,
+    "isolatedModules": true,
+    "skipLibCheck": true,
+    "noEmit": true
+  },
+  "include": ["./**/*", "../convex/lib/topicReviewSchemas.ts"]
+}

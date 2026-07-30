@@ -10,16 +10,17 @@ const matchPendingEvents = makeFunctionReference<"mutation">(
 )
 const dispatchPending = makeFunctionReference<"action">("push:dispatchPending")
 const checkReceipts = makeFunctionReference<"action">("push:checkReceipts")
-const reviewDrafts = makeFunctionReference<"action">(
-  "topicReviewNode:reviewDrafts"
+const enqueueDraftReview = makeFunctionReference<"mutation">(
+  "topicReviewJobs:enqueueDraftReview"
 )
-const retryStalledRequests = makeFunctionReference<"action">(
-  "topicReviewNode:retryStalledRequests"
+const retryStalledRequests = makeFunctionReference<"mutation">(
+  "topicReviewJobs:retryStalledRequests"
 )
 
 crons.interval("refresh topic news", { minutes: 30 }, refreshAllTopicNews)
-// Runs offset from the crawl so it works through what the crawl just filed.
-crons.interval("review crawled drafts", { minutes: 10 }, reviewDrafts)
+// Queues a review batch for whatever the crawl just filed. The local Codex
+// worker is what actually drains it.
+crons.interval("queue draft review", { minutes: 10 }, enqueueDraftReview)
 crons.interval("retry stalled topic requests", { minutes: 15 }, retryStalledRequests)
 crons.interval("match civic alerts", { minutes: 5 }, matchPendingEvents)
 crons.interval("dispatch civic alerts", { minutes: 5 }, dispatchPending)

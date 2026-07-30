@@ -1,7 +1,7 @@
 import { v } from "convex/values"
 
 import { internal } from "./_generated/api"
-import { internalMutation, internalQuery, mutation, query } from "./_generated/server"
+import { internalMutation, mutation, query } from "./_generated/server"
 import {
   MAX_OPEN_REQUESTS_PER_INSTALLATION,
   MAX_REQUESTS_PER_WINDOW,
@@ -82,9 +82,11 @@ export const submit = mutation({
       attempts: 0,
     })
 
-    await ctx.scheduler.runAfter(0, internal.topicReviewNode.reviewRequest, {
-      requestId,
-    })
+    await ctx.scheduler.runAfter(
+      0,
+      internal.topicReviewJobs.enqueueRequestReview,
+      { requestId }
+    )
 
     return { requestId, alreadyRequested: false }
   },
@@ -118,29 +120,7 @@ export const listMine = query({
   },
 })
 
-// MARK: - Internals used by the review action
-
-export const loadForReview = internalQuery({
-  args: { requestId: v.id("topicRequests") },
-  handler: async (ctx, args) => {
-    const request = await ctx.db.get(args.requestId)
-    if (!request) return null
-    const topics = await ctx.db.query("topics").collect()
-    return {
-      request,
-      topics: topics.map((topic) => ({ slug: topic.slug, title: topic.title })),
-    }
-  },
-})
-
-export const markAttempt = internalMutation({
-  args: { requestId: v.id("topicRequests") },
-  handler: async (ctx, args) => {
-    const request = await ctx.db.get(args.requestId)
-    if (!request) return
-    await ctx.db.patch(args.requestId, { attempts: request.attempts + 1 })
-  },
-})
+// MARK: - Internals used by the review queue
 
 export const recordVerdict = internalMutation({
   args: {
@@ -258,22 +238,5 @@ export const approve = internalMutation({
     })
 
     return { created: true }
-  },
-})
-
-// Requests whose review never finished — the action threw, or the deployment
-// restarted mid-call. Retried by cron rather than left silently pending.
-export const listStalled = internalQuery({
-  args: { olderThanMs: v.number() },
-  handler: async (ctx, args) => {
-    const cutoff = new Date(Date.now() - args.olderThanMs).toISOString()
-    const pending = await ctx.db
-      .query("topicRequests")
-      .withIndex("by_status", (q) => q.eq("status", "pending"))
-      .collect()
-    return pending
-      .filter((request) => request.createdAt < cutoff && request.attempts < 3)
-      .slice(0, 10)
-      .map((request) => request._id)
   },
 })

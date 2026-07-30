@@ -271,6 +271,43 @@ export default defineSchema({
     .index("by_status", ["status"])
     .index("by_installation", ["installationId"]),
 
+  // Work waiting for the local Codex worker. Convex cannot hold a Codex
+  // session — the ChatGPT login lives in the CLI on a machine the operator
+  // runs — so review is a leased queue: Convex writes the prompt, a worker
+  // claims it, and the answer comes back through the worker endpoints to be
+  // validated here. Nothing is trusted on the way in.
+  topicReviewJobs: defineTable({
+    kind: v.union(v.literal("request"), v.literal("drafts")),
+    status: v.union(
+      v.literal("pending"),
+      v.literal("completed"),
+      v.literal("failed")
+    ),
+    prompt: v.string(),
+    requestId: v.optional(v.id("topicRequests")),
+    eventKeys: v.optional(v.array(v.string())),
+    attempts: v.number(),
+    claimedBy: v.optional(v.string()),
+    claimedAt: v.optional(v.number()),
+    claimExpiresAt: v.optional(v.number()),
+    deadlineAt: v.number(),
+    modelName: v.optional(v.string()),
+    modelRequestId: v.optional(v.string()),
+    usage: v.optional(
+      v.object({
+        inputTokens: v.optional(v.number()),
+        outputTokens: v.optional(v.number()),
+        totalTokens: v.optional(v.number()),
+      })
+    ),
+    lastErrorCode: v.optional(v.string()),
+    lastErrorDetail: v.optional(v.string()),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  })
+    .index("by_status_and_createdAt", ["status", "createdAt"])
+    .index("by_request", ["requestId"]),
+
   jurisdictions: defineTable({
     key: v.string(),
     name: v.string(),
